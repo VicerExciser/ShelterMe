@@ -1,5 +1,5 @@
 # ShelterMe
-CS2340 Project - Android app for locating homeless shelter availabilities in Atlanta area
+CS2340 Project - Android app for locating available homeless shelters in the Atlanta area
 
 11 Project Milestones:
   - M1 Team Organization/Contracts/Project Management - 5%
@@ -14,3 +14,23 @@ CS2340 Project - Android app for locating homeless shelter availabilities in Atl
   - M10 Code Review and Unit Tests - 5% 
   - M11 Case Study Analysis  - 7%
   There will be an optional UI evaluation time permitting.
+
+We want to help answer questions like:
+  - Where is the nearest shelter to the user's current location?
+  - What gender or ages do nearby shelters house?
+  - How can the shelters be contacted?
+  - Do they currently have available beds?
+  
+Necessary shelter data to collect for each:
+  - Unique key (These numbers are meaningless outside of this app and should not be visible to the users)
+  - Shelter Name
+  - Capacity (for individuals or for families)
+  - Restrictions
+    -- Age (Families w/ newborns, Children, Yound Adults, Anyone)
+    -- Gender (Male, Female, Anyone)
+    -- Families (Yes/No)
+    -- Veterans only (Yes/No)
+  - Location (latitude, longitude, street address)
+  - Special notes
+  - Phone Number (in (000) 000-0000 format)
+  - Other contact information, such as a web address
