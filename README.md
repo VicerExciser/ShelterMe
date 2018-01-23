@@ -34,3 +34,10 @@ Necessary shelter data to collect for each:
   - Special notes
   - Phone Number (in (000) 000-0000 format)
   - Other contact information, such as a web address
+
+Team Members:
+  - Austin Condict
+  - Russell Conklin
+  - Evan Woodard
+  - Sandra Alsayar
+  - Kyra Leroux
