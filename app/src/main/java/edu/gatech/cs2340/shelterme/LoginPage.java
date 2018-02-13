@@ -52,9 +52,9 @@ public class LoginPage extends AppCompatActivity {
     }
     private boolean attemptLogin() {
         String username = mUsernameView.getText().toString().trim();
-        String password = mPasswordView.getText().toString();
+        int password = mPasswordView.getText().toString().hashCode();
         Context context = getApplicationContext();
-        if (TextUtils.isEmpty(password) || TextUtils.isEmpty(username)) {
+        if (password == 0 || TextUtils.isEmpty(username)) {
             displayErrorMessage("This field is required");
             return false;
         }
@@ -62,7 +62,7 @@ public class LoginPage extends AppCompatActivity {
             displayErrorMessage("Your username or login is incorrect.");
             return false;
         }
-        else if (password.hashCode() != "pass".hashCode()) {
+        else if (password != "pass".hashCode()) {
             displayErrorMessage("Your username or login is incorrect.");
             return false;
         }
