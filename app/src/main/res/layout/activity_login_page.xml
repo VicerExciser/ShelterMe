@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/editText2"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="38dp"
+            android:layout_marginTop="18dp"
             android:tint="#000000"
             app:srcCompat="@android:drawable/bottom_bar" />
 
@@ -64,6 +64,65 @@
             android:text="Login"
             android:textColor="#FFFFFF"
             android:textSize="25sp" />
+
+        <ImageButton
+            android:id="@+id/forget"
+            android:layout_width="150dp"
+            android:layout_height="25dp"
+            android:layout_below="@+id/log"
+            android:layout_centerHorizontal="true"
+            android:background="#FFFFFF"
+            android:contentDescription="Cancel"
+            android:labelFor="@+id/Cancel"
+            android:tint="#FFFFFF"
+            app:srcCompat="@android:drawable/bottom_bar" />
+
+        <ImageButton
+            android:id="@+id/actualcancel"
+            android:layout_width="70dp"
+            android:layout_height="25dp"
+            android:layout_alignEnd="@+id/textView5"
+            android:layout_alignRight="@+id/textView5"
+            android:layout_below="@+id/forgotten"
+            android:layout_marginTop="16dp"
+            android:tint="@android:color/white"
+            app:srcCompat="@android:drawable/bottom_bar" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/actualcancel"
+            android:layout_alignLeft="@+id/textView4"
+            android:layout_alignStart="@+id/textView4"
+            android:text="Cancel"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/logo1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/log"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/log"
+            android:layout_marginTop="50dp"
+            android:text="Shelter Me"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="42sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/forgotten"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/forget"
+            android:layout_centerHorizontal="true"
+            android:text="I forgot my password."
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="15sp" />
 
     </RelativeLayout>
 

@@ -26,26 +26,44 @@ public class LoginPage extends AppCompatActivity {
         mPasswordView=(EditText) findViewById(R.id.editText2);
 
         ImageButton logo = findViewById(R.id.log);
+        ImageButton cancel = findViewById(R.id.actualcancel);
+        ImageButton forgotpass = findViewById(R.id.forget);
         logo.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if(attemptLogin()){
-                    android.content.Intent myIntent1 = new android.content.Intent(view.getContext(), MainActivity.class);
+                    android.content.Intent myIntent1 = new android.content.Intent(view.getContext(), HomePage.class);
                     startActivityForResult(myIntent1, 0);
                 }}
         });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.content.Intent myIntent2 = new android.content.Intent(view.getContext(), MainActivity.class);
+                startActivityForResult(myIntent2, 0);
+            }
+        });
+        forgotpass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.content.Intent myIntent3 = new android.content.Intent(view.getContext(), HomePage.class);
+                startActivityForResult(myIntent3, 0);
+            }
+        });
     }
     private boolean attemptLogin() {
-        String username = mUsernameView.getText().toString();
+        String username = mUsernameView.getText().toString().trim();
         String password = mPasswordView.getText().toString();
         Context context = getApplicationContext();
         if (TextUtils.isEmpty(password) || TextUtils.isEmpty(username)) {
             displayErrorMessage("This field is required");
             return false;
         }
-        if (!password.equals("pass")) {
+        else if (!username.equals("user")) {
+            displayErrorMessage("Your username or login is incorrect.");
             return false;
         }
-        if (!username.equals("user")) {
+        else if (password.hashCode() != "pass".hashCode()) {
+            displayErrorMessage("Your username or login is incorrect.");
             return false;
         }
         return true;

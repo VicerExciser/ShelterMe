@@ -17,12 +17,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button login = findViewById(R.id.login);
+
+        ImageButton login = findViewById(R.id.login);
+        ImageButton proceed = findViewById(R.id.proceed);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 android.content.Intent myIntent = new android.content.Intent(view.getContext(), LoginPage.class);
+                startActivityForResult(myIntent, 0);
+            }
+        });
+        proceed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.content.Intent myIntent = new android.content.Intent(view.getContext(), HomePage.class);
                 startActivityForResult(myIntent, 0);
             }
         });
