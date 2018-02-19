@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.gatech.cs2340.shelterme.LoginPage">
+    tools:context="edu.gatech.cs2340.shelterme.controllers.LoginPage">
 
 
     <RelativeLayout
@@ -107,7 +107,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignRight="@+id/log"
             android:layout_marginTop="50dp"
-            android:text="Shelter Me"
+            android:text="ShelterMe"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="42sp"

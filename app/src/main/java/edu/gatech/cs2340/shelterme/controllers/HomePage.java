@@ -1,9 +1,11 @@
-package edu.gatech.cs2340.shelterme;
+package edu.gatech.cs2340.shelterme.controllers;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+
+import edu.gatech.cs2340.shelterme.R;
 
 public class HomePage extends AppCompatActivity {
 

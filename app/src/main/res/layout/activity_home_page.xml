@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.gatech.cs2340.shelterme.HomePage">
+    tools:context="edu.gatech.cs2340.shelterme.controllers.HomePage">
 
     <RelativeLayout
         android:id="@+id/relativeLayout2"
@@ -51,7 +51,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="144dp"
-            android:text="Shelter Me"
+            android:text="ShelterMe"
             android:textColor="#FFFFFF"
             android:textSize="40sp"
             app:layout_constraintBottom_toBottomOf="parent"
