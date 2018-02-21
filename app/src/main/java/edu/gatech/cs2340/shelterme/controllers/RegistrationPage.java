@@ -204,16 +204,16 @@ public class RegistrationPage extends AppCompatActivity {
         @Override
         public void afterTextChanged(Editable text) {
             if (text.length() > 0) {
-                int token = text.toString().indexOf(' ');
+                int delim = text.toString().indexOf(' ');
                 if (!Character.isUpperCase(text.charAt(0))) {
                     CharSequence fixLetter =  String.valueOf(Character.toUpperCase(text.charAt(0)));
                     text.replace(0, 1, (CharSequence) fixLetter);
                 }
-                else if (token != -1 && text.toString().length() > token + 1) {
-                    char lName = text.charAt(token + 1);
+                else if (delim != -1 && text.toString().length() > delim + 1) {
+                    char lName = text.charAt(delim + 1);
                     if (!Character.isUpperCase(lName)) {
                         CharSequence fixLetter = String.valueOf(Character.toUpperCase(lName));
-                        text.replace(token+1, token+2, fixLetter);
+                        text.replace(delim+1, delim+2, fixLetter);
                     }
                 }
             }
@@ -243,15 +243,15 @@ public class RegistrationPage extends AppCompatActivity {
         // Process name:
         String name = fullNameField.getText().toString().trim();
         allFieldsComplete &= (!name.isEmpty() && !name.equals(fullNameField.getHint().toString()));
-        int token = name.indexOf(' ');
-        if (!allFieldsComplete || token < 0) {
+        int delim = name.indexOf(' ');
+        if (!allFieldsComplete || delim < 0) {
             displayErrorMessage("First and last name are required");
             return;
         }
 
 
-        name = Character.toUpperCase(name.charAt(0)) + name.substring(1, token + 1)
-                + Character.toUpperCase(name.charAt(token + 1)) + name.substring(token + 2);
+        name = Character.toUpperCase(name.charAt(0)) + name.substring(1, delim + 1)
+                + Character.toUpperCase(name.charAt(delim + 1)) + name.substring(delim + 2);
 
 
         // Validate email:
@@ -303,8 +303,8 @@ public class RegistrationPage extends AppCompatActivity {
         if (type == Account.Type.USER) {
             dob = dateOfBirthField.getText().toString();
             if (!dob.isEmpty() && !dob.equals(dateOfBirthField.getHint().toString())) {
-                token = dob.indexOf('/');
-                int enteredYear = Integer.parseInt(dob.substring(token + 1));
+                delim = dob.indexOf('/');
+                int enteredYear = Integer.parseInt(dob.substring(delim + 1));
                 // TODO: Calculate for month of birth as well for more accurate age read-in
                 age = currentYear - enteredYear;
                 if (age == 0)
@@ -388,7 +388,7 @@ public class RegistrationPage extends AppCompatActivity {
         // TODO: Save new account
         Model model = Model.getInstance();
         if (newAccount != null) {
-            model.accounts.add(newAccount);
+            model.addToAccounts(newAccount);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Success!").setMessage("Account successfully created!")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {

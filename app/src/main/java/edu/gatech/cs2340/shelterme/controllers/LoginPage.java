@@ -67,8 +67,8 @@ public class LoginPage extends AppCompatActivity {
         if (password == 0 || TextUtils.isEmpty(username)) {
             displayErrorMessage("This field is required");
             return false;
-        } else if (model.accounts.get(0).validatePassword(password)
-                || model.accounts.get(0).getUsername().equals(username)) {
+        } else if (model.getAccountByIndex(0).validatePassword(password)
+                || model.getAccountByIndex(0).getUsername().equals(username)) {
             displayErrorMessage("Pervasive data test successful! Welcome "+username+" !");
         } else if (!username.equals("user")) {
             displayErrorMessage("Your username or login is incorrect.");

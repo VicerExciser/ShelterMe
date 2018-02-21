@@ -10,12 +10,25 @@ import android.view.MenuItem;
 //import android.widget.Button;
 import android.widget.ImageButton;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+
+import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.R;
+import edu.gatech.cs2340.shelterme.model.Shelter;
 
 public class MainActivity extends AppCompatActivity {
 
+    Model model = Model.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -50,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(myIntent, 0);
             }
         });
+
+        loadShelters();
+        model.getAllShelterDetails();
     }
 
 
@@ -73,5 +89,63 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadShelters() {
+//        File shelterDB = new File("HomelessShelterDatabase.csv");
+
+        try {
+//            in = new Scanner(shelterDB);
+            InputStream is = getResources().openRawResource(R.raw.homeless_shelter_database);
+            BufferedReader br = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                // KitKat = Android 4.4 API
+                br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            }
+            br.readLine();
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                String[] tokens = line.split(";");
+
+                int length = tokens.length;
+                for (int i = 0; i < length; i++) {
+                    if (tokens[i].isEmpty() || tokens[i].equals(" ")) {
+                        tokens[i] = "N/A";
+                    } else {
+                        tokens[i] = tokens[i].replace('"',' ');
+                        tokens[i] = tokens[i].trim();
+                    }
+//                    if (tokens[i].charAt(0)=='"' && tokens[i].charAt(tokens[i].length())=='"') {
+//                     tokens[i] = tokens[i].substring(1, tokens[i].length());
+//                    }
+                }
+//                Shelter shelter;
+// Format: key, name, capacity, restricts, long, lat, addr, notes, phone
+                if (length == 9) {
+                    int key = Integer.valueOf(tokens[0]);
+                    String name = tokens[1];
+                    String capacity = tokens[2];
+                    String restricts = tokens[3];
+                    double longitude = Double.parseDouble(tokens[4]);
+                    double latitude = Double.parseDouble(tokens[5]);
+                    String addr = tokens[6];
+                    String notes = tokens[7];
+                    String phone = tokens[8];
+                    model.addShelter(new Shelter(key, name, capacity, restricts, longitude, latitude,
+                            addr, notes, phone));
+                }
+            }
+            br.close();
+
+        } catch (FileNotFoundException fnf) {
+
+        } catch (IOException ioe)
+
+        {
+
+        } catch (Exception e) {
+
+
+        }
     }
 }

@@ -33,6 +33,8 @@ public abstract class Account {
         return this.username;
     }
 
+    public String getEmail() { return this.email; }
+
     public boolean validatePassword(int pw) {
         return pw == this.password;
     }
