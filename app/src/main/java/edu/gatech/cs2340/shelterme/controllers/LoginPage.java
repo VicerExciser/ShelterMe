@@ -63,13 +63,23 @@ public class LoginPage extends AppCompatActivity {
     private boolean attemptLogin() {
         String username = mUsernameView.getText().toString().trim();
         int password = mPasswordView.getText().toString().hashCode();
-        Context context = getApplicationContext();
+//        Context context = getApplicationContext();
         if (password == 0 || TextUtils.isEmpty(username)) {
             displayErrorMessage("This field is required");
             return false;
         } else if (model.getAccountByIndex(0).validatePassword(password)
                 || model.getAccountByIndex(0).getUsername().equals(username)) {
-            displayErrorMessage("Pervasive data test successful! Welcome "+username+" !");
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Success!").setMessage("Login successful!")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
         } else if (!username.equals("user")) {
             displayErrorMessage("Your username or login is incorrect.");
             return false;

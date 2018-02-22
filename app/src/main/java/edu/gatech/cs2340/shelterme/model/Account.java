@@ -19,6 +19,7 @@ public abstract class Account {
 
     public Account(String name, String username, String email, int password,
                    Question secQuest, String secAns) {
+        this.name = name;
         this.username = username;
         this.password = password;
         this.email = email;

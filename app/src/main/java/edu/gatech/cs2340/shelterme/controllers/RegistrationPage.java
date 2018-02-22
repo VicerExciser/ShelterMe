@@ -22,6 +22,7 @@ import java.util.Calendar;
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Account;
 import edu.gatech.cs2340.shelterme.controllers.MainActivity;
+import edu.gatech.cs2340.shelterme.model.Admin;
 import edu.gatech.cs2340.shelterme.model.Employee;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.User;
@@ -382,10 +383,10 @@ public class RegistrationPage extends AppCompatActivity {
                 newAccount = new Employee(nm, un, em, pw, wp, sq, qa);
                 break;
             case ADMIN:
-//              newAccount = new Admin();
+              newAccount = new Admin(nm, un, em, pw, sq, qa);
                 break;
         }
-        // TODO: Save new account
+        // TODO: Save new account in DB
         Model model = Model.getInstance();
         if (newAccount != null) {
             model.addToAccounts(newAccount);
