@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_google_signin_btn_text_light_pressed"
+    tools:context="edu.gatech.cs2340.shelterme.controllers.ShelterDetailsPage">
+
+    <RelativeLayout
+        android:layout_width="362dp"
+        android:layout_height="601dp"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        tools:layout_editor_absoluteX="0dp">
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/linearLayout"
+            android:layout_alignRight="@+id/linearLayout"
+            android:layout_below="@+id/linearLayout"
+            android:layout_marginTop="18dp"
+            android:text="RETURN TO LIST" />
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/notes"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/notes"
+            android:fontFamily="serif"
+            android:singleLine="false"
+            android:text="The Atlanta Day Center for Women &amp; Children"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_light"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/notes"
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:layout_alignLeft="@+id/linearLayout"
+            android:layout_alignStart="@+id/linearLayout"
+            android:layout_below="@+id/header"
+            android:fontFamily="serif"
+            android:text="Notes:"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_light"
+            android:textSize="20sp"
+            android:textStyle="italic" />
+
+        <ScrollView
+            android:id="@+id/details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/linearLayout"
+            android:layout_alignLeft="@+id/linearLayout"
+            android:layout_alignStart="@+id/linearLayout"
+            android:layout_marginBottom="36dp">
+
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginVertical="@dimen/activity_vertical_margin"
+            android:orientation="vertical"
+            android:id="@+id/linearLayout">
+
+            <TextView
+                android:id="@+id/capacity"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="16dp"
+                android:text="Capacity:"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="22sp"
+                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+
+            <TextView
+                android:id="@+id/restrictions"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Accepts:"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="22sp"
+                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:layout_height="84dp"
+                android:text="@string/address"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="22sp"
+                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+
+            <TextView
+                android:id="@+id/phone"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Phone:"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="22sp"
+                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+
+            <TextView
+                android:id="@+id/longitude"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Longitude:"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="22sp"
+                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+
+            <TextView
+                android:id="@+id/latitude"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:text="Latitude:"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="22sp"
+                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -20,8 +19,8 @@
             android:layout_height="30dp"
             android:layout_below="@+id/editText"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="32dp"
-            android:background="@android:color/white"
+            android:layout_marginTop="22dp"
+            android:background="@color/common_google_signin_btn_text_dark_disabled"
             android:ems="10"
             android:hint="Password"
             android:inputType="textPassword"
@@ -35,8 +34,9 @@
             android:layout_height="30dp"
             android:layout_alignLeft="@+id/editText2"
             android:layout_alignStart="@+id/editText2"
-            android:layout_centerVertical="true"
-            android:background="#FFFFFF"
+            android:layout_below="@+id/imageView"
+            android:layout_marginTop="14dp"
+            android:background="@color/common_google_signin_btn_text_dark_disabled"
             android:ems="10"
             android:hint="Username"
             android:inputType="textPersonName"
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/editText2"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="21dp"
             android:tint="#000000"
             app:srcCompat="@android:drawable/bottom_bar" />
 
@@ -92,9 +92,8 @@
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/actualcancel"
-            android:layout_alignLeft="@+id/textView4"
-            android:layout_alignStart="@+id/textView4"
+            android:layout_alignTop="@+id/actualcancel"
+            android:layout_centerHorizontal="true"
             android:text="Cancel"
             android:textColor="#000000"
             android:textSize="20sp" />
@@ -103,10 +102,10 @@
             android:id="@+id/logo1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/log"
             android:layout_alignParentTop="true"
-            android:layout_alignRight="@+id/log"
-            android:layout_marginTop="50dp"
+            android:layout_alignStart="@+id/forget"
+            android:layout_marginTop="18dp"
+            android:fontFamily="cursive"
             android:text="ShelterMe"
             android:textAlignment="center"
             android:textColor="#000000"
@@ -118,11 +117,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/forget"
-            android:layout_centerHorizontal="true"
+            android:layout_alignEnd="@+id/forget"
+            android:layout_alignRight="@+id/forget"
             android:text="I forgot my password."
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="15sp" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/log"
+            android:layout_alignStart="@+id/log"
+            android:layout_below="@+id/logo1"
+            app:srcCompat="@mipmap/cssocialgood" />
 
     </RelativeLayout>
 

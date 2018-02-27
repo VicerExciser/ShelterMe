@@ -1,10 +1,8 @@
 package edu.gatech.cs2340.shelterme.model;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 
-/**
- * Created by austincondict on 2/12/18.
- */
 
 public abstract class Account {
     String name;
@@ -16,6 +14,8 @@ public abstract class Account {
 //    Sex sex;
     Question secQuest;
     String secAns;
+//    DatabaseReference accountID;
+//    String id;
 
     public Account(String name, String username, String email, int password,
                    Question secQuest, String secAns) {
@@ -29,6 +29,22 @@ public abstract class Account {
         this.secAns = secAns;
         accountLocked = false;
     }
+
+//    public void setAccountID(DatabaseReference ref) {
+//        this.accountID = ref;
+//    }
+//
+//    public DatabaseReference getAccountID() {
+//        return this.accountID;
+//    }
+
+//    public void setID(String refKey) {
+//        this.id = refKey;
+//    }
+//
+//    public String getID() {
+//        return this.id;
+//    }
 
     public String getUsername() {
         return this.username;

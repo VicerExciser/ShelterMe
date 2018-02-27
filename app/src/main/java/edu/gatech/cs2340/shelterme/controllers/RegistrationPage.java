@@ -1,13 +1,9 @@
 package edu.gatech.cs2340.shelterme.controllers;
 
-import android.content.DialogInterface;
-import android.graphics.ColorSpace;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,11 +13,12 @@ import android.widget.Spinner;
 import android.text.TextWatcher;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Account;
-import edu.gatech.cs2340.shelterme.controllers.MainActivity;
 import edu.gatech.cs2340.shelterme.model.Admin;
 import edu.gatech.cs2340.shelterme.model.Employee;
 import edu.gatech.cs2340.shelterme.model.Shelter;
@@ -31,6 +28,11 @@ import edu.gatech.cs2340.shelterme.model.Model;
 
 public class RegistrationPage extends AppCompatActivity {
 
+    private DBUtil dbUtil;
+//    DatabaseReference dbRootRef = FirebaseDatabase.getInstance().getReference();
+//    DatabaseReference userRef = dbRootRef.child("users");
+
+    private Model model;
     private EditText fullNameField;
     private EditText emailField;
     private EditText userNameField;
@@ -38,7 +40,8 @@ public class RegistrationPage extends AppCompatActivity {
     private EditText passwordConfirmField;
     private EditText securityAnswerField;
     private EditText dateOfBirthField;
-    private EditText workplaceField;
+//    private EditText workplaceField;
+    private Spinner shelterSpinner;
     private Spinner securityQuestionSpinner;
     private Spinner selectSexSpinner;
     private Spinner accountTypeSpinner;
@@ -46,18 +49,36 @@ public class RegistrationPage extends AppCompatActivity {
     private Button cancelButton;
     private TextView sexPrompt;
     private TextView dobPrompt;
+    private TextView powPrompt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration_page);
 
+        dbUtil = DBUtil.getInstance();
+//        dbRootRef =
+//        dbRef =dbUtil.getRef();
+        model = Model.getInstance();
+
         fullNameField = findViewById(R.id.fullName);
         fullNameField.addTextChangedListener(nameFormatWatcher);
 
         emailField = findViewById(R.id.email);
         userNameField = findViewById(R.id.userName);
-        workplaceField = findViewById(R.id.workplace);
+
+//        workplaceField = findViewById(R.id.workplace);
+        shelterSpinner = findViewById(R.id.shelterSpinner);
+        powPrompt = findViewById(R.id.textView11);
+        HashSet<String> shelterNames = new HashSet<>();
+        for (Shelter s : Model.getShelterListPointer()) {
+            shelterNames.add(s.getShelterName());
+        }
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
+            shelterNames.toArray(new String[shelterNames.size()]));
+        adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        shelterSpinner.setAdapter(adapter3);
+        shelterSpinner.setSelection(0);
 
         passwordField = findViewById(R.id.pass);
         passwordConfirmField = findViewById(R.id.passConfirm);
@@ -69,21 +90,21 @@ public class RegistrationPage extends AppCompatActivity {
         dateOfBirthField.addTextChangedListener(dobEntryWatcher);
 
         securityQuestionSpinner = findViewById(R.id.securityQuestionSpinner);
-        ArrayAdapter<Account.Question> adapter0 = new ArrayAdapter(this,android.R.layout.simple_spinner_item,
+        ArrayAdapter<Account.Question> adapter0 = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,
                 Account.Question.values());
         adapter0.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         securityQuestionSpinner.setAdapter(adapter0);
         securityQuestionSpinner.setSelection(0);
 
         selectSexSpinner = findViewById(R.id.sexSpinner);
-        ArrayAdapter<Account.Sex> adapter1 = new ArrayAdapter(this,android.R.layout.simple_spinner_item,
+        ArrayAdapter<Account.Sex> adapter1 = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,
                 Account.Sex.values());
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         selectSexSpinner.setAdapter(adapter1);
         selectSexSpinner.setSelection(0);
 
         accountTypeSpinner = findViewById(R.id.userTypeSpinner);
-        ArrayAdapter<Account.Type> adapter2 = new ArrayAdapter(this,android.R.layout.simple_spinner_item,
+        ArrayAdapter<Account.Type> adapter2 = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,
                 Account.Type.values());
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accountTypeSpinner.setAdapter(adapter2);
@@ -96,7 +117,7 @@ public class RegistrationPage extends AppCompatActivity {
                 validateInputs();
             }
         });
-        cancelButton = findViewById(R.id.cancelButten);
+        cancelButton = findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,13 +130,33 @@ public class RegistrationPage extends AppCompatActivity {
 
         dateOfBirthField.setVisibility(View.GONE);
         selectSexSpinner.setVisibility(View.GONE);
-        workplaceField.setVisibility(View.GONE);
+//        workplaceField.setVisibility(View.GONE);
+        shelterSpinner.setVisibility(View.GONE);
+        powPrompt.setVisibility(View.GONE);
         sexPrompt.setVisibility(View.GONE);
         dobPrompt.setVisibility(View.GONE);
 
         accountTypeSpinner.setOnItemSelectedListener(typeWatcher);
 
     }
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//
+////        userRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                String text = dataSnapshot.getValue(String.class);
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     private AdapterView.OnItemSelectedListener typeWatcher = new AdapterView.OnItemSelectedListener() {
     // TODO: Will need to add some sort of authentication input for verifying Admin accounts
@@ -129,16 +170,22 @@ public class RegistrationPage extends AppCompatActivity {
                 selectSexSpinner.setVisibility(View.VISIBLE);
                 sexPrompt.setVisibility(View.VISIBLE);
                 dobPrompt.setVisibility(View.VISIBLE);
-                workplaceField.setVisibility(View.GONE);
+//                workplaceField.setVisibility(View.GONE);
+                shelterSpinner.setVisibility(View.GONE);
+                powPrompt.setVisibility(View.GONE);
             } else if (position == 1) { // Shelter Employee
-                workplaceField.setVisibility(View.VISIBLE);
+//                workplaceField.setVisibility(View.VISIBLE);
+                shelterSpinner.setVisibility(View.VISIBLE);
+                powPrompt.setVisibility(View.VISIBLE);
                 dateOfBirthField.setVisibility(View.GONE);
                 selectSexSpinner.setVisibility(View.GONE);
                 sexPrompt.setVisibility(View.GONE);
                 dobPrompt.setVisibility(View.GONE);
             }
             else if (position == 2) { //Admin
-                workplaceField.setVisibility(View.GONE);
+//                workplaceField.setVisibility(View.GONE);
+                shelterSpinner.setVisibility(View.GONE);
+                powPrompt.setVisibility(View.GONE);
                 dateOfBirthField.setVisibility(View.GONE);
                 selectSexSpinner.setVisibility(View.GONE);
                 sexPrompt.setVisibility(View.GONE);
@@ -246,7 +293,7 @@ public class RegistrationPage extends AppCompatActivity {
         allFieldsComplete &= (!name.isEmpty() && !name.equals(fullNameField.getHint().toString()));
         int delim = name.indexOf(' ');
         if (!allFieldsComplete || delim < 0) {
-            displayErrorMessage("First and last name are required");
+            model.displayErrorMessage("First and last name are required", this);
             return;
         }
 
@@ -260,10 +307,10 @@ public class RegistrationPage extends AppCompatActivity {
         // TODO: if (email does not already exist in database)
         allFieldsComplete &= (!email.isEmpty() && !email.equals(emailField.getHint().toString()));
         if (!allFieldsComplete) {
-            displayErrorMessage("Email address is required");
+            model.displayErrorMessage("Email address is required", this);
             return;
-        } else if (!isValidEmailAddress(email)) {
-            displayErrorMessage("Invalid email address");
+        } else if (!Model.isValidEmailAddress(email)) {
+            model.displayErrorMessage("Invalid email address", this);
             return;
         }
 
@@ -277,15 +324,25 @@ public class RegistrationPage extends AppCompatActivity {
             username = email;
         }
 
+        for (Account a : Model.getAccountListPointer()) {
+            if (a.getEmail().equals(email)) {
+                model.displayErrorMessage("Account already exists for this email", this);
+                return;
+            } else if (a.getUsername().equals(username)) {
+                model.displayErrorMessage("Account already exists for this username", this);
+                return;
+            }
+        }
+
         // Validate password & confirmation:
         int password = passwordField.getText().toString().trim().hashCode();
         int confirmPass = passwordConfirmField.getText().toString().trim().hashCode();
         if (password == 0 || passwordField.getText().length() < 4
                 || password == passwordField.getHint().toString().hashCode()) {
-            displayErrorMessage("Valid password is required");
+            model.displayErrorMessage("Valid password is required", this);
             return;
         } else if (confirmPass != password) {
-            displayErrorMessage("Password inputs must match");
+            model.displayErrorMessage("Password inputs must match", this);
             return;
         }
 
@@ -298,7 +355,7 @@ public class RegistrationPage extends AppCompatActivity {
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         int age = 0;
         Account.Sex sex = Account.Sex.MALE;
-        String enteredWorkplace;
+        String selectedWorkplace; //enteredWorkplace;
         Shelter workplace = null;
 
         if (type == Account.Type.USER) {
@@ -311,23 +368,25 @@ public class RegistrationPage extends AppCompatActivity {
                 if (age == 0)
                     return;
             } else {
-                displayErrorMessage("Month and year of birth are required");
+                model.displayErrorMessage("Month and year of birth are required", this);
                 return;
             }
 
             sex = (Account.Sex) selectSexSpinner.getSelectedItem();
 
         } else if (type == Account.Type.EMP) {
-            enteredWorkplace = workplaceField.getText().toString();
-            allFieldsComplete &= !enteredWorkplace.isEmpty()
-                    && !workplace.equals(workplaceField.getHint().toString());
-            if (!allFieldsComplete) {
-                displayErrorMessage("At which shelter do you work?");
-                return;
-            }
-            // TODO: Search thru archived Shelters to verify this workplace exists
-            // This is temporary placeholder for future code
-            workplace = new Shelter();
+//            enteredWorkplace = workplaceField.getText().toString();
+//            allFieldsComplete &= !enteredWorkplace.isEmpty()
+//                    && !enteredWorkplace.equals(workplaceField.getHint().toString());
+//            if (!allFieldsComplete) {
+//                model.displayErrorMessage("At which shelter do you work?", this);
+//                return;
+//            }
+//            // TODO: Search thru archived Shelters to verify this workplace exists
+//            // This is temporary placeholder for future code
+//            workplace = new Shelter();
+            selectedWorkplace = String.valueOf(shelterSpinner.getSelectedItem());
+            workplace = Model.findShelterByName(selectedWorkplace);
         }
 
 
@@ -337,7 +396,7 @@ public class RegistrationPage extends AppCompatActivity {
         allFieldsComplete &= (!secAns.isEmpty()
                 && !secAns.equals(securityAnswerField.getHint().toString()));
         if (!allFieldsComplete) {
-            displayErrorMessage("A response is required for your security question");
+            model.displayErrorMessage("A response is required for your security question", this);
             return;
         }
 
@@ -349,28 +408,14 @@ public class RegistrationPage extends AppCompatActivity {
         }
     }
 
-    private boolean isValidEmailAddress(String email) {
-        String ePattern = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]" +
-                "+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
-        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
-        java.util.regex.Matcher m = p.matcher(email);
-        return m.find();
-    }
+//    private boolean isValidEmailAddress(String email) {
+//        String ePattern = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]" +
+//                "+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
+//        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+//        java.util.regex.Matcher m = p.matcher(email);
+//        return m.find();
+//    }
 
-    private void displayErrorMessage(String error) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        Log.e("error", "displayErrorMessage: " + error);
-        builder.setTitle("Error")
-                .setMessage(error)
-                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
 
     private void createAccount(String nm, String un, String em, int pw, Account.Sex sx,
                                int age, Account.Type at, Account.Question sq, String qa, Shelter wp) {
@@ -378,30 +423,33 @@ public class RegistrationPage extends AppCompatActivity {
         switch (at) {
             case USER:
                 newAccount = new User(nm, un, em, pw, sx, age, sq, qa);
+//                DatabaseReference newUserRef = dbRootRef.child("users").push();
+//                newUserRef.setValue(newAccount);
+//                newAccount.setAccountID(newUserRef);
                 break;
             case EMP:
                 newAccount = new Employee(nm, un, em, pw, wp, sq, qa);
+//                DatabaseReference newEmpRef = dbRootRef.child("employees").push();
+//                newEmpRef.setValue(newAccount);
+//                newAccount.setAccountID(newEmpRef);
                 break;
             case ADMIN:
-              newAccount = new Admin(nm, un, em, pw, sq, qa);
+                newAccount = new Admin(nm, un, em, pw, sq, qa);
+//                DatabaseReference newAdminRef = dbRootRef.child("admins").push();
+//                newAdminRef.setValue(newAccount);
+//                newAccount.setAccountID(newAdminRef);
                 break;
         }
         // TODO: Save new account in DB
-        Model model = Model.getInstance();
+
         if (newAccount != null) {
             model.addToAccounts(newAccount);
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Success!").setMessage("Account successfully created!")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // do nothing
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+//            dbRootRef.child("users").child(em).setValue(newAccount);
+//            userRef.setValue(newAccount);
+            dbUtil.addAccount(newAccount);
+            model.displaySuccessMessage("Account successfully created!", this);
         } else {
-            displayErrorMessage("An error occured while registering your account");
+            model.displayErrorMessage("An error occurred while registering your account", this);
             return;
         }
 

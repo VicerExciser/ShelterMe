@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -26,7 +27,15 @@
         </activity>
         <activity android:name=".controllers.LoginPage" />
         <activity android:name=".controllers.HomePage" />
-        <activity android:name=".controllers.RegistrationPage"></activity>
+        <activity android:name=".controllers.RegistrationPage" />
+        <activity
+            android:name=".controllers.ViewSheltersPage"
+            android:label="@string/title_activity_view_shelters_page"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controllers.ShelterDetailsPage"
+            android:label="@string/title_activity_shelter_details_page"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

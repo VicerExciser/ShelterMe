@@ -32,4 +32,12 @@
     <string name="mm_yyyy">MM/YYYY</string>
     <string name="cancel">Cancel</string>
     <string name="name_of_shelter_workplace">Name of Shelter Workplace</string>
+    <string name="title_activity_view_shelters_page">ViewSheltersPage</string>
+    <string name="title_activity_shelter_details_page">ShelterDetailsPage</string>
+
+
+    <!-- Strings for describing Shelter details -->
+    <string name="address">Address:</string>
+
+
 </resources>

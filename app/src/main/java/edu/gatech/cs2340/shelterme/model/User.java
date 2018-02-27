@@ -38,6 +38,10 @@ public class User extends Account {
                 Question.PET, "Spot");
     }
 
+//    public String getID() {
+//        return super.getID();
+//    }
+
 
 }
 

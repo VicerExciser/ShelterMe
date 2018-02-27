@@ -19,10 +19,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="144dp"
+            android:layout_marginTop="44dp"
+            android:fontFamily="cursive"
             android:text="ShelterMe"
             android:textColor="#FFFFFF"
             android:textSize="40sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -33,9 +35,30 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="90dp"
+            android:layout_marginBottom="52dp"
             android:background="@android:drawable/bottom_bar"
             android:backgroundTint="#FFFFFF"
             android:text="Logout" />
+
+        <Button
+            android:id="@+id/viewShelters"
+            android:layout_width="wrap_content"
+            android:layout_height="@android:dimen/notification_large_icon_height"
+            android:layout_above="@+id/logoutbutton"
+            android:layout_alignEnd="@+id/logoutbutton"
+            android:layout_alignLeft="@+id/logoutbutton"
+            android:layout_alignRight="@+id/logoutbutton"
+            android:layout_alignStart="@+id/logoutbutton"
+            android:layout_marginBottom="28dp"
+            android:text="VIEW SHELTERS" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/logo"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@mipmap/cssocialgood" />
+
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

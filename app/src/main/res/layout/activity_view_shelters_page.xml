@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_dark"
+    tools:context="edu.gatech.cs2340.shelterme.controllers.ViewSheltersPage">
+
+    <include layout="@layout/content_view_shelters_page" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="567dp">
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="11dp"
+            android:layout_marginRight="11dp"
+            android:text="RETURN TO HOME PAGE" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="serif"
+                android:text="Available Shelters"
+                android:textAlignment="center"
+                android:textColor="#FF9900"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <SearchView
+                android:id="@+id/inputSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FF9900"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+            </SearchView>
+
+            <ListView
+                android:id="@+id/shelterList"
+                style="@style/Widget.AppCompat.ListView"
+                android:layout_width="match_parent"
+                android:layout_height="439dp"
+                android:layout_above="@+id/backButton"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/inputSearch"
+                android:background="@color/common_google_signin_btn_text_dark_focused"
+                android:divider="#FF9900"
+                android:dividerHeight="2px"
+                android:entries="@android:drawable/divider_horizontal_textfield"
+                android:footerDividersEnabled="true"
+                android:headerDividersEnabled="true"
+                android:isScrollContainer="true"
+                android:outlineProvider="bounds"
+                android:scrollIndicators="right"
+                android:scrollbarAlwaysDrawHorizontalTrack="false"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbarSize="18dp"
+                android:scrollbarStyle="insideInset"
+                android:scrollbarTrackVertical="@color/common_google_signin_btn_text_dark_default"
+                android:scrollbars="vertical"
+                android:smoothScrollbar="true"
+                android:textColor="@android:color/background_light"
+                tools:textColor="@android:color/background_light" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

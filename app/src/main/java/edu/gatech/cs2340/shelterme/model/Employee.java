@@ -1,8 +1,5 @@
 package edu.gatech.cs2340.shelterme.model;
 
-/**
- * Created by austincondict on 2/18/18.
- */
 
 public class Employee extends Account {
 
@@ -13,4 +10,14 @@ public class Employee extends Account {
         super(name, uname, email, pass, secQ, secA);
         placeOfWork = work;
     }
+
+    public Employee() {
+        super("Working Employee", "shelterboi420", "employeeboi@shelters.com",
+                "employee".hashCode(), Question.PET, "Spot");
+        placeOfWork = Model.findShelterByName("My Sister's House");
+    }
+
+//    public String getID() {
+//        return super.getID();
+//    }
 }

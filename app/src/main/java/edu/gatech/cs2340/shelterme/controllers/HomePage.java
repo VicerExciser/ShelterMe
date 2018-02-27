@@ -1,5 +1,6 @@
 package edu.gatech.cs2340.shelterme.controllers;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +19,13 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View view) {
                 android.content.Intent myIntent1 = new android.content.Intent(view.getContext(), MainActivity.class);
                 startActivityForResult(myIntent1, 0);
+            }
+        });
+        Button viewShelters = findViewById(R.id.viewShelters);
+        viewShelters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomePage.this, ViewSheltersPage.class));
             }
         });
     }

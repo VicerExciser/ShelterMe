@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +25,7 @@ import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
 public class MainActivity extends AppCompatActivity {
-
+    DBUtil dbUtil = DBUtil.getInstance();
     Model model = Model.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,11 +92,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Reading in our CSV data for shelters
     private void loadShelters() {
-//        File shelterDB = new File("HomelessShelterDatabase.csv");
-
         try {
-//            in = new Scanner(shelterDB);
             InputStream is = getResources().openRawResource(R.raw.homeless_shelter_database);
             BufferedReader br = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
@@ -131,8 +130,10 @@ public class MainActivity extends AppCompatActivity {
                     String addr = tokens[6];
                     String notes = tokens[7];
                     String phone = tokens[8];
-                    model.addShelter(new Shelter(key, name, capacity, restricts, longitude, latitude,
-                            addr, notes, phone));
+                    Shelter newShelter = new Shelter(key, name, capacity, restricts, longitude, latitude,
+                            addr, notes, phone);
+                    model.addShelter(newShelter);
+                    dbUtil.addShelter(newShelter);
                 }
             }
             br.close();
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         {
 
         } catch (Exception e) {
-
+            Log.e("LoadShelters", e.getMessage());
 
         }
     }

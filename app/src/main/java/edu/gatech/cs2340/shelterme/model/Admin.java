@@ -1,8 +1,5 @@
 package edu.gatech.cs2340.shelterme.model;
 
-/**
- * Created by austincondict on 2/18/18.
- */
 
 public class Admin extends Account {
 
@@ -15,4 +12,8 @@ public class Admin extends Account {
                  Question secQ, String secA) {
         super(name, username, email, password, secQ, secA);
     }
+
+//    public String getID() {
+//        return super.getID();
+//    }
 }
