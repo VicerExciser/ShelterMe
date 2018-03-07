@@ -322,7 +322,11 @@ public class Shelter implements Parcelable{
 
     public String reserveBed(User user) { //function takes in User and returns ID of bed being reserved
         String userKey = user.generateKey();
-        Bed foundBed = new Bed(1, false, false, Age.ZERO,
+        int newBedId = 1;
+        while (beds.get("O").containsKey(newBedId)) { //temporary measure to avoid overrighting beds in the occupied bed list
+            newBedId++;
+        }
+        Bed foundBed = new Bed(newBedId, false, false, Age.ZERO,
                 Age.TWOHUNDRED, false); // TODO: implement means of finding bed to reserve
         LinkedHashMap<String, Bed> bedTypeFound = new LinkedHashMap<>();
         foundBed.setOccupant(user);
