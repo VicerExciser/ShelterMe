@@ -189,7 +189,7 @@ public class Shelter implements Parcelable{
 //    TODO: Make enum type for restrictions/allowances
 
     //Bed Handling
-    public void addNewBeds(int capacity, boolean isFamily, boolean noAdultMen, Age minAge, Age maxAge, boolean veteranOnly) {
+    public void addNewBeds(int numberOfBeds, boolean isFamily, boolean noAdultMen, Age minAge, Age maxAge, boolean veteranOnly) {
         //create unique bed key that encodes all of the bed's restrictions into the key
         String bedKey = "";
         if (isFamily) {
@@ -222,7 +222,7 @@ public class Shelter implements Parcelable{
             bedType = new ArrayList<>();
             beds.put(bedKey, bedType);
         }
-        for (int i = lastId + 1; i < lastId + capacity + 1; i++) {
+        for (int i = lastId + 1; i < lastId + numberOfBeds + 1; i++) {
             Bed newBed = new Bed(i, isFamily, noAdultMen, minAge, maxAge, veteranOnly);
             bedType.add(newBed);
             vacancies++;
