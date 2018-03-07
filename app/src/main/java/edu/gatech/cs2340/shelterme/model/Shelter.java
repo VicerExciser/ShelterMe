@@ -310,6 +310,9 @@ public class Shelter implements Parcelable{
             if (veteranOnlyBed && !(isVeteranUser)) { //exclude veteran beds from non-veterans
                 thisBedOpen = false;
             }
+            if (userAge > maxAge || userAge < minAge) { //make sure user is within the appropriate age range
+                thisBedOpen = false;
+            }
             if (thisBedOpen) {
                 return true;
             }
@@ -321,7 +324,11 @@ public class Shelter implements Parcelable{
         String userKey = user.generateKey();
         Bed foundBed = new Bed(1, false, false, Age.ZERO,
                 Age.TWOHUNDRED, false); // TODO: implement means of finding bed to reserve
+        LinkedHashMap<String, Bed> bedTypeFound = new LinkedHashMap<>();
         foundBed.setOccupant(user);
-        return "";
+        String bedId = String.valueOf(foundBed.getId());
+        bedTypeFound.remove(bedId);
+        beds.get("O").put(bedId, foundBed);
+        return bedId;
     }
 }
