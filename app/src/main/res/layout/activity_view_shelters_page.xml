@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/background_dark"
+    android:backgroundTint="#ffffff"
     tools:context="edu.gatech.cs2340.shelterme.controllers.ViewSheltersPage">
 
     <include layout="@layout/content_view_shelters_page" />
@@ -12,6 +13,34 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="567dp">
+
+        <ListView
+            android:id="@+id/shelterList"
+            style="@style/Widget.AppCompat.ListView"
+            android:layout_width="match_parent"
+            android:layout_height="439dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/linearLayout2"
+            android:layout_marginTop="131dp"
+            android:background="@color/common_google_signin_btn_text_dark_focused"
+            android:divider="#FF9900"
+            android:dividerHeight="2px"
+            android:entries="@android:drawable/divider_horizontal_textfield"
+            android:footerDividersEnabled="true"
+            android:headerDividersEnabled="true"
+            android:isScrollContainer="true"
+            android:outlineProvider="bounds"
+            android:scrollIndicators="right"
+            android:scrollbarAlwaysDrawHorizontalTrack="false"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbarSize="18dp"
+            android:scrollbarStyle="insideInset"
+            android:scrollbarTrackVertical="@color/common_google_signin_btn_text_dark_default"
+            android:scrollbars="vertical"
+            android:smoothScrollbar="true"
+            android:textColor="@android:color/background_light"
+            tools:textColor="@android:color/background_light" />
 
         <Button
             android:id="@+id/backButton"
@@ -25,6 +54,7 @@
             android:text="RETURN TO HOME PAGE" />
 
         <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -47,40 +77,71 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#FF9900"
-                android:orientation="horizontal"
                 android:visibility="visible">
 
             </SearchView>
 
-            <ListView
-                android:id="@+id/shelterList"
-                style="@style/Widget.AppCompat.ListView"
-                android:layout_width="match_parent"
-                android:layout_height="439dp"
-                android:layout_above="@+id/backButton"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/inputSearch"
-                android:background="@color/common_google_signin_btn_text_dark_focused"
-                android:divider="#FF9900"
-                android:dividerHeight="2px"
-                android:entries="@android:drawable/divider_horizontal_textfield"
-                android:footerDividersEnabled="true"
-                android:headerDividersEnabled="true"
-                android:isScrollContainer="true"
-                android:outlineProvider="bounds"
-                android:scrollIndicators="right"
-                android:scrollbarAlwaysDrawHorizontalTrack="false"
-                android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:scrollbarSize="18dp"
-                android:scrollbarStyle="insideInset"
-                android:scrollbarTrackVertical="@color/common_google_signin_btn_text_dark_default"
-                android:scrollbars="vertical"
-                android:smoothScrollbar="true"
-                android:textColor="@android:color/background_light"
-                tools:textColor="@android:color/background_light" />
-
         </LinearLayout>
+
+        <Spinner
+            android:id="@+id/ageSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/genderSpinner"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:backgroundTint="#000000" />
+
+        <Spinner
+            android:id="@+id/genderSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/FamilyCheck"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="35dp" />
+
+        <CheckBox
+            android:id="@+id/FamilyCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayout2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="98dp"
+            android:text="Accepts Families" />
+
+        <Button
+            android:id="@+id/yesCrit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/noCrit"
+            android:layout_alignBottom="@+id/noCrit"
+            android:layout_toEndOf="@+id/inferCriteria"
+            android:layout_toRightOf="@+id/inferCriteria"
+            android:text="Yes" />
+
+        <Button
+            android:id="@+id/noCrit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/linearLayout2"
+            android:text="No" />
+
+        <TextView
+            android:id="@+id/inferCriteria"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/yesCrit"
+            android:layout_alignBottom="@+id/yesCrit"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:baselineAligned="false"
+            android:text="Use Criteria from Your Account?"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 
