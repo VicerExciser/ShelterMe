@@ -4,21 +4,22 @@ package edu.gatech.cs2340.shelterme.model;
  * Created by Russell on 3/6/2018.
  */
 
+// Had to change the key values to use '_' because '/' is not allowed in a HashMap key
 public enum Age {
-    ZERO("000/"),
-    FIVE("005/"),
-    FIFTEEN("015/"),
-    TWENTYFIVE("025/"),
-    FIFTY("050/"),
-    TWOHUNDRED("200/");
+    MINAGE("000_"),
+    BABIES("005_"),      // Newborns:      0-5    yrs
+    CHILDREN("015_"),    // Children:      6-15   yrs
+    YOUNGADULTS("025_"), // Young Adults:  16-25  yrs
+    ADULTS("065_"),      // Adult:         26-65  yrs
+    MAXAGE("200_");      // Ancient:       61-200 yrs
 
-    String ageString;
+    private String ageKeyVal;
 
-    Age(String ageString) {
-        this.ageString = ageString;
+    Age(String ageKeyVal) {
+        this.ageKeyVal = ageKeyVal;
     }
 
-    public String getAgeString() {
-        return ageString;
+    public String getAgeKeyVal() {
+        return ageKeyVal;
     }
 }

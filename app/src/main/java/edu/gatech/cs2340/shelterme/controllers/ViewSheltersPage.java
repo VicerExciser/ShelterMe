@@ -63,11 +63,11 @@ public class ViewSheltersPage extends AppCompatActivity {
 
 
         //filling spinners
-        ArrayAdapter<String> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, Age.values());
+        ArrayAdapter<String> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, AgeRange.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ageSpin.setAdapter(adapter);
 
-        ArrayAdapter<String> adapterGen = new ArrayAdapter(this,android.R.layout.simple_spinner_item, Account.Sex.values());
+        ArrayAdapter<String> adapterGen = new ArrayAdapter(this,android.R.layout.simple_spinner_item, GenderAccepted.values());
         adapterGen.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpin.setAdapter(adapterGen);
 
@@ -81,7 +81,7 @@ public class ViewSheltersPage extends AppCompatActivity {
 
                 ageSpin.setVisibility(View.VISIBLE);
                 genderSpin.setVisibility(View.VISIBLE);
-                familyCheck.setVisibility(View.VISIBLE);
+                //familyCheck.setVisibility(View.VISIBLE);
                 criteriaCheck.setVisibility(View.GONE);
                 noCrit.setVisibility(View.GONE);
                 text.setVisibility(View.GONE);
@@ -138,6 +138,7 @@ public class ViewSheltersPage extends AppCompatActivity {
                 return false;
             }
         });
+
         // Enabling the search filter
 //        inputSearch.addTextChangedListener(new TextWatcher() {
 //            @Override
@@ -165,4 +166,41 @@ public class ViewSheltersPage extends AppCompatActivity {
         intent.putExtra("Shelter", selected);
         startActivity(intent);
     }
+
+    private enum AgeRange {
+        NEWBORNS("Family w/ children under 5"),
+        CHILDREN("Children (age 6 - 15"),
+        YOUNGADULTS("Young adults (age 16 - 25"),
+        ANYONE("Any age");
+
+        private final String _msg;
+        AgeRange(String msg) { _msg = msg; }
+        public String toString() { return _msg; }
+    }
+
+    private enum GenderAccepted {
+        ANY("Anyone"),
+        MEN("Men only"),
+        WOMEN("Women only");
+
+        private final String _msg;
+        GenderAccepted(String msg) { _msg = msg; }
+        public String toString() { return _msg; }
+    }
+/*
+    private enum Accepting {
+        ANY("Anyone"),
+        MEN("Men only"),
+        WOMEN("Women only"),
+        CHILD("Children (age 6 - 15"),
+        YA("Young Adults (age 16-25)"),
+        WAC("Women & Children"),
+        CAYA("Children & Young Adults"),
+        VET("Veterans"),
+        FAM("Families"),
+        FAMCHILD("Families with Children under 5"),
+        FAMNEWB("Families with Newborns");
+
+    }
+*/
 }

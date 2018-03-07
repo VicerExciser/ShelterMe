@@ -90,12 +90,14 @@
             android:layout_above="@+id/genderSpinner"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_below="@+id/noCrit"
             android:backgroundTint="#000000" />
 
         <Spinner
             android:id="@+id/genderSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/FamilyCheck"
             android:layout_alignBottom="@+id/FamilyCheck"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"

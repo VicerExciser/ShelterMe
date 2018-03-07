@@ -423,7 +423,7 @@ public class RegistrationPage extends AppCompatActivity {
         switch (at) {
             case USER:
                 newAccount = new User(nm, un, em, pw, sx, age, false, sq, qa);
-                //////CHANGE FAMILY FALSE !!!!!!!!!!
+                ////// TODO: CHANGE FAMILY FALSE !!!!!!!!!!
 //                DatabaseReference newUserRef = dbRootRef.child("users").push();
 //                newUserRef.setValue(newAccount);
 //                newAccount.setAccountID(newUserRef);

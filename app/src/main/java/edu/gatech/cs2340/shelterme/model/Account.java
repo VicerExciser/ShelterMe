@@ -45,6 +45,11 @@ public abstract class Account {
 //    public String getID() {
 //        return this.id;
 //    }
+
+    public String getName() {
+        return this.name;
+    }
+
     public String getUsername() {
         return this.username;
     }

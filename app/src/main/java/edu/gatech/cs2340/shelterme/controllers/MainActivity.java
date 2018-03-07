@@ -121,7 +121,8 @@ public class MainActivity extends AppCompatActivity {
 //                Shelter shelter;
 // Format: key, name, capacity, restricts, long, lat, addr, notes, phone
                 if (length == 9) {
-                    int key = Integer.valueOf(tokens[0]);
+//                    int key = Integer.valueOf(tokens[0]);
+                    String key = tokens[0];
                     String name = tokens[1];
                     String capacity = tokens[2];
                     String restricts = tokens[3];
@@ -146,7 +147,8 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             Log.e("LoadShelters", e.getMessage());
-
+            Log.e("Error loading shelters", e.toString());
+            e.printStackTrace();
         }
     }
 }

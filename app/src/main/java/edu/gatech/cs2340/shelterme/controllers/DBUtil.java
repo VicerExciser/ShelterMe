@@ -76,6 +76,10 @@ public class DBUtil {
         adminsRef = rootRef.child("admins");
         sheltersRef = rootRef.child("shelters");
 
+        /* The following onDataChange methods are demonstrative of how to configure Firebase
+           to update the database contents whenever data is changed
+         */
+
         usersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -128,10 +132,14 @@ public class DBUtil {
              @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
                  Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-
-                 for (DataSnapshot child : children) {
-                     Shelter shelter = child.getValue(Shelter.class);
-                     shelterList.add(shelter);
+                 try {
+                     for (DataSnapshot child : children) {
+                         Shelter shelter = child.getValue(Shelter.class);
+                         shelterList.add(shelter);
+                     }
+                 } catch (com.google.firebase.database.DatabaseException dbe) {
+                     Log.e("shelterDataChange", dbe.getMessage());
+                     dbe.printStackTrace();
                  }
              }
 
@@ -243,6 +251,8 @@ public class DBUtil {
                 }
             }
         });
+        sheltersRef.child(key).child("beds").setValue(newShelter.getBeds());
+
     }
 
 }

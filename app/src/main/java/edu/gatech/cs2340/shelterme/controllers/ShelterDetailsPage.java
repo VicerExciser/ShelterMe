@@ -35,8 +35,9 @@ public class ShelterDetailsPage extends AppCompatActivity {
         Intent intent = getIntent();
         Shelter shelter = intent.getParcelableExtra("Shelter");
 
+        // TODO: Add new Shelter fields to Parcel
         header.setText(shelter.getShelterName());
-        String capText = "Capacity: \n\t\t\t\t"+shelter.getCapacity();
+        String capText = "Capacity: \n\t\t\t\t"+shelter.getCapacityStr();
         capacity.setText(capText);
         String accptText = "Accepts: \n\t\t\t\t"+shelter.getRestrictions();
         restrictions.setText(accptText);

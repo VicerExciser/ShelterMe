@@ -6,7 +6,6 @@ import edu.gatech.cs2340.shelterme.model.Account;
  * Created by austincondict on 2/12/18.
  */
 
-// TODO: Make other user type classes
 public class User extends Account {
 
 //    Question secQuest;
@@ -57,5 +56,32 @@ public class User extends Account {
     }
 
     //TODO getStayReports and addStayReport
+
+
+
+
+    public String getName() {
+        return super.getName();
+    }
+
+    public String getEmail() {
+        return super.getEmail();
+    }
+
+    public String getUsername() {
+        return super.getUsername();
+    }
+
+    public boolean getIsFamily() {
+        return this.isFamily;
+    }
+
+    public int getAge() {
+        return this.age;
+    }
+
+    public Sex getSex() {
+        return this.sex;
+    }
 }
 
