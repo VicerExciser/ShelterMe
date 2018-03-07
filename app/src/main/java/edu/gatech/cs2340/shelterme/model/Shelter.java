@@ -327,7 +327,7 @@ public class Shelter implements Parcelable{
             if (noAdultWomenBed && (isFemaleUser && (userAge > 15))) { //make sure adult women don't get into male only shelters
                 thisBedOpen = false;
             }
-            if ((noAdultMenBed || noAdultWomenBed) && isNonBinaryUser) { //makes sure non-binary users cannot access male-only or female-only shelters
+            if ((noAdultMenBed ^ noAdultWomenBed) && isNonBinaryUser) { //makes sure non-binary users can access shelters that exclude nobody OR BOTH genders
                 thisBedOpen = false;
             }
             if (veteranOnlyBed && !(isVeteranUser)) { //exclude veteran beds from non-veterans
