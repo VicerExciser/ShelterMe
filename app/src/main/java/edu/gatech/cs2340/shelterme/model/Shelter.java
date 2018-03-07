@@ -317,7 +317,11 @@ public class Shelter implements Parcelable{
         return false;
     }
 
-    public void reserveBed() {
-
+    public String reserveBed(User user) { //function takes in User and returns ID of bed being reserved
+        String userKey = user.generateKey();
+        Bed foundBed = new Bed(1, false, false, Age.ZERO,
+                Age.TWOHUNDRED, false); // TODO: implement means of finding bed to reserve
+        foundBed.setOccupant(user);
+        return "";
     }
 }
