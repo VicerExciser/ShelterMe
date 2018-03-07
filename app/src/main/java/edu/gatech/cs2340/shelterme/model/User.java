@@ -11,14 +11,16 @@ public class User extends Account {
 
 //    Question secQuest;
 //    String secAns;
+    private boolean isFamily;
     private int age;
     private Sex sex;
 
-    public User(String name, String uname, String email, int pass, Sex sex, int age,
+    public User(String name, String uname, String email, int pass, Sex sex, int age, boolean isFamily,
                 Question secQ, String secA) {
         super(name, uname, email, pass, secQ, secA);
 //        secQuest = secQ;
 //        secAns = secA;
+        this.isFamily = isFamily;
         this.age = age;
         this.sex = sex;
     }
@@ -34,12 +36,24 @@ public class User extends Account {
 //    }
 
     public User() {
-        this("user steve", "user", "user@gmail.com", "pass".hashCode(), Sex.MALE, 25,
+        this("user steve", "user", "user@gmail.com", "pass".hashCode(), Sex.MALE, 25, false,
                 Question.PET, "Spot");
     }
 
 //    public String getID() {
 //        return super.getID();
 //    }
+
+    public String generateKey() {
+        String userKey = "";
+        if (isFamily) {
+            userKey += 'T';
+        } else {
+            userKey += 'F';
+        }
+        userKey += this.sex.toString();
+        userKey += Integer.toString(this.age);
+        return userKey;
+    }
 }
 
