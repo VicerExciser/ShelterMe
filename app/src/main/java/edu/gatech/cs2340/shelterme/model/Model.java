@@ -31,6 +31,7 @@ public class Model {
 
     private static ArrayList<Account> accounts;
     private static ArrayList<Shelter> shelters;
+    private Account currUser;
 
     public static Model getInstance() {
         return ourInstance;
@@ -51,6 +52,9 @@ public class Model {
     public static List<Shelter> getShelterListPointer() {
         return shelters;
     }
+
+    public Account getCurrUser() {return currUser;}
+    public void setCurrUser(String username) {currUser = getAccountByEmail(username);}
 
     public void addToAccounts(Account acct) {
         accounts.add(acct);

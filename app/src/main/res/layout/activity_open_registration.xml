@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="edu.gatech.cs2340.shelterme.OpenRegistration">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ImageButton
+            android:id="@+id/user_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="59dp"
+            android:backgroundTint="@android:color/transparent"
+            app:srcCompat="@mipmap/users_icon" />
+
+        <ImageButton
+            android:id="@+id/employee_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/user_icon"
+            android:layout_alignStart="@+id/user_icon"
+            android:layout_centerVertical="true"
+            android:backgroundTint="@android:color/transparent"
+            app:srcCompat="@mipmap/ic_launcher_foreground" />
+
+        <ImageButton
+            android:id="@+id/admin_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/employee_icon"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/employee_icon"
+            android:layout_marginTop="39dp"
+            android:backgroundTint="@android:color/transparent"
+            app:srcCompat="@mipmap/admin" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="44dp"
+            android:fontFamily="serif-monospace"
+            android:text="usertext"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:text="User" />
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

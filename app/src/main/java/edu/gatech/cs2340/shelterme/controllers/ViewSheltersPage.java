@@ -10,16 +10,23 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
 
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
+import edu.gatech.cs2340.shelterme.model.User;
 
 public class ViewSheltersPage extends AppCompatActivity {
 
     private ArrayAdapter<String> adapter;
     private HashMap<String, Shelter> shelters;
+    private Model model = Model.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +45,16 @@ public class ViewSheltersPage extends AppCompatActivity {
         for (Shelter s : Model.getShelterListPointer()) {
             shelters.put(s.getShelterName(), s);
         }
-
+        List<String> list = new ArrayList<>(shelters.keySet());
+        for (int i = 0; i < shelters.size(); i++) {
+            if (((User) model.getCurrUser()) != null) {
+                if (!shelters.get(list.get(i)).hasOpenBed(((User) model.getCurrUser()).generateKey())) {
+                    shelters.remove(shelters.get(list.get(i)));
+                }
+            }
+        }
         ListView shelterList = findViewById(R.id.shelterList);
+
         SearchView inputSearch = findViewById(R.id.inputSearch);
         adapter = new ArrayAdapter<>(ViewSheltersPage.this, R.layout.list_item, R.id.shelter_name,
                  shelters.keySet().toArray(new String[shelters.keySet().size()]));

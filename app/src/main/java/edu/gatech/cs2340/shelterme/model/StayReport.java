@@ -5,4 +5,5 @@ package edu.gatech.cs2340.shelterme.model;
  */
 
 public class StayReport {
+
 }

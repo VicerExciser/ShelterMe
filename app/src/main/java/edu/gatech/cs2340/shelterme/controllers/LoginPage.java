@@ -27,7 +27,6 @@ public class LoginPage extends AppCompatActivity {
     private FirebaseAuth auth;
     Model model = Model.getInstance();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +92,7 @@ public class LoginPage extends AppCompatActivity {
             model.displayErrorMessage("Incorrect username or password", this);
             return false;
         }
+        model.setCurrUser(username);
         return true;
     }
 
