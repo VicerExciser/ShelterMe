@@ -6,6 +6,7 @@ import android.provider.ContactsContract;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * Created by austincondict on 2/18/18.
@@ -27,7 +28,9 @@ public class Shelter implements Parcelable{
     private String phone;
     private String address;
 
-    private HashMap<String, ArrayList<Bed>> beds;
+    private HashMap<String, LinkedList<Bed>> beds;
+    // TODO: Make occupiedBeds list within beds HashMap
+    // ^ perhaps try using a LinkedHashMap?
     private Bed lastBedAdded;
     private int vacancies;
 
@@ -82,6 +85,39 @@ public class Shelter implements Parcelable{
             description += " with a capacity of " + this.getCapacity();
         }
         return buff + description + "\n" + buff;
+    }
+
+    // TODO: IGNORE DIS
+    // parse Capacity strings to extrapolate integers & bed types
+    private ArrayList parseCapacity(String cp) {
+        ArrayList vals = new ArrayList();
+        if (cp != null && !cp.isEmpty()) {
+            // split up strings by spaces
+            String[] tokens = cp.split(" ");
+            if (cp.indexOf(' ') < 0 || tokens.length == 1) {
+                if (getInt(tokens[0]) >= 0)
+                    vals.add(getInt(tokens[0]));
+                // if only 1 capacity value provided, determine what type of users
+                // this shelter will accept and associate capacity value w/ Bed type
+
+            } else {
+
+                for (int i = 0; i < tokens.length; i++) {
+
+                }
+            }
+        } else {
+            vals.add(100);
+        }
+        return vals;
+    }
+
+    private int getInt(String text) {
+        int val = -1;
+        try {
+            val = Integer.valueOf(text.trim());
+        } catch (NumberFormatException nfe) { }
+        return val;
     }
 
 //    public void setDbID(String id) {
@@ -215,17 +251,18 @@ public class Shelter implements Parcelable{
         } else {
             lastId = lastBedAdded.getId();
         }
-        ArrayList<Bed> bedType;
+        LinkedList<Bed> bedType;
         if (beds.containsKey(bedKey)) { // if this type of bed already exists, add it to the existing bed list
             bedType = beds.get(bedKey);
         } else {    // if this is a new bed type, create the new bed type and add it to the beds hashmap
-            bedType = new ArrayList<>();
+            bedType = new LinkedList<>();
             beds.put(bedKey, bedType);
         }
         for (int i = lastId + 1; i < lastId + numberOfBeds + 1; i++) {
             Bed newBed = new Bed(i, isFamily, noAdultMen, minAge, maxAge, veteranOnly);
             bedType.add(newBed);
             vacancies++;
+            // TODO: overall capacity++, lastBedAdded needs to be updated
         }
     }
     //TODO hasOpenBed method
@@ -280,5 +317,9 @@ public class Shelter implements Parcelable{
             }
         }
         return false;
+    }
+
+    public void reserveBed() {
+
     }
 }
