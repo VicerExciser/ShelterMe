@@ -6,6 +6,7 @@ import android.provider.ContactsContract;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Created by austincondict on 2/18/18.
@@ -27,7 +28,7 @@ public class Shelter implements Parcelable{
     private String phone;
     private String address;
 
-    private HashMap<String, ArrayList<Bed>> beds;
+    private HashMap<String, LinkedHashMap<String, Bed>> beds;
     private Bed lastBedAdded;
     private int vacancies;
 
@@ -38,9 +39,7 @@ public class Shelter implements Parcelable{
     }
 
     public Shelter(String name) {
-        shelterName = name;
-        shelterKey = 1;
-        setCapacity("500");
+        this(1, name, "500", null, 0, 0, null, null, null);
     }
 
     public Shelter(int key, String name, String capacity, String restrictions, double longitude,
@@ -54,6 +53,9 @@ public class Shelter implements Parcelable{
         this.setAddress(address);
         setNotes(specNotes);
         phone = num;
+        LinkedHashMap<String, Bed> occupiedBeds = new LinkedHashMap<>();
+        this.beds = new HashMap<>();
+        this.beds.put("O", occupiedBeds);
 //        processRestrictions();
     }
 
@@ -82,6 +84,39 @@ public class Shelter implements Parcelable{
             description += " with a capacity of " + this.getCapacity();
         }
         return buff + description + "\n" + buff;
+    }
+
+    // TODO: IGNORE DIS
+    // parse Capacity strings to extrapolate integers & bed types
+    private ArrayList parseCapacity(String cp) {
+        ArrayList vals = new ArrayList();
+        if (cp != null && !cp.isEmpty()) {
+            // split up strings by spaces
+            String[] tokens = cp.split(" ");
+            if (cp.indexOf(' ') < 0 || tokens.length == 1) {
+                if (getInt(tokens[0]) >= 0)
+                    vals.add(getInt(tokens[0]));
+                // if only 1 capacity value provided, determine what type of users
+                // this shelter will accept and associate capacity value w/ Bed type
+
+            } else {
+
+                for (int i = 0; i < tokens.length; i++) {
+
+                }
+            }
+        } else {
+            vals.add(100);
+        }
+        return vals;
+    }
+
+    private int getInt(String text) {
+        int val = -1;
+        try {
+            val = Integer.valueOf(text.trim());
+        } catch (NumberFormatException nfe) { }
+        return val;
     }
 
 //    public void setDbID(String id) {
@@ -215,20 +250,20 @@ public class Shelter implements Parcelable{
         } else {
             lastId = lastBedAdded.getId();
         }
-        ArrayList<Bed> bedType;
+        LinkedHashMap<String, Bed> bedType;
         if (beds.containsKey(bedKey)) { // if this type of bed already exists, add it to the existing bed list
             bedType = beds.get(bedKey);
         } else {    // if this is a new bed type, create the new bed type and add it to the beds hashmap
-            bedType = new ArrayList<>();
+            bedType = new LinkedHashMap<>();
             beds.put(bedKey, bedType);
         }
         for (int i = lastId + 1; i < lastId + numberOfBeds + 1; i++) {
             Bed newBed = new Bed(i, isFamily, noAdultMen, minAge, maxAge, veteranOnly);
-            bedType.add(newBed);
+            bedType.put(String.valueOf(newBed.getId()), newBed);
             vacancies++;
+            // TODO: overall capacity++, lastBedAdded needs to be updated
         }
     }
-    //TODO hasOpenBed method
     public boolean hasOpenBed(String userKey) {
         if (userKey == null) {
             throw new IllegalArgumentException("User Key cannot be null");
@@ -275,10 +310,29 @@ public class Shelter implements Parcelable{
             if (veteranOnlyBed && !(isVeteranUser)) { //exclude veteran beds from non-veterans
                 thisBedOpen = false;
             }
+            if (userAge > maxAge || userAge < minAge) { //make sure user is within the appropriate age range
+                thisBedOpen = false;
+            }
             if (thisBedOpen) {
                 return true;
             }
         }
         return false;
+    }
+
+    public String reserveBed(User user) { //function takes in User and returns ID of bed being reserved
+        String userKey = user.generateKey();
+        int newBedId = 1;
+        while (beds.get("O").containsKey(newBedId)) { //temporary measure to avoid overrighting beds in the occupied bed list
+            newBedId++;
+        }
+        Bed foundBed = new Bed(newBedId, false, false, Age.ZERO,
+                Age.TWOHUNDRED, false); // TODO: implement means of finding bed to reserve
+        LinkedHashMap<String, Bed> bedTypeFound = new LinkedHashMap<>();
+        foundBed.setOccupant(user);
+        String bedId = String.valueOf(foundBed.getId());
+        bedTypeFound.remove(bedId);
+        beds.get("O").put(bedId, foundBed);
+        return bedId;
     }
 }

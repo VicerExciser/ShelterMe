@@ -146,6 +146,5 @@ public class Model {
                 .show();
     }
 
-    // TODO: Make enum type for all Shelters in DB for a registering employee to select from as their workplace
 
 }
