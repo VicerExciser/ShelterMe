@@ -224,7 +224,7 @@ public class Shelter implements Parcelable{
 //    TODO: Make enum type for restrictions/allowances
 
     //Bed Handling
-    public void addNewBeds(int numberOfBeds, boolean isFamily, boolean noAdultMen, Age minAge, Age maxAge, boolean veteranOnly) {
+    public void addNewBeds(int numberOfBeds, boolean isFamily, boolean noAdultMen, boolean noAdultWomen, Age minAge, Age maxAge, boolean veteranOnly) {
         //create unique bed key that encodes all of the bed's restrictions into the key
         String bedKey = "";
         if (isFamily) {
@@ -233,6 +233,11 @@ public class Shelter implements Parcelable{
             bedKey += "F";
         }
         if (noAdultMen) {
+            bedKey += "T";
+        } else {
+            bedKey += "F";
+        }
+        if (noAdultWomen) {
             bedKey += "T";
         } else {
             bedKey += "F";
@@ -258,7 +263,7 @@ public class Shelter implements Parcelable{
             beds.put(bedKey, bedType);
         }
         for (int i = lastId + 1; i < lastId + numberOfBeds + 1; i++) {
-            Bed newBed = new Bed(i, isFamily, noAdultMen, minAge, maxAge, veteranOnly);
+            Bed newBed = new Bed(i, isFamily, noAdultMen, noAdultWomen, minAge, maxAge, veteranOnly);
             bedType.put(String.valueOf(newBed.getId()), newBed);
             vacancies++;
             // TODO: overall capacity++, lastBedAdded needs to be updated
@@ -276,9 +281,12 @@ public class Shelter implements Parcelable{
             boolean thisBedOpen = true;
             boolean isFamilyBed = false; //attributes of Bed
             boolean noAdultMenBed = false;
+            boolean noAdultWomenBed = false;
             boolean veteranOnlyBed = false;
             boolean isFamilyUser = false; //attributes of User
-            boolean isMaleorOtherUser = false;
+            boolean isMaleUser = false;
+            boolean isFemaleUser = false;
+            boolean isNonBinaryUser = false;
             boolean isVeteranUser = false;
             if (bedKey.charAt(0) == 'T') {
                 isFamilyBed = true;
@@ -286,25 +294,40 @@ public class Shelter implements Parcelable{
             if (bedKey.charAt(1) == 'T') {
                 noAdultMenBed = true;
             }
+            if (bedKey.charAt(2) == 'T') {
+                noAdultWomenBed = true;
+            }
             if (bedKey.charAt(bedKey.length() - 1) == 'T') {
                 veteranOnlyBed = true;
             }
             if (isFamilyChar == 'T') {
                 isFamilyUser = true;
             }
-            if (genderChar != 'F') {
-                isMaleorOtherUser = true;
+            if (genderChar == 'M') {
+                isMaleUser = true;
+            }
+            if (genderChar == 'F') {
+                isFemaleUser = true;
+            }
+            if (genderChar == 'O') {
+                isNonBinaryUser = true;
             }
             if (isVeteranChar == 'T') {
                 isVeteranUser = true;
             }
-            int minAge = Integer.parseInt(bedKey.substring(2, 5));
-            int maxAge = Integer.parseInt(bedKey.substring(6, 9));
+            int minAge = Integer.parseInt(bedKey.substring(3, 6));
+            int maxAge = Integer.parseInt(bedKey.substring(7, 10));
             int userAge = Integer.parseInt(ageString.substring(0, 3));
             if(isFamilyBed ^ isFamilyUser) { //make sure family type matches between user and bed
                 thisBedOpen = false;
             }
-            if (noAdultMenBed && (isMaleorOtherUser && (userAge > 15))) { //make sure adult males don't get into women only shelters
+            if (noAdultMenBed && (isMaleUser && (userAge > 15))) { //make sure adult males don't get into women only shelters
+                thisBedOpen = false;
+            }
+            if (noAdultWomenBed && (isFemaleUser && (userAge > 15))) { //make sure adult women don't get into male only shelters
+                thisBedOpen = false;
+            }
+            if ((noAdultMenBed || noAdultWomenBed) && isNonBinaryUser) { //makes sure non-binary users cannot access male-only or female-only shelters
                 thisBedOpen = false;
             }
             if (veteranOnlyBed && !(isVeteranUser)) { //exclude veteran beds from non-veterans
@@ -326,7 +349,7 @@ public class Shelter implements Parcelable{
         while (beds.get("O").containsKey(newBedId)) { //temporary measure to avoid overrighting beds in the occupied bed list
             newBedId++;
         }
-        Bed foundBed = new Bed(newBedId, false, false, Age.ZERO,
+        Bed foundBed = new Bed(newBedId, false, false, false, Age.ZERO,
                 Age.TWOHUNDRED, false); // TODO: implement means of finding bed to reserve
         LinkedHashMap<String, Bed> bedTypeFound = new LinkedHashMap<>();
         foundBed.setOccupant(user);
