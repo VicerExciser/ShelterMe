@@ -6,6 +6,7 @@ import android.provider.ContactsContract;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Created by austincondict on 2/18/18.
@@ -27,7 +28,7 @@ public class Shelter implements Parcelable{
     private String phone;
     private String address;
 
-    private HashMap<String, ArrayList<Bed>> beds;
+    private HashMap<String, LinkedHashMap<String, Bed>> beds;
     private Bed lastBedAdded;
     private int vacancies;
 
@@ -38,9 +39,7 @@ public class Shelter implements Parcelable{
     }
 
     public Shelter(String name) {
-        shelterName = name;
-        shelterKey = 1;
-        setCapacity("500");
+        this(1, name, "500", null, 0, 0, null, null, null);
     }
 
     public Shelter(int key, String name, String capacity, String restrictions, double longitude,
@@ -54,6 +53,9 @@ public class Shelter implements Parcelable{
         this.setAddress(address);
         setNotes(specNotes);
         phone = num;
+        LinkedHashMap<String, Bed> occupiedBeds = new LinkedHashMap<>();
+        this.beds = new HashMap<>();
+        this.beds.put("O", occupiedBeds);
 //        processRestrictions();
     }
 
@@ -215,20 +217,19 @@ public class Shelter implements Parcelable{
         } else {
             lastId = lastBedAdded.getId();
         }
-        ArrayList<Bed> bedType;
+        LinkedHashMap<String, Bed> bedType;
         if (beds.containsKey(bedKey)) { // if this type of bed already exists, add it to the existing bed list
             bedType = beds.get(bedKey);
         } else {    // if this is a new bed type, create the new bed type and add it to the beds hashmap
-            bedType = new ArrayList<>();
+            bedType = new LinkedHashMap<>();
             beds.put(bedKey, bedType);
         }
         for (int i = lastId + 1; i < lastId + numberOfBeds + 1; i++) {
             Bed newBed = new Bed(i, isFamily, noAdultMen, minAge, maxAge, veteranOnly);
-            bedType.add(newBed);
+            bedType.put(String.valueOf(newBed.getId()), newBed);
             vacancies++;
         }
     }
-    //TODO hasOpenBed method
     public boolean hasOpenBed(String userKey) {
         if (userKey == null) {
             throw new IllegalArgumentException("User Key cannot be null");
@@ -281,4 +282,8 @@ public class Shelter implements Parcelable{
         }
         return false;
     }
+
+//    public void reserveBed(User user) {
+//
+//    }
 }
