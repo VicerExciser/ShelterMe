@@ -1,6 +1,8 @@
 package edu.gatech.cs2340.shelterme.model;
 
 
+import java.util.ArrayList;
+
 public class Admin extends Account {
 
     public Admin() {

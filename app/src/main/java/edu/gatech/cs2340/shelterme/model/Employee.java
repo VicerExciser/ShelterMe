@@ -16,7 +16,6 @@ public class Employee extends Account {
                 "employee".hashCode(), Question.PET, "Spot");
         placeOfWork = Model.findShelterByName("My Sister's House");
     }
-
 //    public String getID() {
 //        return super.getID();
 //    }

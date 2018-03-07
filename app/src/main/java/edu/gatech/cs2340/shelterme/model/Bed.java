@@ -10,16 +10,18 @@ public class Bed {
     private User occupant;
     private boolean isOccupied;
     private boolean isFamily;       //designates if the bed is of "family type" or for a single person
-    private boolean noAdultMen;     //designates if the bed is a "women and children only" bed
+    private boolean noAdultMen;     //designates if there is a gender restriction against men
+    private boolean noAdultWomen;   //designates if there is a gender restriction against women
     private Age minAge;             //designates minimum age that applies to an individual or the children of a family
     private Age maxAge;             //designates maximum age that applies to an individual or the children of a family
     private boolean veteranOnly;    //designates if the bed must have at least one veteran occupying it
 
-    public Bed(int id, boolean isFamily, boolean noAdultMen, Age minAge, Age maxAge, boolean veteranOnly) {
+    public Bed(int id, boolean isFamily, boolean noAdultMen, boolean noAdultWomen, Age minAge, Age maxAge, boolean veteranOnly) {
         this.id = id;
         this.isOccupied = false;
         this.isFamily = isFamily;
         this.noAdultMen = noAdultMen;
+        this.noAdultWomen = noAdultWomen;
         this.minAge = minAge;
         this.maxAge = maxAge;
         this.veteranOnly = veteranOnly;

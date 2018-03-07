@@ -45,7 +45,6 @@ public abstract class Account {
 //    public String getID() {
 //        return this.id;
 //    }
-
     public String getUsername() {
         return this.username;
     }
@@ -58,7 +57,8 @@ public abstract class Account {
 
     public enum Sex {
         MALE ("M"),
-        FEMALE ("F");
+        FEMALE ("F"),
+        OTHER ("O");
 
         private final String _code;
 

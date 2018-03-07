@@ -55,5 +55,7 @@ public class User extends Account {
         userKey += Integer.toString(this.age);
         return userKey;
     }
+
+    //TODO getStayReports and addStayReport
 }
 
