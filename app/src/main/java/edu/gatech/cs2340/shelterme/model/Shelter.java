@@ -4,6 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Created by austincondict on 2/18/18.
  */
@@ -16,12 +19,6 @@ public class Shelter implements Parcelable{
     private String capacity;
     private String restrictions;
 
-    // Restrictions:
-    private boolean ageRestricted;
-    private boolean sexRestricted;
-    private boolean familyAllowed;
-    private boolean veteransOnly;
-
 //    private Location location;
     private double latitude;
     private double longitude;
@@ -30,7 +27,9 @@ public class Shelter implements Parcelable{
     private String phone;
     private String address;
 
-    private Bed[] beds;
+    private HashMap<String, ArrayList<Bed>> beds;
+    private Bed lastBedAdded;
+    private int vacancies;
 
     // TODO: Constructors, getters, setters
 
@@ -42,10 +41,6 @@ public class Shelter implements Parcelable{
         shelterName = name;
         shelterKey = 1;
         setCapacity("500");
-        ageRestricted = false;
-        sexRestricted = false;
-        familyAllowed = true;
-        veteransOnly = false;
     }
 
     public Shelter(int key, String name, String capacity, String restrictions, double longitude,
@@ -60,11 +55,6 @@ public class Shelter implements Parcelable{
         setNotes(specNotes);
         phone = num;
 //        processRestrictions();
-        try {
-            beds = new Bed[Integer.valueOf(capacity)];
-        } catch (NumberFormatException nfe) {
-            beds = null;
-        }
     }
 
     public Shelter(Parcel parcel) {
@@ -197,4 +187,86 @@ public class Shelter implements Parcelable{
     };
 
 //    TODO: Make enum type for restrictions/allowances
+
+    //Bed Handling
+    public void addNewBeds(int capacity, boolean isFamily, boolean noAdultMen, Age minAge, Age maxAge, boolean veteranOnly) {
+        //create unique bed key that encodes all of the bed's restrictions into the key
+        String bedKey = "";
+        if (isFamily) {
+            bedKey += "T";
+        } else {
+            bedKey += "F";
+        }
+        if (noAdultMen) {
+            bedKey += "T";
+        } else {
+            bedKey += "F";
+        }
+        bedKey += minAge.getAgeString();
+        bedKey += maxAge.getAgeString();
+        if (veteranOnly) {
+            bedKey += "T";
+        } else {
+            bedKey += "F";
+        }
+        int lastId;
+        if (lastBedAdded == null) {
+            lastId = 0;
+        } else {
+            lastId = lastBedAdded.getId();
+        }
+        ArrayList<Bed> bedType;
+        if (beds.containsKey(bedKey)) { // if this type of bed already exists, add it to the existing bed list
+            bedType = beds.get(bedKey);
+        } else {    // if this is a new bed type, create the new bed type and add it to the beds hashmap
+            bedType = new ArrayList<>();
+            beds.put(bedKey, bedType);
+        }
+        for (int i = lastId + 1; i < lastId + capacity + 1; i++) {
+            Bed newBed = new Bed(i, isFamily, noAdultMen, minAge, maxAge, veteranOnly);
+            bedType.add(newBed);
+            vacancies++;
+        }
+    }
+    //TODO hasOpenBed method
+    public boolean hasOpenBed(String userKey) {
+        if (userKey == null) {
+            throw new IllegalArgumentException("User Key cannot be null");
+        }
+        boolean returnableBool = false;
+        char isFamilyChar = userKey.charAt(0);
+        char genderChar = userKey.charAt(1);
+        String ageString = userKey.substring(2, userKey.length() - 1);
+        char isVeteranChar = userKey.charAt(userKey.length() - 1);
+        for (String bedKey : beds.keySet()) {
+            boolean isFamilyBed = false; //attributes of Bed
+            boolean noAdultMenBed = false;
+            boolean veteranOnlyBed = false;
+            boolean isFamilyUser = false; //attributes of User
+            boolean isMaleorOtherUser = false;
+            boolean isVeteranUser = false;
+            if (bedKey.charAt(0) == 'T') {
+                isFamilyBed = true;
+            }
+            if (bedKey.charAt(1) == 'T') {
+                noAdultMenBed = true;
+            }
+            if (bedKey.charAt(bedKey.length() - 1) == 'T') {
+                veteranOnlyBed = true;
+            }
+            if (isFamilyChar == 'T') {
+                isFamilyUser = true;
+            }
+            if (genderChar != 'F') {
+                isMaleorOtherUser = true;
+            }
+            if (isVeteranChar == 'T') {
+                isVeteranUser = true;
+            }
+            int minAge = Integer.parseInt(bedKey.substring(2, 5));
+            int maxAge = Integer.parseInt(bedKey.substring(6, 9));
+            int userAge = Integer.parseInt(ageString.substring(0, 3));
+        }
+        return returnableBool;
+    }
 }
