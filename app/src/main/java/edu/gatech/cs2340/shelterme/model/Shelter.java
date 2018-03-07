@@ -233,12 +233,12 @@ public class Shelter implements Parcelable{
         if (userKey == null) {
             throw new IllegalArgumentException("User Key cannot be null");
         }
-        boolean returnableBool = false;
         char isFamilyChar = userKey.charAt(0);
         char genderChar = userKey.charAt(1);
         String ageString = userKey.substring(2, userKey.length() - 1);
         char isVeteranChar = userKey.charAt(userKey.length() - 1);
         for (String bedKey : beds.keySet()) {
+            boolean thisBedOpen = true;
             boolean isFamilyBed = false; //attributes of Bed
             boolean noAdultMenBed = false;
             boolean veteranOnlyBed = false;
@@ -266,7 +266,19 @@ public class Shelter implements Parcelable{
             int minAge = Integer.parseInt(bedKey.substring(2, 5));
             int maxAge = Integer.parseInt(bedKey.substring(6, 9));
             int userAge = Integer.parseInt(ageString.substring(0, 3));
+            if(isFamilyBed ^ isFamilyUser) { //make sure family type matches between user and bed
+                thisBedOpen = false;
+            }
+            if (noAdultMenBed && (isMaleorOtherUser && (userAge > 15))) { //make sure adult males don't get into women only shelters
+                thisBedOpen = false;
+            }
+            if (veteranOnlyBed && !(isVeteranUser)) { //exclude veteran beds from non-veterans
+                thisBedOpen = false;
+            }
+            if (thisBedOpen) {
+                return true;
+            }
         }
-        return returnableBool;
+        return false;
     }
 }
