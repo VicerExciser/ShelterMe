@@ -190,7 +190,7 @@ public class DBUtil {
 
     }
 
-    public Account getAccountByEmail(String emailAddress) {
+    //public Account getAccountByEmail(String emailAddress) {
 //        Account target = null;
 ////        Query userQuery = usersRef.orderByChild("email").equalTo(emailAddress);
 ////        Query empQuery = employeesRef.orderByChild("email").equalTo(emailAddress);
@@ -219,8 +219,8 @@ public class DBUtil {
 //            }
 //        }
 //        return target;
-        return Model.getAccountByEmail(emailAddress);
-    }
+      //  return Model.getAccountByEmail(emailAddress);
+   // }
 
     public String getEmailAssociatedWithUsername(String username) {
         if (Model.isValidEmailAddress(username)) return username;

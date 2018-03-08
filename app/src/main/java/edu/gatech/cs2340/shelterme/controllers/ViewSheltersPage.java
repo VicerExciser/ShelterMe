@@ -3,6 +3,7 @@ package edu.gatech.cs2340.shelterme.controllers;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -32,7 +33,11 @@ public class ViewSheltersPage extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private HashMap<String, Shelter> shelters;
     private Model model = Model.getInstance();
-    private boolean critChecked;
+//    private boolean critChecked;
+    private AgeRange selectedAgeRange = AgeRange.ANYONE;
+    private GenderAccepted selectedGender = GenderAccepted.ANY;
+    private ListView shelterList;
+    private User currentUser;
 
 
     @Override
@@ -48,37 +53,62 @@ public class ViewSheltersPage extends AppCompatActivity {
             }
         });
 
+        shelterList = findViewById(R.id.shelterList);
+        currentUser = ((User)model.getCurrUser());
+
         //default to registered criteria
-        final Button criteriaCheck = (Button) findViewById(R.id.yesCrit);
-        final Button noCrit = (Button) findViewById(R.id.noCrit);
+//        final Button criteriaCheck = (Button) findViewById(R.id.yesCrit);
+//        final Button noCrit = (Button) findViewById(R.id.noCrit);
         final Spinner ageSpin = (Spinner) findViewById(R.id.ageSpinner);
         final Spinner genderSpin = (Spinner) findViewById(R.id.genderSpinner);
         final CheckBox familyCheck = (CheckBox) findViewById(R.id.FamilyCheck);
-        final TextView text = (TextView) findViewById(R.id.inferCriteria);
-        ageSpin.setVisibility(View.GONE);
-        genderSpin.setVisibility(View.GONE);
-        familyCheck.setVisibility(View.GONE);
-
-
+//        final TextView text = (TextView) findViewById(R.id.inferCriteria);
+//        ageSpin.setVisibility(View.GONE);
+//        genderSpin.setVisibility(View.GONE);
+//        familyCheck.setVisibility(View.GONE);
 
 
         //filling spinners
-        ArrayAdapter<String> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, AgeRange.values());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        ageSpin.setAdapter(adapter);
+        ArrayAdapter<String> adapterAge = new ArrayAdapter(this,android.R.layout.simple_spinner_item, AgeRange.values());
+        adapterAge.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ageSpin.setAdapter(adapterAge);
 
         ArrayAdapter<String> adapterGen = new ArrayAdapter(this,android.R.layout.simple_spinner_item, GenderAccepted.values());
         adapterGen.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpin.setAdapter(adapterGen);
 
+        // Omit shelters where this user is ineligible to stay
         shelters = new HashMap<>();
-        for (Shelter s : Model.getShelterListPointer()) {
-            shelters.put(s.getShelterName(), s);
+        for(Shelter s : Model.getShelterListPointer()) {
+            if(currentUser != null && s.hasOpenBed(currentUser.generateKey()))
+                shelters.put(s.getShelterName(), s);
+            else if (currentUser == null && s.getVacancies() > 0) {
+                Log.e("ViewShelterPage", "Current User returned NULL!");
+                shelters.put(s.getShelterName(), s);
+//                model.displayErrorMessage("Must be a registered user to do this!", this);
+            }
         }
+//        updateSearch(familyCheck.isChecked());
+//        updateResults();
 
+//        String[] listItems = new String[shelters.keySet().size()];
+//        shelters.keySet().toArray(listItems);
+//        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+//        shelterList.setAdapter(adapter);
+
+        adapter = new ArrayAdapter<>(ViewSheltersPage.this, R.layout.list_item, R.id.shelter_name,
+                shelters.keySet().toArray(new String[shelters.keySet().size()]));
+        shelterList.setAdapter(adapter);
+        shelterList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                displayDetailView(position);
+            }
+        });
+
+        /* ~ Would implement if we wanted to use the User's registered attributes ~
         noCrit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-
                 ageSpin.setVisibility(View.VISIBLE);
                 genderSpin.setVisibility(View.VISIBLE);
                 //familyCheck.setVisibility(View.VISIBLE);
@@ -86,9 +116,15 @@ public class ViewSheltersPage extends AppCompatActivity {
                 noCrit.setVisibility(View.GONE);
                 text.setVisibility(View.GONE);
                 critChecked = false;
-            }
-        });
 
+                selectedGender
+
+                updateSearch((((User)model.getCurrUser()).getIsFamily()));
+            }
+        }); */
+
+        /*
+        // removing all shelters w/ no vacancies from the listing
         criteriaCheck.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
 
@@ -102,24 +138,62 @@ public class ViewSheltersPage extends AppCompatActivity {
                     }
                 }
             }
-        });
+        }); */
 
-
-
-
-
-        ListView shelterList = findViewById(R.id.shelterList);
-
-        SearchView inputSearch = findViewById(R.id.inputSearch);
-        adapter = new ArrayAdapter<>(ViewSheltersPage.this, R.layout.list_item, R.id.shelter_name,
-                 shelters.keySet().toArray(new String[shelters.keySet().size()]));
-        shelterList.setAdapter(adapter);
-        shelterList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        familyCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                displayDetailView(position);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // TODO: Incorporate other search criteria to be applied
+                updateSearch(isChecked);
             }
         });
+
+        ageSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        selectedAgeRange = AgeRange.ANYONE;
+                        break;
+                    case 1:
+                        selectedAgeRange = AgeRange.FAMWITHYOUNG;
+                        break;
+                    case 2:
+                        selectedAgeRange = AgeRange.CHILDREN;
+                        break;
+                    case 3:
+                        selectedAgeRange = AgeRange.YOUNGADULTS;
+                        break;
+                }
+                updateSearch(familyCheck.isChecked());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+
+        genderSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        selectedGender = GenderAccepted.ANY;
+                        break;
+                    case 1:
+                        selectedGender = GenderAccepted.MEN;
+                        break;
+                    case 2:
+                        selectedGender = GenderAccepted.WOMEN;
+                        break;
+                }
+                updateSearch(familyCheck.isChecked());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+
+        SearchView inputSearch = findViewById(R.id.inputSearch);
         inputSearch.setQueryHint("Search by Name");
 //        inputSearch.setSelected(true);
         inputSearch.setIconifiedByDefault(false);
@@ -159,6 +233,75 @@ public class ViewSheltersPage extends AppCompatActivity {
 //        });
     }
 
+    private void updateSearch(boolean isChecked) {
+        shelters.clear();
+        for (Shelter s : Model.getShelterListPointer()) {
+            for (String key : s.getBeds().keySet()) {
+                if (familyChoiceMatchesKey(key, isChecked) && s.getVacancies() > 0)
+                    if (genderChoiceMatchesKey(key) && ageRangeChoiceMatchesKey(key))
+                        // Probably can omit the following if statement:
+                        try {
+                            if (s.hasOpenBed(currentUser.generateKey()))
+                                shelters.put(s.getShelterName(), s);
+                        } catch (NullPointerException npe) {
+                            model.displayErrorMessage("Must be a registered user to do this!", this);
+                            Log.e("Shelter Search Update", npe.getMessage());
+                            npe.printStackTrace();
+                        }
+            }
+        }
+        updateResults();
+    }
+
+    private void updateResults() {
+        adapter = new ArrayAdapter<>(ViewSheltersPage.this, R.layout.list_item, R.id.shelter_name,
+                shelters.keySet().toArray(new String[shelters.keySet().size()]));
+        shelterList.setAdapter(adapter);
+        shelterList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                displayDetailView(position);
+            }
+        });
+    }
+
+    private boolean familyChoiceMatchesKey(String key, boolean famChecked) {
+        if (famChecked && key.charAt(0) == 'T')
+            return true;
+        else if (!famChecked && key.charAt(0) == 'F')
+            return true;
+        return false;
+    }
+
+    private boolean genderChoiceMatchesKey(String key) {
+        if ((selectedGender.compareTo(GenderAccepted.MEN) == 0 && key.charAt(1) == 'T')
+                || (selectedGender.compareTo(GenderAccepted.WOMEN) == 0 && key.charAt(2) == 'T'))
+            return true;
+        else if (selectedGender.compareTo(GenderAccepted.ANY) == 0
+                && key.charAt(1) == 'F' && key.charAt(2) == 'F')
+            return true;
+        return false;
+
+    }
+
+    private boolean ageRangeChoiceMatchesKey(String key) {
+        String min = key.substring(3,6) + "_";
+        String max = key.substring(7,10) + "_";
+        if ((selectedAgeRange.compareTo(AgeRange.ANYONE) == 0
+                || selectedAgeRange.compareTo(AgeRange.FAMWITHYOUNG) == 0)
+                && min.equals(Age.MINAGE)
+                && max.equals(Age.MAXAGE))
+            return true;
+        else if (selectedAgeRange.compareTo(AgeRange.CHILDREN) == 0
+                && min.equals(Age.CHILDREN_BASE)
+                && max.equals(Age.CHILDREN_CAP))
+            return true;
+        else if (selectedAgeRange.compareTo(AgeRange.YOUNGADULTS) == 0
+                && min.equals(Age.YOUNGADULTS_BASE)
+                && max.equals(Age.YOUNGADULTS_CAP))
+            return true;
+        return false;
+    }
 
     private void displayDetailView(int position) {
         Shelter selected = shelters.get(adapter.getItem(position));
@@ -168,10 +311,11 @@ public class ViewSheltersPage extends AppCompatActivity {
     }
 
     private enum AgeRange {
-        NEWBORNS("Family w/ children under 5"),
-        CHILDREN("Children (age 6 - 15"),
-        YOUNGADULTS("Young adults (age 16 - 25"),
-        ANYONE("Any age");
+        ANYONE("Any age"),
+        FAMWITHYOUNG("Family w/ children under 5"),
+        CHILDREN("Children (age 6 - 15)"),
+        YOUNGADULTS("Young adults (age 16 - 25)");
+
 
         private final String _msg;
         AgeRange(String msg) { _msg = msg; }
@@ -179,7 +323,7 @@ public class ViewSheltersPage extends AppCompatActivity {
     }
 
     private enum GenderAccepted {
-        ANY("Anyone"),
+        ANY("Any gender"),
         MEN("Men only"),
         WOMEN("Women only");
 

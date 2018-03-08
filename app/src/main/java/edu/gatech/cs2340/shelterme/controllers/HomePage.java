@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import edu.gatech.cs2340.shelterme.R;
+import edu.gatech.cs2340.shelterme.model.Model;
 
 public class HomePage extends AppCompatActivity {
 
@@ -18,6 +19,7 @@ public class HomePage extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 android.content.Intent myIntent1 = new android.content.Intent(view.getContext(), MainActivity.class);
+                Model.getInstance().setCurrUser(null);
                 startActivityForResult(myIntent1, 0);
             }
         });

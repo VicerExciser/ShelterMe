@@ -1,5 +1,7 @@
 package edu.gatech.cs2340.shelterme.model;
 
+import android.util.Log;
+
 import edu.gatech.cs2340.shelterme.model.Account;
 
 /**
@@ -13,7 +15,9 @@ public class User extends Account {
     private boolean isFamily;
     private int age;
     private Sex sex;
+    private boolean isVeteran;
 
+    // TODO: Collect isVeteran information from registration/edit profile, pass into contructor (set to False for default until then)
     public User(String name, String uname, String email, int pass, Sex sex, int age, boolean isFamily,
                 Question secQ, String secA) {
         super(name, uname, email, pass, secQ, secA);
@@ -22,6 +26,8 @@ public class User extends Account {
         this.isFamily = isFamily;
         this.age = age;
         this.sex = sex;
+        this.isVeteran = false;
+        Log.e("USER_KEY", this.generateKey());
     }
 
 //    public User(String name, String pass) {
@@ -43,15 +49,13 @@ public class User extends Account {
 //        return super.getID();
 //    }
 
-    public String generateKey() {
+    public String generateKey() {   // Ex. key:  'FM25F'  <-- not family account, male, 25 yrs old, not a veteran
         String userKey = "";
-        if (isFamily) {
-            userKey += 'T';
-        } else {
-            userKey += 'F';
-        }
+
+        userKey += this.isFamily ? 'T' : 'F';
         userKey += this.sex.toString();
         userKey += Integer.toString(this.age);
+        userKey += this.isVeteran ? 'T' : 'F';
         return userKey;
     }
 
@@ -83,5 +87,28 @@ public class User extends Account {
     public Sex getSex() {
         return this.sex;
     }
+
+    public boolean getIsVeteran() {
+        return this.isVeteran;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        User u;
+        if (o instanceof User)
+            u = (User)o;
+        else return false;
+        return this.getEmail().equals(u.getEmail())
+                && this.getName().equals(u.getName())
+                && this.getUsername().equals(u.getUsername())
+                && this.password == u.password;
+
+    }
+
+//    @Override
+//    public int hashCode() {
+//        hash = 31
+//    }
 }
 

@@ -54,7 +54,7 @@ public class Model {
     }
 
     public Account getCurrUser() {return currUser;}
-    public void setCurrUser(String username) {currUser = getAccountByEmail(username);}
+    public void setCurrUser(String email) {currUser = getAccountByEmail(email);}
 
     public void addToAccounts(Account acct) {
         accounts.add(acct);
@@ -62,13 +62,18 @@ public class Model {
 
     public static Account getAccountByEmail(String email) {
         Account toRet = null;
+        if (email == null) return toRet;
         for (Account a : accounts) {
             if (a.getEmail().equals(email)) {
                 toRet = a;
             }
         }
-        return toRet;
+        return toRet instanceof User ? (User)toRet
+                : (toRet instanceof Admin ? (Admin)toRet
+                : (toRet instanceof Employee ? (Employee)toRet : toRet));
     }
+
+//    public static User
 
     public Account getAccountByIndex(int indx) {
         return accounts.get(indx);

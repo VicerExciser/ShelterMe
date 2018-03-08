@@ -56,9 +56,15 @@ public abstract class Account {
 
     public String getEmail() { return this.email; }
 
+//    public abstract boolean getIsFamily();
+//    public abstract String generateKey();
+
     public boolean validatePassword(int pw) {
         return pw == this.password;
     }
+
+
+
 
     public enum Sex {
         MALE ("M"),

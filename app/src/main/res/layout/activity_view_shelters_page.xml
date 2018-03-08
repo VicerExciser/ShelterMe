@@ -21,8 +21,7 @@
             android:layout_height="439dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/linearLayout2"
-            android:layout_marginTop="131dp"
+            android:layout_below="@+id/genderSpinner"
             android:background="@color/common_google_signin_btn_text_dark_focused"
             android:divider="#FF9900"
             android:dividerHeight="2px"
@@ -88,62 +87,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/genderSpinner"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/noCrit"
+            android:layout_toLeftOf="@+id/FamilyCheck"
+            android:layout_toStartOf="@+id/FamilyCheck"
             android:backgroundTint="#000000" />
 
         <Spinner
             android:id="@+id/genderSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/FamilyCheck"
-            android:layout_alignBottom="@+id/FamilyCheck"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="35dp" />
+            android:layout_below="@+id/FamilyCheck"
+            android:layout_toLeftOf="@+id/FamilyCheck"
+            android:layout_toStartOf="@+id/FamilyCheck" />
 
         <CheckBox
             android:id="@+id/FamilyCheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/backButton"
+            android:layout_alignRight="@+id/backButton"
             android:layout_below="@+id/linearLayout2"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="98dp"
             android:text="Accepts Families" />
-
-        <Button
-            android:id="@+id/yesCrit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/noCrit"
-            android:layout_alignBottom="@+id/noCrit"
-            android:layout_toEndOf="@+id/inferCriteria"
-            android:layout_toRightOf="@+id/inferCriteria"
-            android:text="Yes" />
-
-        <Button
-            android:id="@+id/noCrit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/linearLayout2"
-            android:text="No" />
-
-        <TextView
-            android:id="@+id/inferCriteria"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/yesCrit"
-            android:layout_alignBottom="@+id/yesCrit"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:baselineAligned="false"
-            android:text="Use Criteria from Your Account?"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            android:textStyle="bold" />
 
     </RelativeLayout>
 

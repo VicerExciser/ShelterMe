@@ -76,23 +76,26 @@ public class LoginPage extends AppCompatActivity {
     private boolean attemptLogin() {
         String username = mUsernameView.getText().toString().trim();
         int password = mPasswordView.getText().toString().hashCode();
-        Account attempting = Model.getAccountByEmail(DBUtil.getInstance().getEmailAssociatedWithUsername(username));
+        String email = DBUtil.getInstance().getEmailAssociatedWithUsername(username);
+        Account attempting = Model.getAccountByEmail(email);
         if (password == 0 || TextUtils.isEmpty(username)) {
             model.displayErrorMessage("This field is required", this);
             return false;
 //        } else if (model.getAccountByIndex(0).validatePassword(password)
 //                || model.getAccountByIndex(0).getUsername().equals(username)) {
-        } else if (attempting != null && attempting.validatePassword(password)) {
-                model.displaySuccessMessage("Login successful!", this);
-        } else if (!username.equals("user")) {
+        } else if (attempting != null
+                && username.equals(attempting.getUsername())
+                && email.equals(attempting.getEmail())
+                && attempting.validatePassword(password)) {
+            model.displaySuccessMessage("Login successful!", this);
+        } else if (!Model.getAccountListPointer().contains(attempting)) {
+            model.displayErrorMessage("User does not exist, please register an account", this);
+            return false;
+        } else if (!attempting.validatePassword(password)) {
             model.displayErrorMessage("Incorrect username or password", this);
             return false;
         }
-        else if (password != "pass".hashCode()) {
-            model.displayErrorMessage("Incorrect username or password", this);
-            return false;
-        }
-        model.setCurrUser(username);
+        model.setCurrUser(email);
         return true;
     }
 
