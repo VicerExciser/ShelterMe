@@ -298,7 +298,7 @@ public class ViewSheltersPage extends AppCompatActivity {
 
     private boolean ageRangeChoiceMatchesKey(String key) {
         boolean fam = false;
-        String min = "0" + key.substring(3,5) + "_";
+        String min = key.substring(3,6) + "_";//here lies the bug of the century; rest in peace, substring(3,5)
         System.out.print(min);
         System.out.print(Age.MINAGE.getAgeKeyVal());
         System.out.print(selectedAgeRange);
@@ -325,9 +325,9 @@ public class ViewSheltersPage extends AppCompatActivity {
                 && max.equals(Age.MAXAGE.getAgeKeyVal())) {
             fam = true;
         }
-        if (selectedAgeRange.compareTo(AgeRange.ANYONE) == 0) {
-            return true;
-        }
+//        if (selectedAgeRange.compareTo(AgeRange.ANYONE) == 0) {
+//            return true;
+//        }
         return fam;
     }
 
