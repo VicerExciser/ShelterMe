@@ -8,11 +8,25 @@
     android:backgroundTint="#ffffff"
     tools:context="edu.gatech.cs2340.shelterme.controllers.ViewSheltersPage">
 
-    <include layout="@layout/content_view_shelters_page" />
+    <include
+        layout="@layout/content_view_shelters_page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="567dp">
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="11dp"
+            android:layout_marginRight="11dp"
+            android:text="RETURN TO HOME PAGE" />
 
         <ListView
             android:id="@+id/shelterList"
@@ -40,17 +54,6 @@
             android:smoothScrollbar="true"
             android:textColor="@android:color/background_light"
             tools:textColor="@android:color/background_light" />
-
-        <Button
-            android:id="@+id/backButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginEnd="11dp"
-            android:layout_marginRight="11dp"
-            android:text="RETURN TO HOME PAGE" />
 
         <LinearLayout
             android:id="@+id/linearLayout2"
