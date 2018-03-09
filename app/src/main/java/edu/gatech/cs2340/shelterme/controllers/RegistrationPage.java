@@ -287,94 +287,95 @@ public class RegistrationPage extends AppCompatActivity {
     };
 
     private void validateInputs() {
-        boolean allFieldsComplete = true;
-        // Process name:
-        String name = fullNameField.getText().toString().trim();
-        allFieldsComplete &= (!name.isEmpty() && !name.equals(fullNameField.getHint().toString()));
-        int delim = name.indexOf(' ');
-        if (!allFieldsComplete || delim < 0) {
-            model.displayErrorMessage("First and last name are required", this);
-            return;
-        }
-
-
-        name = Character.toUpperCase(name.charAt(0)) + name.substring(1, delim + 1)
-                + Character.toUpperCase(name.charAt(delim + 1)) + name.substring(delim + 2);
-
-
-        // Validate email:
-        String email = emailField.getText().toString().trim();
-        // TODO: if (email does not already exist in database)
-        allFieldsComplete &= (!email.isEmpty() && !email.equals(emailField.getHint().toString()));
-        if (!allFieldsComplete) {
-            model.displayErrorMessage("Email address is required", this);
-            return;
-        } else if (!Model.isValidEmailAddress(email)) {
-            model.displayErrorMessage("Invalid email address", this);
-            return;
-        }
-
-        // Register username:
-        String username = userNameField.getText().toString().trim();
-        // TODO: if (username does not already exist in database)
-        if (username.isEmpty() || username.equals(userNameField.getHint().toString())
-                || username.equals(email)) {
-            // Set username as an alias to email to avoid having to distinguish
-            // between valid username or email for login validity checks
-            username = email;
-        }
-
-        for (Account a : Model.getAccountListPointer()) {
-            if (a.getEmail().equals(email)) {
-                model.displayErrorMessage("Account already exists for this email", this);
-                return;
-            } else if (a.getUsername().equals(username)) {
-                model.displayErrorMessage("Account already exists for this username", this);
+        try {
+            boolean allFieldsComplete = true;
+            // Process name:
+            String name = fullNameField.getText().toString().trim();
+            allFieldsComplete &= (!name.isEmpty() && !name.equals(fullNameField.getHint().toString()));
+            int delim = name.indexOf(' ');
+            if (!allFieldsComplete || delim < 0) {
+                model.displayErrorMessage("First and last name are required", this);
                 return;
             }
-        }
-
-        // Validate password & confirmation:
-        int password = passwordField.getText().toString().trim().hashCode();
-        int confirmPass = passwordConfirmField.getText().toString().trim().hashCode();
-        if (password == 0 || passwordField.getText().length() < 4
-                || password == passwordField.getHint().toString().hashCode()) {
-            model.displayErrorMessage("Valid password is required", this);
-            return;
-        } else if (confirmPass != password) {
-            model.displayErrorMessage("Password inputs must match", this);
-            return;
-        }
 
 
-        // Process user type:
-        Account.Type type = (Account.Type) accountTypeSpinner.getSelectedItem();
+            name = Character.toUpperCase(name.charAt(0)) + name.substring(1, delim + 1)
+                    + Character.toUpperCase(name.charAt(delim + 1)) + name.substring(delim + 2);
 
-        // Process DOB and Sex if regular User:
-        String dob;
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        int age = 0;
-        Account.Sex sex = Account.Sex.MALE;
-        String selectedWorkplace; //enteredWorkplace;
-        Shelter workplace = null;
 
-        if (type == Account.Type.USER) {
-            dob = dateOfBirthField.getText().toString();
-            if (!dob.isEmpty() && !dob.equals(dateOfBirthField.getHint().toString())) {
-                delim = dob.indexOf('/');
-                int enteredYear = Integer.parseInt(dob.substring(delim + 1));
-                // TODO: Calculate for month of birth as well for more accurate age read-in
-                age = currentYear - enteredYear;
-                if (age == 0)
+            // Validate email:
+            String email = emailField.getText().toString().trim();
+            // TODO: if (email does not already exist in database)
+            allFieldsComplete &= (!email.isEmpty() && !email.equals(emailField.getHint().toString()));
+            if (!allFieldsComplete) {
+                model.displayErrorMessage("Email address is required", this);
+                return;
+            } else if (!Model.isValidEmailAddress(email)) {
+                model.displayErrorMessage("Invalid email address", this);
+                return;
+            }
+
+            // Register username:
+            String username = userNameField.getText().toString().trim();
+            // TODO: if (username does not already exist in database)
+            if (username.isEmpty() || username.equals(userNameField.getHint().toString())
+                    || username.equals(email)) {
+                // Set username as an alias to email to avoid having to distinguish
+                // between valid username or email for login validity checks
+                username = email;
+            }
+
+            for (Account a : Model.getAccountListPointer()) {
+                if (a.getEmail().equals(email)) {
+                    model.displayErrorMessage("Account already exists for this email", this);
                     return;
-            } else {
-                model.displayErrorMessage("Month and year of birth are required", this);
+                } else if (a.getUsername().equals(username)) {
+                    model.displayErrorMessage("Account already exists for this username", this);
+                    return;
+                }
+            }
+
+            // Validate password & confirmation:
+            int password = passwordField.getText().toString().trim().hashCode();
+            int confirmPass = passwordConfirmField.getText().toString().trim().hashCode();
+            if (password == 0 || passwordField.getText().length() < 4
+                    || password == passwordField.getHint().toString().hashCode()) {
+                model.displayErrorMessage("Valid password is required", this);
+                return;
+            } else if (confirmPass != password) {
+                model.displayErrorMessage("Password inputs must match", this);
                 return;
             }
 
-            sex = (Account.Sex) selectSexSpinner.getSelectedItem();
 
-        } else if (type == Account.Type.EMP) {
+            // Process user type:
+            Account.Type type = (Account.Type) accountTypeSpinner.getSelectedItem();
+
+            // Process DOB and Sex if regular User:
+            String dob;
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            int age = 0;
+            Account.Sex sex = Account.Sex.MALE;
+            String selectedWorkplace; //enteredWorkplace;
+            Shelter workplace = null;
+
+            if (type == Account.Type.USER) {
+                dob = dateOfBirthField.getText().toString();
+                if (!dob.isEmpty() && !dob.equals(dateOfBirthField.getHint().toString())) {
+                    delim = dob.indexOf('/');
+                    int enteredYear = Integer.parseInt(dob.substring(delim + 1));
+                    // TODO: Calculate for month of birth as well for more accurate age read-in
+                    age = currentYear - enteredYear;
+                    if (age == 0)
+                        return;
+                } else {
+                    model.displayErrorMessage("Month and year of birth are required", this);
+                    return;
+                }
+
+                sex = (Account.Sex) selectSexSpinner.getSelectedItem();
+
+            } else if (type == Account.Type.EMP) {
 //            enteredWorkplace = workplaceField.getText().toString();
 //            allFieldsComplete &= !enteredWorkplace.isEmpty()
 //                    && !enteredWorkplace.equals(workplaceField.getHint().toString());
@@ -385,26 +386,29 @@ public class RegistrationPage extends AppCompatActivity {
 //            // TODO: Search thru archived Shelters to verify this workplace exists
 //            // This is temporary placeholder for future code
 //            workplace = new Shelter();
-            selectedWorkplace = String.valueOf(shelterSpinner.getSelectedItem());
-            workplace = Model.findShelterByName(selectedWorkplace);
-        }
+                selectedWorkplace = String.valueOf(shelterSpinner.getSelectedItem());
+                workplace = Model.findShelterByName(selectedWorkplace);
+            }
 
 
-        // Process security question & response:
-        Account.Question secQuest = (Account.Question) securityQuestionSpinner.getSelectedItem();
-        String secAns = securityAnswerField.getText().toString();
-        allFieldsComplete &= (!secAns.isEmpty()
-                && !secAns.equals(securityAnswerField.getHint().toString()));
-        if (!allFieldsComplete) {
-            model.displayErrorMessage("A response is required for your security question", this);
-            return;
-        }
+            // Process security question & response:
+            Account.Question secQuest = (Account.Question) securityQuestionSpinner.getSelectedItem();
+            String secAns = securityAnswerField.getText().toString();
+            allFieldsComplete &= (!secAns.isEmpty()
+                    && !secAns.equals(securityAnswerField.getHint().toString()));
+            if (!allFieldsComplete) {
+                model.displayErrorMessage("A response is required for your security question", this);
+                return;
+            }
 
 
-        if (allFieldsComplete) {
-            createAccount(name, username, email, password, sex, age, type, secQuest, secAns, workplace);
+            if (allFieldsComplete) {
+                createAccount(name, username, email, password, sex, age, type, secQuest, secAns, workplace);
 
-            startActivity(new Intent(RegistrationPage.this, LoginPage.class));
+                startActivity(new Intent(RegistrationPage.this, LoginPage.class));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

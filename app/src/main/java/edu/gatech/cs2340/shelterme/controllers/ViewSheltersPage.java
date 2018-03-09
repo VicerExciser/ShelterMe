@@ -238,22 +238,25 @@ public class ViewSheltersPage extends AppCompatActivity {
     }
 
     private void updateSearch(boolean isChecked) {
-            shelters.clear();
+        shelters.clear();
         for (Shelter s : Model.getShelterListPointer()) {
             for (String key : s.getBeds().keySet()) {
-                System.out.print(key);
+                Log.e("ViewShelters", "key = " + key);
                 if (familyChoiceMatchesKey(key, isChecked) && s.getVacancies() > 0) {
                     if (genderChoiceMatchesKey(key) && ageRangeChoiceMatchesKey(key)) {
                         // Probably can omit the following if statement:
-                        try {
-                            //if (s.hasOpenBed(currentUser.generateKey())) {
+//                        try {
+//                            if (s.hasOpenBed(currentUser.generateKey())) {
                                 shelters.put(s.getShelterName(), s);
-                            //}
-                        } catch (NullPointerException npe) {
-                            model.displayErrorMessage("Must be a registered user to do this!", this);
-                            Log.e("Shelter Search Update", npe.getMessage());
-                            npe.printStackTrace();
-                        }
+//                            }
+//                        } catch (NullPointerException npe) {
+////                            model.displayErrorMessage("Must be a registered user to do this!", this);
+////                            Log.e("Shelter Search Update", npe.getMessage());
+////                            npe.printStackTrace();
+//
+//                            Log.e("Shelter Search Update", "No registered user data found, must be a browser");
+//                            shelters.put(s.getShelterName(), s);
+//                        }
                     }
                 }
             }
@@ -277,13 +280,13 @@ public class ViewSheltersPage extends AppCompatActivity {
         if (famChecked && key.charAt(0) == 'T') {
             return true;
         }
-        else if (!famChecked && key.charAt(0) == 'F' || !famChecked && key.charAt(0) == 'T')
+        else if (!famChecked && key.charAt(0) == 'F' /*|| !famChecked && key.charAt(0) == 'T'*/)
             return true;
         return false;
     }
 
     private boolean genderChoiceMatchesKey(String key) {
-        System.out.print(key);
+//        Log.e("ViewShelters", key);
         if ((selectedGender.compareTo(GenderAccepted.MEN) == 0 && key.charAt(1) == 'T')
                 || (selectedGender.compareTo(GenderAccepted.WOMEN) == 0 && key.charAt(2) == 'T')) {
             return true;
@@ -298,19 +301,21 @@ public class ViewSheltersPage extends AppCompatActivity {
 
     private boolean ageRangeChoiceMatchesKey(String key) {
         boolean fam = false;
-        String min = "0" + key.substring(3,5) + "_";
-        System.out.print(min);
-        System.out.print(Age.MINAGE.getAgeKeyVal());
-        System.out.print(selectedAgeRange);
-        System.out.print(AgeRange.ANYONE);
-        System.out.print(Age.MAXAGE.getAgeKeyVal());
+        String min =/* "0" + */ key.substring(3,6) + "_";
+        Log.e("ViewShelters", min);
+        Log.e("ViewShelters", Age.MINAGE.getAgeKeyVal());
+        Log.e("ViewShelters", selectedAgeRange.toString());
+//        Log.e("ViewShelters", AgeRange.ANYONE.toString());
+//        Log.e("ViewShelters", Age.MAXAGE.getAgeKeyVal());
         String max = key.substring(7,10) + "_";
-        System.out.print(max);
+        Log.e("ViewShelters", max);
         if ((selectedAgeRange.compareTo(AgeRange.ANYONE) == 0
                 || selectedAgeRange.compareTo(AgeRange.FAMWITHYOUNG) == 0)
                 && min.equals(Age.MINAGE.getAgeKeyVal())
                 && max.equals(Age.MAXAGE.getAgeKeyVal())) {
-            return true;}
+//            return true;
+            fam = true;
+        }
         else if (selectedAgeRange.compareTo(AgeRange.CHILDREN) == 0
                 && (min.equals(Age.CHILDREN_BASE.getAgeKeyVal()) || min.equals(Age.MINAGE.getAgeKeyVal()))
                 && max.equals(Age.CHILDREN_CAP.getAgeKeyVal())) {
