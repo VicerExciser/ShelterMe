@@ -280,7 +280,7 @@ public class ViewSheltersPage extends AppCompatActivity {
         if (famChecked && key.charAt(0) == 'T') {
             return true;
         }
-        else if (!famChecked && key.charAt(0) == 'F' /*|| !famChecked && key.charAt(0) == 'T'*/)
+        else if (!famChecked && key.charAt(0) == 'F' /*|| !famChecked && key.charAt(0) == 'T'*/) // <-- no no
             return true;
         return false;
     }
@@ -292,7 +292,7 @@ public class ViewSheltersPage extends AppCompatActivity {
             return true;
         }
         else if (selectedGender.compareTo(GenderAccepted.ANY) == 0
-                || key.charAt(1) == 'F' && key.charAt(2) == 'F') {
+                || key.charAt(1) == 'F' && key.charAt(2) == 'F') { // Nice bug catch here!
             return true;
         }
         return false;
@@ -301,14 +301,14 @@ public class ViewSheltersPage extends AppCompatActivity {
 
     private boolean ageRangeChoiceMatchesKey(String key) {
         boolean fam = false;
-        String min =/* "0" + */ key.substring(3,6) + "_";
+        String min = key.substring(3,6) + "_";//here lies the bug of the century; rest in peace, substring(3,5)
         Log.e("ViewShelters", min);
         Log.e("ViewShelters", Age.MINAGE.getAgeKeyVal());
         Log.e("ViewShelters", selectedAgeRange.toString());
 //        Log.e("ViewShelters", AgeRange.ANYONE.toString());
 //        Log.e("ViewShelters", Age.MAXAGE.getAgeKeyVal());
         String max = key.substring(7,10) + "_";
-        Log.e("ViewShelters", max);
+//        Log.e("ViewShelters", max);
         if ((selectedAgeRange.compareTo(AgeRange.ANYONE) == 0
                 || selectedAgeRange.compareTo(AgeRange.FAMWITHYOUNG) == 0)
                 && min.equals(Age.MINAGE.getAgeKeyVal())
@@ -330,9 +330,9 @@ public class ViewSheltersPage extends AppCompatActivity {
                 && max.equals(Age.MAXAGE.getAgeKeyVal())) {
             fam = true;
         }
-        if (selectedAgeRange.compareTo(AgeRange.ANYONE) == 0) {
-            return true;
-        }
+//        if (selectedAgeRange.compareTo(AgeRange.ANYONE) == 0) {
+//            return true;
+//        }
         return fam;
     }
 
