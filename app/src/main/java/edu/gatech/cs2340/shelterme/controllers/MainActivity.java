@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
             }
             br.readLine();
-            String line = null;
+            String line;// = null;
             while ((line = br.readLine()) != null) {
                 String[] tokens = line.split(";");
 

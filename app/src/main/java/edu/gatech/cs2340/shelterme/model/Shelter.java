@@ -99,6 +99,7 @@ public class Shelter implements Parcelable{
     private void processRestrictions(String rs) {
 //        if (rs != null && !rs.isEmpty())
 //            rs = "Anyone";
+        String cp = this.capacityStr;
         boolean fam, anyone, exMen, exWomen, exVets, youngAdults;
         int ageFloor = 0;
         int ageCeiling = 200;
@@ -111,29 +112,34 @@ public class Shelter implements Parcelable{
             exVets = false;
             ageFloor = 0;
             ageCeiling = 200;
-            parseCapacity(this.capacityStr, fam, exMen, exWomen, ageFloor, ageCeiling, exVets);
+            parseCapacity(cp, fam, exMen, exWomen, ageFloor, ageCeiling, exVets);
             return;
         } else {
             fam = rs.contains("families");
             exWomen = !fam && rs.contains("women");
             exMen = !fam && !exWomen && rs.contains("men");
         }
+        if (exMen) ageFloor = 26;
         exVets = rs.contains("veterans");
         if (exVets) {
             ageFloor = 26;
             ageCeiling = 200;
         }
         youngAdults = rs.contains("young adults");
-        if (rs.contains("children")) {
-            if (rs.contains("newborns") || rs.contains("under 5")) {
+        if (rs.contains("children") || rs.contains("newborns")) {
+            if (rs.contains("newborns") || rs.contains("under 5") || exWomen || exMen) {
                 ageFloor = 0;
                 ageCeiling = 5;
             } else {
                 ageFloor = 6;
                 ageCeiling = 15;
             }
-            if (fam || exWomen || exMen) {
+            if (/*fam ||*/ exWomen || exMen) {
                 ageCeiling = 200;
+                fam = true;
+                if (cp.split(" ").length < 2) {
+                    cp = (getInt(cp) / 4) + " apartment";   // :,( RIP
+                }
             } else if (youngAdults) {
                 ageCeiling = 25;
             }
@@ -141,7 +147,7 @@ public class Shelter implements Parcelable{
             ageFloor = 16;
             ageCeiling = 25;
         }
-        parseCapacity(this.capacityStr, fam, exMen, exWomen, ageFloor, ageCeiling, exVets);
+        parseCapacity(cp, fam, exMen, exWomen, ageFloor, ageCeiling, exVets);
     }
 
     // parse Capacity strings to extrapolate integers & bed types
@@ -162,12 +168,14 @@ public class Shelter implements Parcelable{
                     if (length > 1) {
                         for (int j = 1; j <= 3; j++) {
                             if (i + j < length) {
-                                if (tokens[i + j].contains("famil")
-                                        || tokens[i + j].contains("apartment")) {
+                                if (tokens[i + j].contains("famil")) {
                                     familyBeds += val;
                                 } else if (tokens[i + j].contains("singl")
                                         || tokens[i + j].contains("bed")) {
                                     singleBeds += val;
+                                } else if (tokens[i + j].contains("apartment")) {
+                                    familyBeds += val / 2;
+                                    singleBeds += val * 2;      // Special case! (Sorry, Mom.)
                                 }
                             }
                         }

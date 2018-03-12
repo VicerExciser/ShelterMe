@@ -81,7 +81,22 @@ public class ViewSheltersPage extends AppCompatActivity {
         // Omit shelters where this user is ineligible to stay
         shelters = new HashMap<>();
         for (Shelter shelter : Model.getShelterListPointer()) {
-            shelters.put(shelter.getShelterName(), shelter);
+//            if (currentUser != null && shelter.getBeds() != null) {
+//                for (String key : shelter.getBeds().keySet()) {
+//                    if (key.length() > 3) {
+//                        if ((currentUser.getSex() == Account.Sex.MALE) && (key.charAt(2) != 'T')) {
+//                            shelters.put(shelter.getShelterName(), shelter);
+//                        } else if ((currentUser.getSex() == Account.Sex.FEMALE) && (key.charAt(1) != 'T')) {
+//                            shelters.put(shelter.getShelterName(), shelter);
+//                        } else if ((currentUser.getSex() == Account.Sex.OTHER) && (key.charAt(1) != 'T')
+//                                && (key.charAt(2) != 'T')) {
+//                            shelters.put(shelter.getShelterName(), shelter);
+//                        }
+//                    }
+//                }
+//            } else {
+                shelters.put(shelter.getShelterName(), shelter);
+//            }
         }
         //for(Shelter s : Model.getShelterListPointer()) {
             //if(currentUser != null && s.hasOpenBed(currentUser.generateKey()))
@@ -168,6 +183,9 @@ public class ViewSheltersPage extends AppCompatActivity {
                     case 3:
                         selectedAgeRange = AgeRange.YOUNGADULTS;
                         break;
+                    case 4:
+                        selectedAgeRange = AgeRange.ADULTS;
+                        break;
                 }
                 updateSearch(familyCheck.isChecked());
             }
@@ -241,13 +259,14 @@ public class ViewSheltersPage extends AppCompatActivity {
         shelters.clear();
         for (Shelter s : Model.getShelterListPointer()) {
             for (String key : s.getBeds().keySet()) {
-                Log.e("ViewShelters", "key = " + key);
-                if (familyChoiceMatchesKey(key, isChecked) && s.getVacancies() > 0) {
-                    if (genderChoiceMatchesKey(key) && ageRangeChoiceMatchesKey(key)) {
-                        // Probably can omit the following if statement:
+                if (key.length() > 1) {
+                    Log.e("ViewShelters", "key = " + key);
+                    if (familyChoiceMatchesKey(key, isChecked) && s.getVacancies() > 0) {
+                        if (genderChoiceMatchesKey(key) && ageRangeChoiceMatchesKey(key)) {
+                            // Probably can omit the following if statement:
 //                        try {
 //                            if (s.hasOpenBed(currentUser.generateKey())) {
-                                shelters.put(s.getShelterName(), s);
+                            shelters.put(s.getShelterName(), s);
 //                            }
 //                        } catch (NullPointerException npe) {
 ////                            model.displayErrorMessage("Must be a registered user to do this!", this);
@@ -257,6 +276,7 @@ public class ViewSheltersPage extends AppCompatActivity {
 //                            Log.e("Shelter Search Update", "No registered user data found, must be a browser");
 //                            shelters.put(s.getShelterName(), s);
 //                        }
+                        }
                     }
                 }
             }
@@ -277,63 +297,72 @@ public class ViewSheltersPage extends AppCompatActivity {
     }
 
     private boolean familyChoiceMatchesKey(String key, boolean famChecked) {
+        boolean match = false;
         if (famChecked && key.charAt(0) == 'T') {
-            return true;
+            match = true;
         }
-        else if (!famChecked && key.charAt(0) == 'F' /*|| !famChecked && key.charAt(0) == 'T'*/) // <-- no no
-            return true;
-        return false;
+        else if (famChecked == false && key.charAt(0) == 'F')//key.charAt(1) == 'F' &&  key.charAt(2) == 'F') // FFF000_200_F
+            match = true;
+        return match;
     }
 
     private boolean genderChoiceMatchesKey(String key) {
 //        Log.e("ViewShelters", key);
-        if ((selectedGender.compareTo(GenderAccepted.MEN) == 0 && key.charAt(1) == 'T')
-                || (selectedGender.compareTo(GenderAccepted.WOMEN) == 0 && key.charAt(2) == 'T')) {
-            return true;
+        boolean match = false;
+        if ((selectedGender.equals(GenderAccepted.MEN) && key.charAt(1) == 'T')
+                ^ (selectedGender.equals(GenderAccepted.WOMEN) && key.charAt(2) == 'T')) {
+            match = true;
         }
-        else if (selectedGender.compareTo(GenderAccepted.ANY) == 0
-                || key.charAt(1) == 'F' && key.charAt(2) == 'F') { // Nice bug catch here!
-            return true;
+        else if (selectedGender.equals(GenderAccepted.ANY)
+                /*||*/ && (key.charAt(1) == 'F' && key.charAt(2) == 'F')) {
+            match = true;
         }
-        return false;
+        return match;
 
     }
 
     private boolean ageRangeChoiceMatchesKey(String key) {
-        boolean fam = false;
-        String min = key.substring(3,6) + "_";//here lies the bug of the century; rest in peace, substring(3,5)
-        Log.e("ViewShelters", min);
+        boolean match = false;
+        int min = Integer.valueOf(key.substring(3,6));// + "_";//here lies the bug of the century; rest in peace, substring(3,5)
+        Log.e("ViewShelters", String.valueOf(min));
         Log.e("ViewShelters", Age.MINAGE.getAgeKeyVal());
         Log.e("ViewShelters", selectedAgeRange.toString());
 //        Log.e("ViewShelters", AgeRange.ANYONE.toString());
 //        Log.e("ViewShelters", Age.MAXAGE.getAgeKeyVal());
-        String max = key.substring(7,10) + "_";
+        int max = Integer.valueOf(key.substring(7,10));// + "_";
 //        Log.e("ViewShelters", max);
-        if ((selectedAgeRange.compareTo(AgeRange.ANYONE) == 0
-                || selectedAgeRange.compareTo(AgeRange.FAMWITHYOUNG) == 0)
-                && min.equals(Age.MINAGE.getAgeKeyVal())
-                && max.equals(Age.MAXAGE.getAgeKeyVal())) {
+        if ((selectedAgeRange.equals(AgeRange.ANYONE))) {
+            if (min == 0 && max == 200)
+                match = true;
+        }
+//                ^
+        else if ((selectedAgeRange.equals(AgeRange.FAMWITHYOUNG))
+//                && (min == Integer.valueOf(Age.MINAGE.getAgeKeyVal().substring(3))
+//                && (max == Integer.valueOf(Age.MAXAGE.getAgeKeyVal().substring(3))))) {
+                && min == 0 && max >= 5) { //== 200) {
 //            return true;
-            fam = true;
+            match = true;
         }
-        else if (selectedAgeRange.compareTo(AgeRange.CHILDREN) == 0
-                && (min.equals(Age.CHILDREN_BASE.getAgeKeyVal()) || min.equals(Age.MINAGE.getAgeKeyVal()))
-                && max.equals(Age.CHILDREN_CAP.getAgeKeyVal())) {
-            fam = true;}
-        else if (selectedAgeRange.compareTo(AgeRange.YOUNGADULTS) == 0
-                && (min.equals(Age.YOUNGADULTS_BASE.getAgeKeyVal()) || min.equals(Age.MINAGE.getAgeKeyVal()))
-                && max.equals(Age.MAXAGE.getAgeKeyVal())) {
-            fam = true;
+        else if (selectedAgeRange.equals(AgeRange.CHILDREN)
+                && (min <= 6 //(Age.CHILDREN_BASE.getAgeKeyVal())
+//                || min.equals(Age.MINAGE.getAgeKeyVal()))
+                && max >= 15)){ //(Age.CHILDREN_CAP.getAgeKeyVal())) {
+            match = true;}
+        else if (selectedAgeRange.equals(AgeRange.YOUNGADULTS)
+                && (min <= 16 //(Age.YOUNGADULTS_BASE.getAgeKeyVal())
+//                || min.equals(Age.MINAGE.getAgeKeyVal()))
+                && max >= 25)) { //(Age.MAXAGE.getAgeKeyVal())) {
+            match = true;
         }
-        else if(selectedAgeRange.compareTo(AgeRange.ADULTS) == 0
-                && min.equals(Age.ADULTS_BASE.getAgeKeyVal())
-                && max.equals(Age.MAXAGE.getAgeKeyVal())) {
-            fam = true;
+        else if (selectedAgeRange.equals(AgeRange.ADULTS)
+                && (min <= 26 //.equals(Age.ADULTS_BASE.getAgeKeyVal())
+                && max >= 65)) { //(Age.MAXAGE.getAgeKeyVal())) {
+            match = true;
         }
 //        if (selectedAgeRange.compareTo(AgeRange.ANYONE) == 0) {
 //            return true;
 //        }
-        return fam;
+        return match;
     }
 
     private void displayDetailView(int position) {
@@ -345,7 +374,7 @@ public class ViewSheltersPage extends AppCompatActivity {
 
     private enum AgeRange {
         ANYONE("Any age"),
-        FAMWITHYOUNG("Family w/ children under 5"),
+        FAMWITHYOUNG("Children under 5"),
         CHILDREN("Children (age 6 - 15)"),
         YOUNGADULTS("Young adults (age 16 - 25)"),
         ADULTS("Adults (25+)");

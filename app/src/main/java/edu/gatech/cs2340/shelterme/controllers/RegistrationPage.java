@@ -251,20 +251,21 @@ public class RegistrationPage extends AppCompatActivity {
 
         @Override
         public void afterTextChanged(Editable text) {
-            if (text.length() > 0) {
-                int delim = text.toString().indexOf(' ');
-                if (!Character.isUpperCase(text.charAt(0))) {
-                    CharSequence fixLetter =  String.valueOf(Character.toUpperCase(text.charAt(0)));
-                    text.replace(0, 1, (CharSequence) fixLetter);
-                }
-                else if (delim != -1 && text.toString().length() > delim + 1) {
-                    char lName = text.charAt(delim + 1);
-                    if (!Character.isUpperCase(lName)) {
-                        CharSequence fixLetter = String.valueOf(Character.toUpperCase(lName));
-                        text.replace(delim+1, delim+2, fixLetter);
+            try {
+                if (text.length() > 0) {
+                    int delim = text.toString().indexOf(' ');
+                    if (!Character.isUpperCase(text.charAt(0))) {
+                        CharSequence fixLetter = String.valueOf(Character.toUpperCase(text.charAt(0)));
+                        text.replace(0, 1, (CharSequence) fixLetter);
+                    } else if (delim != -1 && text.toString().length() > delim + 1) {
+                        char lName = text.charAt(delim + 1);
+                        if (!Character.isUpperCase(lName)) {
+                            CharSequence fixLetter = String.valueOf(Character.toUpperCase(lName));
+                            text.replace(delim + 1, delim + 2, fixLetter);
+                        }
                     }
                 }
-            }
+            } catch (Exception e) { return; }
         }
     };
 
