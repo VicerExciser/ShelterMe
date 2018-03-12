@@ -339,7 +339,7 @@ public class Shelter implements Parcelable{
         String foundBedKey = (String) bedTypeFound.keySet().toArray()[0];
         Bed foundBed = bedTypeFound.remove(foundBedKey); //remove first bed in the collection
         foundBed.setOccupant(user);
-        user.setOccupyingBed(foundBed);
+        user.setOccupyingBed(/*foundBed*/);
         String bedId = String.valueOf(foundBed.getId());
         bedTypeFound.remove(bedId);
         getBeds().get("O").put(bedId, foundBed);
@@ -367,13 +367,26 @@ public class Shelter implements Parcelable{
         } else if (!user.isOccupyingBed()) {
             throw new IllegalArgumentException("User must have bed reserved");
         }
-        Bed bed = user.getOccupiedBed();
+//        Bed bed = user.getOccupiedBed();
+        Bed bed = this.getBedOccupiedBy(user);
         user.clearOccupiedBed();
-        bed.removeOccupant();
-        String bedId = bed.getId();
-        this.beds.get("O").remove(bed.getId());
-        this.beds.get(bed.getSavedBedKey()).put(bed.getId(), bed);
-        this.vacancies++;
+        if (bed != null) {
+            bed.removeOccupant();
+            String bedId = bed.getId();
+            this.beds.get("O").remove(bed.getId());
+            this.beds.get(bed.getSavedBedKey()).put(bed.getId(), bed);
+            this.vacancies++;
+        }
+    }
+
+    public Bed getBedOccupiedBy(User user) {
+        for (Bed b : this.beds.get("O").values()) {
+            User occupant = b.getOccupant();
+            if (occupant != null && occupant.equals(user)) {
+                return b;
+            }
+        }
+        return null;
     }
 
 

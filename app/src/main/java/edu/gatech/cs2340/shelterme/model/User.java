@@ -17,7 +17,7 @@ public class User extends Account {
     private Sex sex;
     private boolean isVeteran;
     private boolean occupyingBed;
-    private Bed occupiedBed;
+//    private Bed occupiedBed;
 
     // TODO: Collect isVeteran information from registration/edit profile, pass into contructor (set to False for default until then)
     public User(String name, String uname, String email, int pass, Sex sex, int age, boolean isFamily,
@@ -99,14 +99,14 @@ public class User extends Account {
         return occupyingBed;
     }
 
-    public void setOccupyingBed(Bed bed) {
+    public void setOccupyingBed(/*Bed bed*/) {
         this.occupyingBed = true;
-        this.occupiedBed = bed;
+//        this.occupiedBed = bed;
     }
 
     public void clearOccupiedBed() {
         this.occupyingBed = false;
-        this.occupiedBed = null;
+//        this.occupiedBed = null;
     }
 
     @Override
@@ -122,9 +122,12 @@ public class User extends Account {
 
     }
 
-    public Bed getOccupiedBed() {
-        return occupiedBed;
-    }
+//    public Bed getOccupiedBed() {
+////        return occupiedBed;
+//        for (Shelter s : Model.getShelterListPointer()) {
+//            for (s.getBeds().keySet())
+//        }
+//    }
 
 //    @Override
 //    public int hashCode() {
