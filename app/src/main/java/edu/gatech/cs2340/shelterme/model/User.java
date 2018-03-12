@@ -16,6 +16,8 @@ public class User extends Account {
     private int age;
     private Sex sex;
     private boolean isVeteran;
+    private boolean occupyingBed;
+    private Bed occupiedBed;
 
     // TODO: Collect isVeteran information from registration/edit profile, pass into contructor (set to False for default until then)
     public User(String name, String uname, String email, int pass, Sex sex, int age, boolean isFamily,
@@ -27,6 +29,7 @@ public class User extends Account {
         this.age = age;
         this.sex = sex;
         this.isVeteran = false;
+        this.occupyingBed = false;
         Log.e("USER_KEY", this.generateKey());
     }
 
@@ -92,6 +95,19 @@ public class User extends Account {
         return this.isVeteran;
     }
 
+    public boolean isOccupyingBed() {
+        return occupyingBed;
+    }
+
+    public void setOccupyingBed(Bed bed) {
+        this.occupyingBed = true;
+        this.occupiedBed = bed;
+    }
+
+    public void clearOccupiedBed() {
+        this.occupyingBed = false;
+        this.occupiedBed = null;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -104,6 +120,10 @@ public class User extends Account {
                 && this.getUsername().equals(u.getUsername())
                 && this.password == u.password;
 
+    }
+
+    public Bed getOccupiedBed() {
+        return occupiedBed;
     }
 
 //    @Override

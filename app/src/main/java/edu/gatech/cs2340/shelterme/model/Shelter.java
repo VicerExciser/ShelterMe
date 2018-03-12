@@ -5,8 +5,8 @@ import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.util.Log;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
+import java.util.Map;
 
 /**
  * Created by austincondict on 2/18/18.
@@ -245,7 +245,7 @@ public class Shelter implements Parcelable{
             getBeds().put(bedKey, bedType);
         }
         for (int i = lastId + 1; i < lastId + numberOfBeds + 1; i++) {
-            Bed newBed = new Bed("bed_"+i, isFamily, menOnly, womenOnly, minAge, maxAge, veteranOnly);
+            Bed newBed = new Bed("bed_"+i, isFamily, menOnly, womenOnly, minAge, maxAge, veteranOnly, bedKey);
             bedType.put(String.valueOf(newBed.getId()), newBed);
             this.vacancies++;
             if (isFamily)
@@ -257,6 +257,10 @@ public class Shelter implements Parcelable{
     }
 
     public boolean hasOpenBed(String userKey) {     // Ex key: 'FM25F'  <-- not family acct, male, 25 yrs old, not veteran
+        return findValidBedType(userKey) != null;
+    }
+
+    private String findValidBedType(String userKey) {   //moved everything in hasOpenBed to more convenient and flexible private method
         if (userKey == null) {
             throw new IllegalArgumentException("User Key cannot be null");
         } else {
@@ -267,7 +271,7 @@ public class Shelter implements Parcelable{
             for (String bedKey : this.beds.keySet()) {
                 if (bedKey.length() > 1) {
                     if (this.restrictions.toLowerCase().equals("anyone"))
-                        return true;
+                        return bedKey;
 
                     //attributes of Bed
                     boolean thisBedOpen = true;
@@ -311,29 +315,65 @@ public class Shelter implements Parcelable{
                     if (userAge > maxAge || userAge < minAge) { //make sure user is within the appropriate age range
                         thisBedOpen = false;
                     }
+                    if (this.beds.get(bedKey).size() == 0) { //cannot have 0 vacancies of this bed type to be valid for use
+                        thisBedOpen = false;
+                    }
                     if (thisBedOpen) {
-                        return true;
+                        return bedKey;
                     }
                 }
             }
         }
-        return false;
+        return null;
     }
 
     public String reserveBed(User user) { //function takes in User and returns ID of bed being reserved
-        String userKey = user.generateKey();
-        int newBedId = 1;
-        while (getBeds().get("O").containsKey("bed_"+newBedId)) { //temporary measure to avoid overrighting beds in the occupied bed list
-            newBedId++;
+        if (user == null) {
+            throw new IllegalArgumentException("User be null.");
+        } else if (user.isOccupyingBed()) {
+            throw new IllegalArgumentException("User must not have already reserved a bed.");
         }
-        Bed foundBed = new Bed("bed_"+newBedId, false, false, false, Age.MINAGE,
-                Age.MAXAGE, false); // TODO: implement means of finding bed to reserve
-        LinkedHashMap<String, Bed> bedTypeFound = new LinkedHashMap<>();
+        String userKey = user.generateKey();
+        String bedTypeFoundKey = findValidBedType(userKey);
+        LinkedHashMap<String, Bed> bedTypeFound = this.beds.get(bedTypeFoundKey); //collection of beds of appropriate type
+        String foundBedKey = (String) bedTypeFound.keySet().toArray()[0];
+        Bed foundBed = bedTypeFound.remove(foundBedKey); //remove first bed in the collection
         foundBed.setOccupant(user);
+        user.setOccupyingBed(foundBed);
         String bedId = String.valueOf(foundBed.getId());
         bedTypeFound.remove(bedId);
         getBeds().get("O").put(bedId, foundBed);
+        this.vacancies--;
         return bedId;
+    }
+
+    public void clearOccupiedBeds() {
+        for (String bedId : this.beds.get("O").keySet()) {
+            Bed bed = this.beds.get("O").remove(bedId);
+            User occupant = bed.getOccupant();
+            bed.removeOccupant();
+            occupant.clearOccupiedBed();
+            String bedKey = bed.getSavedBedKey();
+            if (this.beds.get(bedKey) != null) {
+                this.beds.get(bedKey).put(bedKey, bed);
+            }
+            this.vacancies++;
+        }
+    }
+
+    public void undoReservation(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        } else if (!user.isOccupyingBed()) {
+            throw new IllegalArgumentException("User must have bed reserved");
+        }
+        Bed bed = user.getOccupiedBed();
+        user.clearOccupiedBed();
+        bed.removeOccupant();
+        String bedId = bed.getId();
+        this.beds.get("O").remove(bed.getId());
+        this.beds.get(bed.getSavedBedKey()).put(bed.getId(), bed);
+        this.vacancies++;
     }
 
 

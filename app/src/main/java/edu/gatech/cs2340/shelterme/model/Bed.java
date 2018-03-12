@@ -16,9 +16,10 @@ public class Bed {
     private Age minAge;             //designates minimum age that applies to an individual or the children of a family
     private Age maxAge;             //designates maximum age that applies to an individual or the children of a family
     private boolean veteranOnly;    //designates if the bed must have at least one veteran occupying it
+    private String savedBedKey;     //bed Key saved so it can be easily grouped with other beds of its type
 
     public Bed(String id, boolean isFamily, boolean menOnly, boolean womenOnly, Age minAge, Age maxAge,
-               boolean veteranOnly) {
+               boolean veteranOnly, String savedBedKey) {
         this.id = id;
         if (id != null && !id.contains("bed_"))
             this.id = "bed_" + id;
@@ -29,10 +30,12 @@ public class Bed {
         this.minAge = minAge;
         this.maxAge = maxAge;
         this.veteranOnly = veteranOnly;
+        this.savedBedKey = savedBedKey;
     }
 
     public Bed() {
-        this("bed_1001", false, false, false, Age.MINAGE, Age.MAXAGE, false);
+        this("bed_1001", false, false, false, Age.MINAGE, Age.MAXAGE,
+                false, "FFF000_200_F");
     }
 
     public void setOccupant(User occupant) {
@@ -117,4 +120,11 @@ public class Bed {
         }
     }
 
+    public String getSavedBedKey() {
+        return savedBedKey;
+    }
+
+    public void setSavedBedKey(String savedBedKey) {
+        this.savedBedKey = savedBedKey;
+    }
 }
