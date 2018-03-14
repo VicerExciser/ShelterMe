@@ -66,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
+                android:layout_centerHorizontal="false"
                 android:fontFamily="serif"
                 android:text="Available Shelters"
                 android:textAlignment="center"
@@ -112,6 +112,17 @@
             android:layout_alignRight="@+id/backButton"
             android:layout_below="@+id/linearLayout2"
             android:text="Accepts Families" />
+
+        <CheckBox
+            android:id="@+id/showAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/shelterList"
+            android:layout_alignEnd="@+id/FamilyCheck"
+            android:layout_alignRight="@+id/FamilyCheck"
+            android:layout_toEndOf="@+id/ageSpinner"
+            android:layout_toRightOf="@+id/ageSpinner"
+            android:text="Show All" />
 
     </RelativeLayout>
 

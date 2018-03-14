@@ -35,6 +35,7 @@ public class ViewSheltersPage extends AppCompatActivity {
     private HashMap<String, Shelter> shelters;
     private Model model = Model.getInstance();
 //    private boolean critChecked;
+    private boolean showAll;
     private AgeRange selectedAgeRange = AgeRange.ANYONE;
     private GenderAccepted selectedGender = GenderAccepted.ANY;
     private ListView shelterList;
@@ -67,6 +68,17 @@ public class ViewSheltersPage extends AppCompatActivity {
 //        ageSpin.setVisibility(View.GONE);
 //        genderSpin.setVisibility(View.GONE);
 //        familyCheck.setVisibility(View.GONE);
+        final CheckBox showAllCheck = (CheckBox) findViewById(R.id.showAll);
+        showAll = true;
+        showAllCheck.setChecked(showAll);
+
+        showAllCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                showAll = isChecked;
+                updateSearch(familyCheck.isChecked());
+            }
+        });
 
 
         //filling spinners
@@ -163,6 +175,8 @@ public class ViewSheltersPage extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // TODO: Incorporate other search criteria to be applied
+//                showAll = false;
+                showAllCheck.setChecked(false);
                 updateSearch(isChecked);
             }
         });
@@ -170,6 +184,7 @@ public class ViewSheltersPage extends AppCompatActivity {
         ageSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                showAllCheck.setChecked(false);
                 switch (position) {
                     case 0:
                         selectedAgeRange = AgeRange.ANYONE;
@@ -197,6 +212,7 @@ public class ViewSheltersPage extends AppCompatActivity {
         genderSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                showAllCheck.setChecked(false);
                 switch (position) {
                     case 0:
                         selectedGender = GenderAccepted.ANY;
@@ -225,6 +241,7 @@ public class ViewSheltersPage extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 ViewSheltersPage.this.adapter.getFilter().filter(query);
+                showAllCheck.setChecked(false);
                 return false;
             }
 
@@ -253,20 +270,27 @@ public class ViewSheltersPage extends AppCompatActivity {
 //
 //            }
 //        });
+
+        showAllCheck.setChecked(true);
     }
 
     private void updateSearch(boolean isChecked) {
         shelters.clear();
-        for (Shelter s : Model.getShelterListPointer()) {
-            for (String key : s.getBeds().keySet()) {
-                if (key.length() > 1) {
-                    Log.e("ViewShelters", "key = " + key);
-                    if (familyChoiceMatchesKey(key, isChecked) && s.getVacancies() > 0) {
-                        if (genderChoiceMatchesKey(key) && ageRangeChoiceMatchesKey(key)) {
-                            // Probably can omit the following if statement:
+        if (showAll) {
+            for (Shelter s : Model.getShelterListPointer()) {
+                shelters.put(s.getShelterName(), s);
+            }
+        } else {
+            for (Shelter s : Model.getShelterListPointer()) {
+                for (String key : s.getBeds().keySet()) {
+                    if (key.length() > 1) {
+                        Log.e("ViewShelters", "key = " + key);
+                        if (familyChoiceMatchesKey(key, isChecked) && s.getVacancies() > 0) {
+                            if (genderChoiceMatchesKey(key) && ageRangeChoiceMatchesKey(key)) {
+                                // Probably can omit the following if statement:
 //                        try {
 //                            if (s.hasOpenBed(currentUser.generateKey())) {
-                            shelters.put(s.getShelterName(), s);
+                                shelters.put(s.getShelterName(), s);
 //                            }
 //                        } catch (NullPointerException npe) {
 ////                            model.displayErrorMessage("Must be a registered user to do this!", this);
@@ -276,6 +300,7 @@ public class ViewSheltersPage extends AppCompatActivity {
 //                            Log.e("Shelter Search Update", "No registered user data found, must be a browser");
 //                            shelters.put(s.getShelterName(), s);
 //                        }
+                            }
                         }
                     }
                 }
