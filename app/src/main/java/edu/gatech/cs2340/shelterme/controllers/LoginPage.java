@@ -16,7 +16,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Account;
+import edu.gatech.cs2340.shelterme.model.Admin;
+import edu.gatech.cs2340.shelterme.model.Employee;
 import edu.gatech.cs2340.shelterme.model.Model;
+import edu.gatech.cs2340.shelterme.model.User;
 
 //import com.google.firebase.auth.FirebaseAuth;
 
@@ -49,9 +52,17 @@ public class LoginPage extends AppCompatActivity {
         logo.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if(attemptLogin()){
-                    Intent myIntent1 = new Intent(view.getContext(),
-                            HomePage.class);
-                    startActivityForResult(myIntent1, 0);
+                    Account acct = model.getCurrUser();
+                    Intent myIntent1 = null;
+                    if (acct instanceof User) {
+                           myIntent1 = new Intent(view.getContext(), HomePage.class);
+                    } else if (acct instanceof Admin) {
+                        myIntent1 = new Intent(view.getContext(), AdminHomePage.class);
+                    } else if (acct instanceof Employee) {
+                        myIntent1 = new Intent(view.getContext(), EmployeeHomePage.class);
+                    }
+                    if (myIntent1 != null)
+                        startActivityForResult(myIntent1, 0);
                 }}
         });
 
