@@ -13,6 +13,9 @@ import android.view.View;
 import edu.gatech.cs2340.shelterme.R;
 
 public class EditProfile extends AppCompatActivity {
+    DBUtil dbUtil = DBUtil.getInstance();
+
+    // USE THIS: dbUtil.updateUserInfo(user);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

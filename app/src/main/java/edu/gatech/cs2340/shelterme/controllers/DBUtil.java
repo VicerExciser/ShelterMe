@@ -8,30 +8,37 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 import edu.gatech.cs2340.shelterme.model.Account;
 import edu.gatech.cs2340.shelterme.model.Admin;
 import edu.gatech.cs2340.shelterme.model.Employee;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
+import edu.gatech.cs2340.shelterme.model.StayReport;
 import edu.gatech.cs2340.shelterme.model.User;
 
 import static android.content.ContentValues.TAG;
 
 public class DBUtil {
 
-    private static final DBUtil ourInstance = new DBUtil();
+    public static final DBUtil ourInstance = new DBUtil();
 
-    private final List<User> users = new ArrayList<User>();
-    private final List<Admin> admins = new ArrayList<Admin>();
-    private final List<Employee> employees = new ArrayList<Employee>();
-    private final List<Account> accountList;// = Model.getAccountListPointer();
-    private final List<Shelter> shelterList;// = Model.getShelterListPointer();
+    private final Map<String, User> users = new HashMap<String, User>();
+    private final Map<String, Admin> admins = new HashMap<String, Admin>();
+    private final Map<String, Employee> employees = new HashMap<>();
+    private final Map<String, Account> accountList;// = Model.getAccountListPointer();
+    private final Map<String, Shelter> shelterList;// = Model.getShelterListPointer();
 
     // Write a message to the database
     private static FirebaseDatabase database;// = FirebaseDatabase.getInstance();
@@ -70,7 +77,9 @@ public class DBUtil {
         shelterList = Model.getShelterListPointer();
 
         database = FirebaseDatabase.getInstance();
+//        database.setPersistenceEnabled(true);
         rootRef = database.getReference();
+//        rootRef.keepSynced(true);
         usersRef = rootRef.child("users");
         employeesRef = rootRef.child("employees");
         adminsRef = rootRef.child("admins");
@@ -84,11 +93,15 @@ public class DBUtil {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-
-                for (DataSnapshot child : children) {
-                    User user = child.getValue(User.class);
-                    users.add(user);
-                    accountList.add(user);
+                try {
+                    for (DataSnapshot child : children) {
+                        User user = child.getValue(User.class);
+                        users.put(user.getEmail(), user);
+                        accountList.put(user.getEmail(), user);
+                    }
+                } catch (com.google.firebase.database.DatabaseException dbe) {
+                    Log.e("userDataChange", dbe.getMessage());
+                    dbe.printStackTrace();
                 }
             }
 
@@ -103,8 +116,8 @@ public class DBUtil {
 
                 for (DataSnapshot child : children) {
                     Employee emp = child.getValue(Employee.class);
-                    employees.add(emp);
-                    accountList.add(emp);
+                    employees.put(emp.getEmail(), emp);
+                    accountList.put(emp.getEmail(), emp);
                 }
             }
 
@@ -119,8 +132,8 @@ public class DBUtil {
 
                 for (DataSnapshot child : children) {
                     Admin admin = child.getValue(Admin.class);
-                    admins.add(admin);
-                    accountList.add(admin);
+                    admins.put(admin.getEmail(), admin);
+                    accountList.put(admin.getEmail(), admin);
                 }
             }
 
@@ -135,7 +148,7 @@ public class DBUtil {
                  try {
                      for (DataSnapshot child : children) {
                          Shelter shelter = child.getValue(Shelter.class);
-                         shelterList.add(shelter);
+                         shelterList.put(shelter.getShelterName(), shelter);
                      }
                  } catch (com.google.firebase.database.DatabaseException dbe) {
                      Log.e("shelterDataChange", dbe.getMessage());
@@ -187,6 +200,9 @@ public class DBUtil {
             }
         });
 //        newAccount.setAccountID(newAcctRef);
+        if (branch.equals("users")) {
+            usersRef.child(key).child("stayReports").setValue(((User)newAccount).getStayReports());
+        }
 
     }
 
@@ -224,9 +240,9 @@ public class DBUtil {
 
     public String getEmailAssociatedWithUsername(String username) {
         if (Model.isValidEmailAddress(username)) return username;
-        List<Account> accounts = new ArrayList<Account>(users);
-        accounts.addAll(employees);
-        accounts.addAll(admins);
+        List<Account> accounts = new ArrayList<Account>(users.values());
+        accounts.addAll(employees.values());
+        accounts.addAll(admins.values());
         for (Account a : accounts) {
             if (a.getUsername().equals(username))
                 return a.getEmail();
@@ -253,6 +269,68 @@ public class DBUtil {
         });
         sheltersRef.child(key).child("beds").setValue(newShelter.getBeds());
 
+    }
+
+//    FirebaseDatabase ref = FirebaseDatabase.getInstance("https://shelterme-2340.firebaseio.com/");
+
+    public void updateShelterVacanciesAndBeds(Shelter s, HashMap<String, String> ids, User u) {
+        String key = s.getShelterKey() + "_" + s.getShelterName();
+        DatabaseReference ref = sheltersRef.child(key);
+
+        // TODO: Figure out how to update a Shelter's Beds hashmap in Firebase (fuck Android seriously)
+        // ids map contains <bedTypeKey, bedIDNumber>
+
+//        String updateKey = "beds/" + u.generateKey();
+//        for (int i = 0; i < ids.length; i++) {
+//            updateKey += "/"+ids[i];
+//        }
+
+//        Map<String, Object> update = new HashMap<>();
+//        update.put(key+"/beds", s.getBeds());
+//        update.put(key+"/vacancies", s.getVacancies());
+
+        try {
+//            ref.child(updateKey).setValue(null);
+//            ref.child(updateKey).setValue(s.getBeds().get(u.generateKey()));
+//            ref.child("beds/O").setValue(s.getBeds().get("O"));
+            ref.child("vacancies").setValue(s.getVacancies());
+//            ref.child("vacancies").setValue(s.getVacancies());
+//            ref.child("beds").setValue(s.getBeds());
+//            sheltersRef.updateChildren(update);
+        } catch (Exception e) {
+            Log.e("UpdateShelters: ", e.getMessage());
+            updateShelterInfo(s);
+        }
+    }
+
+    public void updateShelterInfo(Shelter s) {
+        String key = s.getShelterKey() + "_" + s.getShelterName();
+        sheltersRef.child(key).setValue(s);
+    }
+
+    public void updateUserOccupancyAndStayReports(User u) {
+        String key = u.getEmail().substring(0, u.getEmail().indexOf('@'));
+        usersRef.child(key).child("isOccupyingBed").setValue(u.isOccupyingBed());
+        // TODO: Figure out how to make a User's StayReportList readable into Firebase
+       /* ObjectMapper mapper = new ObjectMapper();
+        GenericTypeIndicator<Map<String,Object>> indicator = new GenericTypeIndicator<Map<String, Object>>() {};
+        TestChild value = mapper.convertValue(dataSnapshot.getValue(indicator), TestChild.class);
+        GenericTypeIndicator<List<StayReport>>  = new GenericTypeIndicator<List<StayReport>>() {};
+        List<StayReport> srlist = new Stack<>();
+        srlist.addAll(u.getStayReports());
+        usersRef.child(key).child("stayReports").setValue(srlist); */
+
+//        Map<String, Object> update = new HashMap<>();
+//        update.put("isOccupyingBed", u.isOccupyingBed());
+//        update.put("stayReports", (u.getStayReports()));
+//        Map<String, Map<String, Object>> userUpdate = new HashMap<>();
+//        userUpdate.put(key, update);
+//        usersRef.setValue(userUpdate);
+    }
+
+    public void updateUserInfo(User u) {
+        String key = u.getEmail().substring(0, u.getEmail().indexOf('@'));
+        usersRef.child(key).setValue(u);
     }
 
 }

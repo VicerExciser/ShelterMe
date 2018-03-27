@@ -13,6 +13,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 
@@ -29,8 +31,8 @@ public class Model {
 
     private DBUtil dbUtil;// = DBUtil.getInstance();
 
-    private static ArrayList<Account> accounts;
-    private static ArrayList<Shelter> shelters;
+    private static HashMap<String, Account> accounts;
+    private static HashMap<String, Shelter> shelters;
     private Account currUser;
 
     public static Model getInstance() {
@@ -40,34 +42,41 @@ public class Model {
     private Model() {
         dbUtil = DBUtil.getInstance();
 
-        accounts = new ArrayList<>();
+        accounts = new HashMap<>();
 //        loadShelters();
-        shelters = new ArrayList<>();
+        shelters = new HashMap<>();
     }
 
-    public static  List<Account> getAccountListPointer() {
+    public static HashMap<String, Account> getAccountListPointer() {
         return accounts;
     }
 
-    public static List<Shelter> getShelterListPointer() {
+    public static HashMap<String, Shelter> getShelterListPointer() {
         return shelters;
+    }
+
+    public Shelter verifyShelterParcel(Shelter shelter) {
+        if (shelters.containsValue(shelter))
+            return shelters.get(shelter.getShelterName());
+        return shelter;
     }
 
     public Account getCurrUser() {return currUser;}
     public void setCurrUser(String email) {currUser = getAccountByEmail(email);}
 
     public void addToAccounts(Account acct) {
-        accounts.add(acct);
+        accounts.put(acct.getEmail(), acct);
     }
 
     public static Account getAccountByEmail(String email) {
         Account toRet = null;
         if (email == null) return toRet;
-        for (Account a : accounts) {
-            if (a.getEmail().equals(email)) {
-                toRet = a;
-            }
-        }
+//        for (Account a : accounts) {
+//            if (a.getEmail().equals(email)) {
+//                toRet = a;
+//            }
+//        }
+        toRet = accounts.get(email);
         return toRet instanceof User ? (User)toRet
                 : (toRet instanceof Admin ? (Admin)toRet
                 : (toRet instanceof Employee ? (Employee)toRet : toRet));
@@ -75,23 +84,23 @@ public class Model {
 
 //    public static User
 
-    public Account getAccountByIndex(int indx) {
-        return accounts.get(indx);
-    }
+//    public Account getAccountByIndex(int indx) {
+//        return accounts.get(indx);
+//    }
 
-    public boolean removeAccountOfEmail(String email) {
-        Account toRem = null;
-        for (Account a : accounts) {
-            if (a.getEmail().equals(email)) {
-                toRem = a;
-
-            }
-        }
-        return  accounts.remove(toRem);
+    public void removeAccountOfEmail(String email) {
+//        Account toRem = accounts.get(email);
+//        for (Account a : accounts) {
+//            if (a.getEmail().equals(email)) {
+//                toRem = a;
+//
+//            }
+//        }
+        accounts.remove(email);
     }
 
     public void addShelter(Shelter s) {
-        shelters.add(s);
+        shelters.put(s.getShelterName(), s);
 //        dbUtil.addShelter(s);
         System.out.println(s.toString());
     }
@@ -102,17 +111,18 @@ public class Model {
     }
 
     public void getAllShelterDetails() {
-        for (Shelter s : shelters) {
+        for (Shelter s : shelters.values()) {
             getShelterDetails(s);
         }
     }
 
     public static Shelter findShelterByName(String name) {
-        for (Shelter s : shelters) {
-            if (s.getShelterName().equals(name))
-                return s;
-        }
-        return null;
+//        for (Shelter s : shelters.values()) {
+//            if (s.getShelterName().equals(name))
+//                return s;
+//        }
+//        return null;
+        return shelters.get(name);
     }
 
     public static boolean isValidEmailAddress(String email) {

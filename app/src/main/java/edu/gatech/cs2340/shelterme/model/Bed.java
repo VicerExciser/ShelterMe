@@ -40,10 +40,12 @@ public class Bed {
 
     public void setOccupant(User occupant) {
         this.occupant = occupant;
+        this.occupant.setIsOccupyingBed(true);
         this.isOccupied = true;
     }
 
     public void removeOccupant() {
+        this.occupant.clearOccupiedBed();
         this.occupant = null;
         this.isOccupied = false;
     }
@@ -113,7 +115,7 @@ public class Bed {
         String newId = bedNumber;
         if (bedNumber != null && !bedNumber.contains("bed_"))
                 newId = "bed_" + bedNumber;
-        for (Shelter s : Model.getShelterListPointer()) {
+        for (Shelter s : Model.getShelterListPointer().values()) {
             if (!s.getBeds().containsKey(newId)) {
                 this.id = newId;
             }

@@ -61,11 +61,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent myIntent = new Intent(view.getContext(),
                         HomePage.class);
+                model.setCurrUser(null);
                 startActivityForResult(myIntent, 0);
             }
         });
 
+        // MUST COMMENT THIS OUT TO PREVENT SHELTER DATA FROM BEING OVERWRITTEN
         loadShelters();
+        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         model.getAllShelterDetails();
     }
 

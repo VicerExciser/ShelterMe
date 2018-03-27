@@ -90,26 +90,26 @@ public class ViewSheltersPage extends AppCompatActivity {
         adapterGen.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpin.setAdapter(adapterGen);
 
-        // Omit shelters where this user is ineligible to stay
-        shelters = new HashMap<>();
-        for (Shelter shelter : Model.getShelterListPointer()) {
-//            if (currentUser != null && shelter.getBeds() != null) {
-//                for (String key : shelter.getBeds().keySet()) {
-//                    if (key.length() > 3) {
-//                        if ((currentUser.getSex() == Account.Sex.MALE) && (key.charAt(2) != 'T')) {
-//                            shelters.put(shelter.getShelterName(), shelter);
-//                        } else if ((currentUser.getSex() == Account.Sex.FEMALE) && (key.charAt(1) != 'T')) {
-//                            shelters.put(shelter.getShelterName(), shelter);
-//                        } else if ((currentUser.getSex() == Account.Sex.OTHER) && (key.charAt(1) != 'T')
-//                                && (key.charAt(2) != 'T')) {
-//                            shelters.put(shelter.getShelterName(), shelter);
-//                        }
-//                    }
-//                }
-//            } else {
-                shelters.put(shelter.getShelterName(), shelter);
-//            }
-        }
+        // Omit shelters where this user is ineligible to stay  <- nah
+        shelters = new HashMap<>(Model.getShelterListPointer());
+//        for (Shelter shelter : Model.getShelterListPointer()) {
+////            if (currentUser != null && shelter.getBeds() != null) {
+////                for (String key : shelter.getBeds().keySet()) {
+////                    if (key.length() > 3) {
+////                        if ((currentUser.getSex() == Account.Sex.MALE) && (key.charAt(2) != 'T')) {
+////                            shelters.put(shelter.getShelterName(), shelter);
+////                        } else if ((currentUser.getSex() == Account.Sex.FEMALE) && (key.charAt(1) != 'T')) {
+////                            shelters.put(shelter.getShelterName(), shelter);
+////                        } else if ((currentUser.getSex() == Account.Sex.OTHER) && (key.charAt(1) != 'T')
+////                                && (key.charAt(2) != 'T')) {
+////                            shelters.put(shelter.getShelterName(), shelter);
+////                        }
+////                    }
+////                }
+////            } else {
+//                shelters.put(shelter.getShelterName(), shelter);
+////            }
+//        }
         //for(Shelter s : Model.getShelterListPointer()) {
             //if(currentUser != null && s.hasOpenBed(currentUser.generateKey()))
                 //shelters.put(s.getShelterName(), s);
@@ -270,18 +270,18 @@ public class ViewSheltersPage extends AppCompatActivity {
 //
 //            }
 //        });
-
-        showAllCheck.setChecked(true);
+        if (!showAllCheck.isChecked())
+            showAllCheck.setChecked(true);
     }
 
     private void updateSearch(boolean isChecked) {
         shelters.clear();
         if (showAll) {
-            for (Shelter s : Model.getShelterListPointer()) {
+            for (Shelter s : Model.getShelterListPointer().values()) {
                 shelters.put(s.getShelterName(), s);
             }
         } else {
-            for (Shelter s : Model.getShelterListPointer()) {
+            for (Shelter s : Model.getShelterListPointer().values()) {
                 for (String key : s.getBeds().keySet()) {
                     if (key.length() > 1) {
                         Log.e("ViewShelters", "key = " + key);

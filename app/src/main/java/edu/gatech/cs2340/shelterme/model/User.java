@@ -1,6 +1,12 @@
 package edu.gatech.cs2340.shelterme.model;
 
 import android.util.Log;
+import android.util.LongSparseArray;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
 
 import edu.gatech.cs2340.shelterme.model.Account;
 
@@ -16,8 +22,12 @@ public class User extends Account {
     private int age;
     private Sex sex;
     private boolean isVeteran;
-    private boolean occupyingBed;
-//    private Bed occupiedBed;
+    private boolean isOccupyingBed;
+    private Shelter stayingAt;
+//    private HashMap<Long, StayReport> stayReports;
+//    private LongSparseArray<StayReport> stayReports;
+    private List<StayReport> stayReports;
+
 
     // TODO: Collect isVeteran information from registration/edit profile, pass into contructor (set to False for default until then)
     public User(String name, String uname, String email, int pass, Sex sex, int age, boolean isFamily,
@@ -29,7 +39,10 @@ public class User extends Account {
         this.age = age;
         this.sex = sex;
         this.isVeteran = false;
-        this.occupyingBed = false;
+        this.isOccupyingBed = false;
+        this.stayingAt = null;
+//        this.stayReports = new HashMap<>();
+        this.stayReports = new Stack<StayReport>();
         Log.e("USER_KEY", this.generateKey());
     }
 
@@ -62,10 +75,29 @@ public class User extends Account {
         return userKey;
     }
 
-    //TODO getStayReports and addStayReport
+    public List<StayReport> getStayReports() {
+        return this.stayReports;
+    }
 
+    public void addStayReport(StayReport stay) {
+        ((Stack<StayReport>)this.stayReports).push(stay);
+    }
 
-
+    public StayReport getCurrentStayReport () {
+        StayReport cur;
+        if (!this.stayReports.isEmpty()) {
+            cur = ((Stack<StayReport>)this.stayReports).peek();
+            if (!cur.isActive()) {
+                for (StayReport s : stayReports) {
+                    if (s.isActive()) {
+                        cur = s;
+                    }
+                }
+            }
+            return cur;
+        }
+        return null;
+    }
 
     public String getName() {
         return super.getName();
@@ -96,17 +128,25 @@ public class User extends Account {
     }
 
     public boolean isOccupyingBed() {
-        return occupyingBed;
+        return this.isOccupyingBed;
     }
 
-    public void setOccupyingBed(/*Bed bed*/) {
-        this.occupyingBed = true;
+    public void setIsOccupyingBed(boolean tf) {
+        this.isOccupyingBed = tf;
 //        this.occupiedBed = bed;
     }
 
     public void clearOccupiedBed() {
-        this.occupyingBed = false;
-//        this.occupiedBed = null;
+        setIsOccupyingBed(false);
+        this.setStayingAt(null);
+    }
+
+    public Shelter getStayingAt() {
+        return this.stayingAt;
+    }
+
+    public void setStayingAt(Shelter currentShelter) {
+        this.stayingAt = currentShelter;
     }
 
     @Override

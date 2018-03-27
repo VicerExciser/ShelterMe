@@ -18,10 +18,9 @@
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/linearLayout"
-            android:layout_alignRight="@+id/linearLayout"
-            android:layout_below="@+id/linearLayout"
-            android:layout_marginTop="18dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:text="RETURN TO LIST" />
 
         <Button

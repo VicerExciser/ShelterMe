@@ -99,7 +99,7 @@ public class LoginPage extends AppCompatActivity {
                 && email.equals(attempting.getEmail())
                 && attempting.validatePassword(password)) {
             model.displaySuccessMessage("Login successful!", this);
-        } else if (!Model.getAccountListPointer().contains(attempting)) {
+        } else if (!Model.getAccountListPointer().containsValue(attempting)) {
             model.displayErrorMessage("User does not exist, please register an account", this);
             return false;
         } else if (!attempting.validatePassword(password)) {

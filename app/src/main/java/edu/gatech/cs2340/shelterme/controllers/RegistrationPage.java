@@ -70,10 +70,10 @@ public class RegistrationPage extends AppCompatActivity {
 //        workplaceField = findViewById(R.id.workplace);
         shelterSpinner = findViewById(R.id.shelterSpinner);
         powPrompt = findViewById(R.id.textView11);
-        HashSet<String> shelterNames = new HashSet<>();
-        for (Shelter s : Model.getShelterListPointer()) {
-            shelterNames.add(s.getShelterName());
-        }
+        HashSet<String> shelterNames = new HashSet<>(Model.getShelterListPointer().keySet());
+//        for (Shelter s : Model.getShelterListPointer()) {
+//            shelterNames.add(s.getShelterName());
+//        }
         ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
             shelterNames.toArray(new String[shelterNames.size()]));
         adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -326,7 +326,7 @@ public class RegistrationPage extends AppCompatActivity {
                 username = email;
             }
 
-            for (Account a : Model.getAccountListPointer()) {
+            for (Account a : Model.getAccountListPointer().values()) {
                 if (a.getEmail().equals(email)) {
                     model.displayErrorMessage("Account already exists for this email", this);
                     return;
