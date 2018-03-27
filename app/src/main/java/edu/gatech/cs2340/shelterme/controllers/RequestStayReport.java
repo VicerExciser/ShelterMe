@@ -12,9 +12,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import edu.gatech.cs2340.shelterme.R;
+import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.User;
@@ -37,15 +39,16 @@ public class RequestStayReport extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    HashMap<String, String> reservedBedIds = shelter.reserveBed(2/*numBedsReserved*/);
-                    for (String s : reservedBedIds.keySet())
+                    HashMap<String, Collection<Bed>> reserved = shelter.reserveBed(/*numBedsReserved*/);
+                    for (String s : reserved.keySet()) {
                         Log.e("BED_KEY", s);
-                    for (String s : reservedBedIds.values()) {
-                        Log.e("BED_ID", s);
+                        for (Bed b : reserved.get(s)) {
+                            Log.e("\nKEY_ID", b.getId());
+                        }
                     }
                     User user = (User)Model.getInstance().getCurrUser();
                     DBUtil dbUtil = DBUtil.getInstance();
-                    dbUtil.updateShelterVacanciesAndBeds(shelter, reservedBedIds, user);
+                    dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, user);
                     dbUtil.updateUserOccupancyAndStayReports(user);
                 } catch (IllegalArgumentException iae) {
                     Model.getInstance().displayErrorMessage(iae.getMessage(), RequestStayReport.this);

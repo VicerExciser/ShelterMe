@@ -4,6 +4,7 @@
 package edu.gatech.cs2340.shelterme.model;
 
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -13,7 +14,7 @@ public class StayReport {
     private boolean active;
     private int numReserved;
     private Shelter shelter;
-    private Bed[] reservedBeds;
+    private ArrayList<Bed> reservedBeds;
     //Date startDate, endDate;
     private Date timestamp;
     private Long startDate, endDate;
@@ -21,7 +22,7 @@ public class StayReport {
 
     public StayReport() {}
 
-    public StayReport(Shelter shelter, User account, Bed[] reservedBeds) {
+    public StayReport(Shelter shelter, User account, ArrayList<Bed> reservedBeds) {
         this.active = true;
         this.shelter = shelter;
         account.setStayingAt(shelter);
@@ -31,7 +32,7 @@ public class StayReport {
         startDate = timestamp.getTime();
         endDate = null;
         this.reservedBeds = reservedBeds;
-        this.numReserved = reservedBeds.length;
+        this.numReserved = reservedBeds.size();
     }
 
 
@@ -49,7 +50,7 @@ public class StayReport {
         return numReserved;
     }
 
-    public Bed[] getReservedBeds() {
+    public ArrayList<Bed> getReservedBeds() {
         return this.reservedBeds;
     }
 

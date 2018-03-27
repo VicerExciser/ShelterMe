@@ -276,7 +276,7 @@ public class Shelter implements Parcelable{
         return findValidBedType(userKey) != null;
     }
 
-    private String findValidBedType(String userKey) {   //moved everything in hasOpenBed to more convenient and flexible private method
+    public String findValidBedType(String userKey) {   //moved everything in hasOpenBed to more convenient and flexible private method
         if (userKey == null) {
             throw new IllegalArgumentException("User Key cannot be null");
         } else {
@@ -354,12 +354,12 @@ public class Shelter implements Parcelable{
         return null;
     }
 
-    public HashMap<String, String> reserveBed() {
+    public HashMap<String, Collection<Bed>> reserveBed() {
         return reserveBed(1);
     }
 
     // Equivalent for checking in w/ a StayReport
-    public HashMap<String, String> reserveBed(int numBeds) { //function takes in User and returns ID of bed(s) being reserved
+    public HashMap<String, Collection<Bed>> reserveBed(int numBeds) { //function takes in User and returns ID of bed(s) being reserved
         User user = ((User)(Model.getInstance().getCurrUser()));
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null.");
@@ -368,49 +368,85 @@ public class Shelter implements Parcelable{
         }
         String userKey = user.generateKey();
         String bedTypeFoundKey = findValidBedType(userKey);
+
         Shelter curShelter = Model.getInstance().verifyShelterParcel(this);
-        /*Linked*/HashMap<String, Bed> bedTypeFound = curShelter.getBeds().get(bedTypeFoundKey); //collection of beds of appropriate type
-        HashMap<String, String> bedsToReserve = new HashMap<>();
-        Bed[] bedArr = new Bed[numBeds];
-//        String[] bedIds = new String[numBeds];
-        for (int i = 0; i < numBeds; i++) {
-            String foundBedKey = (String) bedTypeFound.keySet().toArray()[0];
 
-            Bed foundBed = bedTypeFound.remove(foundBedKey); //remove first bed in the collection
-            foundBed.setOccupant(user);
-//            user.setOccupyingBed(/*foundBed*/);
-            bedArr[i] = foundBed;
 
-            String bedId = String.valueOf(foundBed.getId());
-//            bedTypeFound.remove(bedId);   <- Isn't this redundant?
-            bedsToReserve.put(bedTypeFoundKey, bedId); // or should I use foundBedKey?
-//            bedIds[i] = bedId;
-            LinkedHashMap<String, Bed> occupied = curShelter.getBeds().get("O");
-            if (occupied == null) {
-                occupied = new LinkedHashMap<>();
-                curShelter.beds.put("O", occupied);
-            }
-//            curShelter.getBeds().get("O").put(bedId, foundBed);
-            occupied.put(bedId, foundBed);
-            curShelter.beds.put("O", occupied); // necessary?
-            curShelter.vacancies--;
+        // ValidBedsFound is our structure containing all beds that must be updated in the database
+        HashMap<String, Collection<Bed>> validBedsFound = new HashMap<>();
+        // values will hold pointers to our newly reserved bed objects
+        Collection<Bed> resValues = new ArrayList<>();
+        HashMap<String,Bed> poop = (HashMap<String, Bed>) curShelter.getBeds().get(bedTypeFoundKey);
+        Bed[] bedArr = new Bed[poop.values().size()];
+        bedArr = (Bed[])((poop.values().toArray(bedArr)));
+
+        LinkedHashMap<String, Bed> occupied = curShelter.getBeds().get("O");
+        if (occupied == null) {
+            occupied = new LinkedHashMap<>();
+            curShelter.beds.put("O", occupied);
         }
-        user.addStayReport(new StayReport(this, user, bedArr));
+        Collection<Bed> occValues = new ArrayList<>();
 
-//        this.vacancies--;
-//        this.vacancies -= numBeds;
+        for (int i = 0; i < numBeds; i++) {
+            bedArr[i].setOccupant(user);
+            // remove the valid bed from this shelter's beds list & place in the occupied list
+            occupied.put(bedArr[i].getId(), bedArr[i]);
+            occValues.add(bedArr[i]);
+            resValues.add(((HashMap<String, Bed>)(curShelter.getBeds().get(bedTypeFoundKey)))
+                    .remove(bedArr[i].getId()));
 
-//        DBUtil dbUtil = DBUtil.getInstance();
-//        try {
-//            dbUtil.updateShelterVacanciesAndBeds(curShelter);
-//            dbUtil.updateUserOccupancyAndStayReports(user);
-//        } catch (DatabaseException de) {
-//            Log.e("RESERVE_BEDS", de.getMessage());
+        }
+        validBedsFound.put(bedTypeFoundKey, resValues);
+        user.addStayReport(new StayReport(curShelter, user, (ArrayList<Bed>) resValues));
+        validBedsFound.put("O", occValues);
+//        values = curShelter.getBeds().get("O").values();
+        int newVac = curShelter.getVacancies() - numBeds;
+        curShelter.setVacancies(newVac);
+
+//
+////                curShelter.getBeds().get(bedTypeFoundKey); //collection of beds of appropriate type
+//
+////        HashMap<String, ArrayList<String>> bedsToReserve = new HashMap<>();
+//
+//
+////        String[] bedIds = new String[numBeds];
+//        for (int i = 0; i < numBeds; i++) {
+//            String foundBedKey = (String) bedTypeFound.keySet().toArray()[0];
+//
+//            Bed foundBed = bedTypeFound.remove(foundBedKey); //remove first bed in the collection
+//            foundBed.setOccupant(user);
+////            user.setOccupyingBed();
+//            bedArr[i] = foundBed;
+//
+//            String bedId = String.valueOf(foundBed.getId());
+////            bedTypeFound.remove(bedId);   <- Isn't this redundant?
+//            bedsToReserve.put(bedTypeFoundKey, bedId); // or should I use foundBedKey?
+////            bedIds[i] = bedId;
+//
+//
+////            curShelter.getBeds().get("O").put(bedId, foundBed);
+//            occupied.put(bedId, foundBed);
+//            curShelter.beds.put("O", occupied); // necessary?
+//            curShelter.vacancies--;
 //        }
-//        return bedIds;
-        return bedsToReserve;
+//        user.addStayReport(new StayReport(this, user, bedArr));
+//
+////        this.vacancies--;
+////        this.vacancies -= numBeds;
+//
+////        DBUtil dbUtil = DBUtil.getInstance();
+////        try {
+////            dbUtil.updateShelterVacanciesAndBeds(curShelter);
+////            dbUtil.updateUserOccupancyAndStayReports(user);
+////        } catch (DatabaseException de) {
+////            Log.e("RESERVE_BEDS", de.getMessage());
+////        }
+////        return bedIds;
+//
+        return validBedsFound;
     }
 
+    // TODO: Fix for Firebase compatibility
     // Clears all occupied beds for this shelter
     public void clearOccupiedBeds() {
         Shelter curShelter = Model.getInstance().verifyShelterParcel(this);
@@ -435,6 +471,7 @@ public class Shelter implements Parcelable{
 
     }
 
+    // TODO: Fix for Firebase compatibility
     // Equivalent for checking out w/ a StayReport
     public void undoReservation() {
         User user = ((User)(Model.getInstance().getCurrUser()));

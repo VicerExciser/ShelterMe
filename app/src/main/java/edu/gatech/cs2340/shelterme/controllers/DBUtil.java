@@ -13,6 +13,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.Stack;
 
 import edu.gatech.cs2340.shelterme.model.Account;
 import edu.gatech.cs2340.shelterme.model.Admin;
+import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.Employee;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
@@ -51,6 +53,8 @@ public class DBUtil {
     private static DatabaseReference adminsRef;// = rootRef.child("admins");
     private static DatabaseReference sheltersRef;// = rootRef.child("shelters");
 
+
+    // TODO: Add ChildUpdateListeners, etc. to DBReferences
 
 
 //    myRef.setValue("Hello, World!");
@@ -273,30 +277,55 @@ public class DBUtil {
 
 //    FirebaseDatabase ref = FirebaseDatabase.getInstance("https://shelterme-2340.firebaseio.com/");
 
-    public void updateShelterVacanciesAndBeds(Shelter s, HashMap<String, String> ids, User u) {
+    public void updateShelterVacanciesAndBeds(Shelter s, HashMap<String, Collection<Bed>> reserved, User u) {
         String key = s.getShelterKey() + "_" + s.getShelterName();
+        String bedTypeKey = s.findValidBedType(u.generateKey());
         DatabaseReference ref = sheltersRef.child(key);
 
         // TODO: Figure out how to update a Shelter's Beds hashmap in Firebase (fuck Android seriously)
         // ids map contains <bedTypeKey, bedIDNumber>
+
+        // get all bed_ids for each bedTypeKey
+        // use s.getBeds()
 
 //        String updateKey = "beds/" + u.generateKey();
 //        for (int i = 0; i < ids.length; i++) {
 //            updateKey += "/"+ids[i];
 //        }
 
-//        Map<String, Object> update = new HashMap<>();
-//        update.put(key+"/beds", s.getBeds());
-//        update.put(key+"/vacancies", s.getVacancies());
+        // may need to update individual beds...
+        Map<String, Object> update = new HashMap<>();
+        for (String bedKey : reserved.keySet()) {
+            String jsonPath;
+            for (Bed bed : reserved.get(bedKey)) {
+                jsonPath = String.format("/%s/%s", bedKey, bed.getId());
+                ref.child(jsonPath).setValue(bed);
+//                update.put(jsonPath, bed);
+            }
+        }
 
         try {
+//            ref.updateChildren(update);
+            ref.child("vacancies").setValue(s.getVacancies());
+/*
+            String mapkey = key.trim() + "/vacancies";
+            mapkey = mapkey.replace(' ', '%');
+            update.put(mapkey, s.getVacancies());
+            sheltersRef.updateChildren(update);
+            update = new HashMap<>();
+            mapkey = key.trim() + "/beds";
+            mapkey = mapkey.replace(' ', '%');
+            update.put(mapkey, s.getBeds());
+*/
+//            sheltersRef.setValue(update);
+
 //            ref.child(updateKey).setValue(null);
 //            ref.child(updateKey).setValue(s.getBeds().get(u.generateKey()));
 //            ref.child("beds/O").setValue(s.getBeds().get("O"));
-            ref.child("vacancies").setValue(s.getVacancies());
+
 //            ref.child("vacancies").setValue(s.getVacancies());
 //            ref.child("beds").setValue(s.getBeds());
-//            sheltersRef.updateChildren(update);
+
         } catch (Exception e) {
             Log.e("UpdateShelters: ", e.getMessage());
             updateShelterInfo(s);
