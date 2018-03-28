@@ -299,10 +299,12 @@ public class DBUtil {
         Map<String, Object> update = new HashMap<>();
         for (String bedKey : reserved.keySet()) {
             String jsonPath;
-            for (Bed bed : reserved.get(bedKey)) {
-                jsonPath = String.format("/%s/%s", bedKey, bed.getId());
-                ref.child(jsonPath).setValue(bed);
+            if (!bedKey.equals("O")) {
+                for (Bed bed : reserved.get(bedKey)) {
+                    jsonPath = String.format("/%s/%s", bedKey, bed.getId());
+                    ref.child(jsonPath).setValue(bed);
 //                update.put(jsonPath, bed);
+                }
             }
         }
         */
