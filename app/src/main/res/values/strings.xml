@@ -38,6 +38,19 @@
 
     <!-- Strings for describing Shelter details -->
     <string name="address">Address:</string>
+    <string name="title_activity_admin_home_page">AdminHomePage</string>
+    <string name="title_activity_employee_home_page">EmployeeHomePage</string>
+    <string name="title_activity_password_recovery">PasswordRecovery</string>
+    <string name="title_activity_edit_profile">EditProfile</string>
+    <string name="title_activity_create_shelter">CreateShelter</string>
+    <string name="title_activity_edit_shelter">EditShelter</string>
+    <string name="title_activity_account_management">AccountManagement</string>
+    <string name="title_activity_stay_report_history">StayReportHistory</string>
+    <string name="title_activity_account_details">AccountDetails</string>
+    <string name="title_activity_message_board">MessageBoard</string>
+    <string name="title_activity_request_page">RequestPage</string>
+    <string name="title_activity_stay_report">StayReport</string>
 
+    <string name="one_bed">1 Bed</string>
 
 </resources>

@@ -2,7 +2,8 @@ package edu.gatech.cs2340.shelterme.model;
 
 import android.util.Log;
 
-import edu.gatech.cs2340.shelterme.model.Account;
+import java.util.List;
+import java.util.Stack;
 
 /**
  * Created by austincondict on 2/12/18.
@@ -12,12 +13,16 @@ public class User extends Account {
 
 //    Question secQuest;
 //    String secAns;
-    private boolean isFamily;
+    public boolean isFamily;
     private int age;
     private Sex sex;
-    private boolean isVeteran;
-    private boolean occupyingBed;
-//    private Bed occupiedBed;
+    public boolean isVeteran;
+    public boolean isOccupyingBed;
+//    private Shelter stayingAt;
+//    private HashMap<Long, StayReport> stayReports;
+//    private LongSparseArray<StayReport> stayReports;
+    private List<StayReport> stayReports;
+
 
     // TODO: Collect isVeteran information from registration/edit profile, pass into contructor (set to False for default until then)
     public User(String name, String uname, String email, int pass, Sex sex, int age, boolean isFamily,
@@ -29,7 +34,11 @@ public class User extends Account {
         this.age = age;
         this.sex = sex;
         this.isVeteran = false;
-        this.occupyingBed = false;
+        this.setIsOccupyingBed(false);
+//        this.setOccupyingBed(false);
+//        this.stayingAt = null;
+//        this.stayReports = new HashMap<>();
+        this.stayReports = new Stack<StayReport>();
         Log.e("USER_KEY", this.generateKey());
     }
 
@@ -62,10 +71,32 @@ public class User extends Account {
         return userKey;
     }
 
-    //TODO getStayReports and addStayReport
+    public List<StayReport> getStayReports() {
+        return this.stayReports;
+    }
 
+    public void addStayReport(StayReport stay) {
+//        ((Stack<StayReport>)this.stayReports).push(stay);
+        ((List<StayReport>) this.stayReports).add(stay);
+    }
 
-
+    public StayReport getCurrentStayReport () {
+        StayReport cur = null;
+        if (!this.stayReports.isEmpty()) {
+//            cur = ((Stack<StayReport>)this.stayReports).peek();
+            cur = (this.stayReports).get(stayReports.size() - 1);
+            if (!cur.isActive()) {
+                for (StayReport s : stayReports) {
+                    if (s.isActive()) {
+                        cur = s;
+                        break;
+                    }
+                }
+            }
+//            return cur;
+        }
+        return cur;
+    }
 
     public String getName() {
         return super.getName();
@@ -96,18 +127,32 @@ public class User extends Account {
     }
 
     public boolean isOccupyingBed() {
-        return occupyingBed;
+        return this.isOccupyingBed;
     }
 
-    public void setOccupyingBed(/*Bed bed*/) {
-        this.occupyingBed = true;
-//        this.occupiedBed = bed;
+    public void setIsOccupyingBed(boolean tf) {
+        this.isOccupyingBed = tf;
+//        setOccupyingBed(tf);
     }
+
+//    public void setOccupyingBed(boolean tf) {
+//        this.isOccupyingBed = tf;
+////        setIsOccupyingBed(tf);
+//    }
 
     public void clearOccupiedBed() {
-        this.occupyingBed = false;
-//        this.occupiedBed = null;
+        setIsOccupyingBed(false);
+//        setOccupyingBed(false);
+//        this.setStayingAt(null);
     }
+
+//    public Shelter getStayingAt() {
+//        return this.stayingAt;
+//    }
+//
+//    public void setStayingAt(Shelter currentShelter) {
+//        this.stayingAt = currentShelter;
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -121,6 +166,10 @@ public class User extends Account {
                 && this.password == u.password;
 
     }
+
+//    public void setOccupyingBed(boolean occupyingBed) {
+//        isOccupyingBed = occupyingBed;
+//    }
 
 //    public Bed getOccupiedBed() {
 ////        return occupiedBed;

@@ -36,7 +36,55 @@
             android:name=".controllers.ShelterDetailsPage"
             android:label="@string/title_activity_shelter_details_page"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".OpenRegistration"></activity>
+        <activity android:name=".OpenRegistration" />
+        <activity
+            android:name=".controllers.AdminHomePage"
+            android:label="@string/title_activity_admin_home_page"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controllers.EmployeeHomePage"
+            android:label="@string/title_activity_employee_home_page"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controllers.PasswordRecovery"
+            android:label="@string/title_activity_password_recovery"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controllers.EditProfile"
+            android:label="@string/title_activity_edit_profile"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controllers.CreateShelter"
+            android:label="@string/title_activity_create_shelter"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controllers.EditShelter"
+            android:label="@string/title_activity_edit_shelter"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controllers.AccountManagement"
+            android:label="@string/title_activity_account_management"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controllers.StayReportHistory"
+            android:label="@string/title_activity_stay_report_history"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controllers.AccountDetails"
+            android:label="@string/title_activity_account_details"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controllers.MessageBoard"
+            android:label="@string/title_activity_message_board"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controllers.RequestPage"
+            android:label="@string/title_activity_request_page"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controllers.RequestStayReport"
+            android:label="@string/title_activity_stay_report"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

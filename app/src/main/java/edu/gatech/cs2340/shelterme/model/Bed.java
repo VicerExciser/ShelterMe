@@ -8,7 +8,8 @@ public class Bed {
     // Had to change Bed id to a String in the form: "bed_1" for the sake of serialization
 
     private String id;
-    private User occupant;
+//    private User occupant;
+    private String occupantEmail;
     private boolean isOccupied;
     private boolean isFamily;       //designates if the bed is of "family type" or for a single person
     private boolean menOnly;        //designates if there is a gender restriction against women
@@ -38,13 +39,44 @@ public class Bed {
                 false, "FFF000_200_F");
     }
 
-    public void setOccupant(User occupant) {
-        this.occupant = occupant;
+//    public User currentOccupant() {
+//        return ((User)Model.getAccountByEmail(this.occupantEmail));
+//    }
+
+    public String getOccupantEmail() {
+        return this.occupantEmail;
+    }
+
+//    public void setOccupantEmail(User occupant) {
+//        this.occupantEmail = occupant.getEmail();
+//        if (!this.isOccupied) {
+//            modifyOccupant(occupant);
+//        }
+//    }
+
+    public void setOccupantEmail(String email) {
+        this.occupantEmail = email;
+        if (!this.isOccupied) {
+            modifyOccupant(email);
+        }
+    }
+
+    private void modifyOccupant(String occupantEmail) {
+//        this.occupant = occupant;
+        ((User)Model.getAccountByEmail(occupantEmail)).setIsOccupyingBed(true);
+//        this.occupant.setOccupyingBed(true);
         this.isOccupied = true;
     }
 
-    public void removeOccupant() {
-        this.occupant = null;
+//    public void removeOccupant(User occupant) {
+//        occupant.clearOccupiedBed();
+//        this.occupantEmail = null;
+//        this.isOccupied = false;
+//    }
+
+    public void removeOccupant(String email) {
+        ((User)Model.getAccountByEmail(email)).clearOccupiedBed();
+        this.occupantEmail = null;
         this.isOccupied = false;
     }
 
@@ -53,9 +85,9 @@ public class Bed {
         return id;
     }
 
-    public User getOccupant() {
-        return occupant;
-    }
+//    public User getOccupant() {
+//        return occupant;
+//    }
 
     public boolean getIsOccupied() {
         return isOccupied;
@@ -113,7 +145,7 @@ public class Bed {
         String newId = bedNumber;
         if (bedNumber != null && !bedNumber.contains("bed_"))
                 newId = "bed_" + bedNumber;
-        for (Shelter s : Model.getShelterListPointer()) {
+        for (Shelter s : Model.getShelterListPointer().values()) {
             if (!s.getBeds().containsKey(newId)) {
                 this.id = newId;
             }

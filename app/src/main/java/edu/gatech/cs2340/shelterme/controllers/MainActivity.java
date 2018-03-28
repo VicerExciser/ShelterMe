@@ -25,8 +25,10 @@ import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
 public class MainActivity extends AppCompatActivity {
+
     DBUtil dbUtil = DBUtil.getInstance();
     Model model = Model.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -61,11 +63,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent myIntent = new Intent(view.getContext(),
                         HomePage.class);
+                model.setCurrUser(null);
                 startActivityForResult(myIntent, 0);
             }
         });
 
-        loadShelters();
+        // MUST COMMENT THIS OUT TO PREVENT SHELTER DATA FROM BEING OVERWRITTEN
+//        loadShelters();
+        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         model.getAllShelterDetails();
     }
 

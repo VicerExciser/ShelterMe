@@ -18,11 +18,19 @@
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/linearLayout"
-            android:layout_alignRight="@+id/linearLayout"
-            android:layout_below="@+id/linearLayout"
-            android:layout_marginTop="18dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:text="RETURN TO LIST" />
+
+        <Button
+            android:id="@+id/stayRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/backButton"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="Request to Stay" />
 
         <TextView
             android:id="@+id/header"
@@ -124,6 +132,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:text="Latitude:"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="22sp"
+                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+
+            <TextView
+                android:id="@+id/vacancies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Vacancies:"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="22sp"
                 tools:textColor="@color/common_google_signin_btn_text_dark_default" />

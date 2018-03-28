@@ -35,10 +35,10 @@ public class ViewSheltersPage extends AppCompatActivity {
     private HashMap<String, Shelter> shelters;
     private Model model = Model.getInstance();
 //    private boolean critChecked;
+    private boolean showAll;
     private AgeRange selectedAgeRange = AgeRange.ANYONE;
     private GenderAccepted selectedGender = GenderAccepted.ANY;
     private ListView shelterList;
-    private User currentUser;
 
 
     @Override
@@ -55,7 +55,7 @@ public class ViewSheltersPage extends AppCompatActivity {
         });
 
         shelterList = findViewById(R.id.shelterList);
-        currentUser = ((User)model.getCurrUser());
+        User currentUser = ((User) model.getCurrUser());
 
         //default to registered criteria
 //        final Button criteriaCheck = (Button) findViewById(R.id.yesCrit);
@@ -67,6 +67,17 @@ public class ViewSheltersPage extends AppCompatActivity {
 //        ageSpin.setVisibility(View.GONE);
 //        genderSpin.setVisibility(View.GONE);
 //        familyCheck.setVisibility(View.GONE);
+        final CheckBox showAllCheck = (CheckBox) findViewById(R.id.showAll);
+        showAll = true;
+        showAllCheck.setChecked(showAll);
+
+        showAllCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                showAll = isChecked;
+                updateSearch(familyCheck.isChecked());
+            }
+        });
 
 
         //filling spinners
@@ -78,26 +89,26 @@ public class ViewSheltersPage extends AppCompatActivity {
         adapterGen.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpin.setAdapter(adapterGen);
 
-        // Omit shelters where this user is ineligible to stay
-        shelters = new HashMap<>();
-        for (Shelter shelter : Model.getShelterListPointer()) {
-//            if (currentUser != null && shelter.getBeds() != null) {
-//                for (String key : shelter.getBeds().keySet()) {
-//                    if (key.length() > 3) {
-//                        if ((currentUser.getSex() == Account.Sex.MALE) && (key.charAt(2) != 'T')) {
-//                            shelters.put(shelter.getShelterName(), shelter);
-//                        } else if ((currentUser.getSex() == Account.Sex.FEMALE) && (key.charAt(1) != 'T')) {
-//                            shelters.put(shelter.getShelterName(), shelter);
-//                        } else if ((currentUser.getSex() == Account.Sex.OTHER) && (key.charAt(1) != 'T')
-//                                && (key.charAt(2) != 'T')) {
-//                            shelters.put(shelter.getShelterName(), shelter);
-//                        }
-//                    }
-//                }
-//            } else {
-                shelters.put(shelter.getShelterName(), shelter);
-//            }
-        }
+        // Omit shelters where this user is ineligible to stay  <- nah
+        shelters = new HashMap<>(Model.getShelterListPointer());
+//        for (Shelter shelter : Model.getShelterListPointer()) {
+////            if (currentUser != null && shelter.getBeds() != null) {
+////                for (String key : shelter.getBeds().keySet()) {
+////                    if (key.length() > 3) {
+////                        if ((currentUser.getSex() == Account.Sex.MALE) && (key.charAt(2) != 'T')) {
+////                            shelters.put(shelter.getShelterName(), shelter);
+////                        } else if ((currentUser.getSex() == Account.Sex.FEMALE) && (key.charAt(1) != 'T')) {
+////                            shelters.put(shelter.getShelterName(), shelter);
+////                        } else if ((currentUser.getSex() == Account.Sex.OTHER) && (key.charAt(1) != 'T')
+////                                && (key.charAt(2) != 'T')) {
+////                            shelters.put(shelter.getShelterName(), shelter);
+////                        }
+////                    }
+////                }
+////            } else {
+//                shelters.put(shelter.getShelterName(), shelter);
+////            }
+//        }
         //for(Shelter s : Model.getShelterListPointer()) {
             //if(currentUser != null && s.hasOpenBed(currentUser.generateKey()))
                 //shelters.put(s.getShelterName(), s);
@@ -163,6 +174,8 @@ public class ViewSheltersPage extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // TODO: Incorporate other search criteria to be applied
+//                showAll = false;
+                showAllCheck.setChecked(false);
                 updateSearch(isChecked);
             }
         });
@@ -170,6 +183,7 @@ public class ViewSheltersPage extends AppCompatActivity {
         ageSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                showAllCheck.setChecked(false);
                 switch (position) {
                     case 0:
                         selectedAgeRange = AgeRange.ANYONE;
@@ -197,6 +211,7 @@ public class ViewSheltersPage extends AppCompatActivity {
         genderSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                showAllCheck.setChecked(false);
                 switch (position) {
                     case 0:
                         selectedGender = GenderAccepted.ANY;
@@ -225,6 +240,7 @@ public class ViewSheltersPage extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 ViewSheltersPage.this.adapter.getFilter().filter(query);
+                showAllCheck.setChecked(false);
                 return false;
             }
 
@@ -253,20 +269,27 @@ public class ViewSheltersPage extends AppCompatActivity {
 //
 //            }
 //        });
+        if (!showAllCheck.isChecked())
+            showAllCheck.setChecked(true);
     }
 
     private void updateSearch(boolean isChecked) {
         shelters.clear();
-        for (Shelter s : Model.getShelterListPointer()) {
-            for (String key : s.getBeds().keySet()) {
-                if (key.length() > 1) {
-                    Log.e("ViewShelters", "key = " + key);
-                    if (familyChoiceMatchesKey(key, isChecked) && s.getVacancies() > 0) {
-                        if (genderChoiceMatchesKey(key) && ageRangeChoiceMatchesKey(key)) {
-                            // Probably can omit the following if statement:
+        if (showAll) {
+            for (Shelter s : Model.getShelterListPointer().values()) {
+                shelters.put(s.getShelterName(), s);
+            }
+        } else {
+            for (Shelter s : Model.getShelterListPointer().values()) {
+                for (String key : s.getBeds().keySet()) {
+                    if (key.length() > 1) {
+                        Log.e("ViewShelters", "key = " + key);
+                        if (familyChoiceMatchesKey(key, isChecked) && s.getVacancies() > 0) {
+                            if (genderChoiceMatchesKey(key) && ageRangeChoiceMatchesKey(key)) {
+                                // Probably can omit the following if statement:
 //                        try {
 //                            if (s.hasOpenBed(currentUser.generateKey())) {
-                            shelters.put(s.getShelterName(), s);
+                                shelters.put(s.getShelterName(), s);
 //                            }
 //                        } catch (NullPointerException npe) {
 ////                            model.displayErrorMessage("Must be a registered user to do this!", this);
@@ -276,6 +299,7 @@ public class ViewSheltersPage extends AppCompatActivity {
 //                            Log.e("Shelter Search Update", "No registered user data found, must be a browser");
 //                            shelters.put(s.getShelterName(), s);
 //                        }
+                            }
                         }
                     }
                 }
