@@ -13,11 +13,11 @@ public class User extends Account {
 
 //    Question secQuest;
 //    String secAns;
-    private boolean isFamily;
+    public boolean isFamily;
     private int age;
     private Sex sex;
-    private boolean isVeteran;
-    private boolean isOccupyingBed;
+    public boolean isVeteran;
+    public boolean isOccupyingBed;
     private Shelter stayingAt;
 //    private HashMap<Long, StayReport> stayReports;
 //    private LongSparseArray<StayReport> stayReports;
@@ -81,7 +81,7 @@ public class User extends Account {
     }
 
     public StayReport getCurrentStayReport () {
-        StayReport cur;
+        StayReport cur = null;
         if (!this.stayReports.isEmpty()) {
 //            cur = ((Stack<StayReport>)this.stayReports).peek();
             cur = (this.stayReports).get(stayReports.size() - 1);
@@ -89,12 +89,13 @@ public class User extends Account {
                 for (StayReport s : stayReports) {
                     if (s.isActive()) {
                         cur = s;
+                        break;
                     }
                 }
             }
-            return cur;
+//            return cur;
         }
-        return null;
+        return cur;
     }
 
     public String getName() {

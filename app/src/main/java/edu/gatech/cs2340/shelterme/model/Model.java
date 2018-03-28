@@ -42,9 +42,13 @@ public class Model {
     private Model() {
         dbUtil = DBUtil.getInstance();
 
-        accounts = new HashMap<>();
-//        loadShelters();
-        shelters = new HashMap<>();
+//        accounts = new HashMap<>();
+//        DBUtil.initAccounts();
+//        shelters = new HashMap<>();
+//        DBUtil.initShelters();
+
+        accounts = DBUtil.getAccountListPointer();
+        shelters = DBUtil.getShelterListPointer();
     }
 
     // Map: <Email, Account>

@@ -13,6 +13,14 @@
         android:background="#000000"
         tools:layout_editor_absoluteY="8dp">
 
+        <Button
+            android:id="@+id/checkOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="Check Out From Current Shelter Stay" />
+
         <TextView
             android:id="@+id/logo"
             android:layout_width="wrap_content"
@@ -35,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="52dp"
+            android:layout_marginBottom="65dp"
             android:background="@android:drawable/bottom_bar"
             android:backgroundTint="#FFFFFF"
             android:text="Logout" />

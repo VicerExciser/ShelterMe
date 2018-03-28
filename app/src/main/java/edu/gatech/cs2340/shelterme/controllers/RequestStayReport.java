@@ -23,6 +23,8 @@ import edu.gatech.cs2340.shelterme.model.User;
 
 public class RequestStayReport extends AppCompatActivity {
 
+    DBUtil dbUtil = DBUtil.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,17 +48,21 @@ public class RequestStayReport extends AppCompatActivity {
                             Log.e("\nKEY_ID", b.getId());
                         }
                     }
-                    User user = (User)Model.getInstance().getCurrUser();
-                    DBUtil dbUtil = DBUtil.getInstance();
-                    dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, user);
-                    dbUtil.updateUserOccupancyAndStayReports(user);
+                    dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, true);
+                    dbUtil.updateUserOccupancyAndStayReports((User)Model.getInstance().getCurrUser());
                 } catch (IllegalArgumentException iae) {
                     Model.getInstance().displayErrorMessage(iae.getMessage(), RequestStayReport.this);
                 }
             }
         });
 
-
+//        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
+//        fab2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
 
     }
 
