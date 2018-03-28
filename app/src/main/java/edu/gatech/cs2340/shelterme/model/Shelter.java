@@ -376,9 +376,9 @@ public class Shelter implements Parcelable{
         HashMap<String, Collection<Bed>> validBedsFound = new HashMap<>();
         // values will hold pointers to our newly reserved bed objects
         Collection<Bed> resValues = new ArrayList<>();
-        HashMap<String,Bed> poop = (HashMap<String, Bed>) curShelter.getBeds().get(bedTypeFoundKey);
-        Bed[] bedArr = new Bed[poop.values().size()];
-        bedArr = (Bed[])((poop.values().toArray(bedArr)));
+        HashMap<String,Bed> validBeds = (HashMap<String, Bed>) curShelter.getBeds().get(bedTypeFoundKey);
+        Bed[] bedArr = new Bed[validBeds.values().size()];
+        bedArr = (Bed[])((validBeds.values().toArray(bedArr)));
 
         LinkedHashMap<String, Bed> occupied = curShelter.getBeds().get("O");
         if (occupied == null) {
@@ -394,7 +394,6 @@ public class Shelter implements Parcelable{
             occValues.add(bedArr[i]);
             resValues.add(((HashMap<String, Bed>)(curShelter.getBeds().get(bedTypeFoundKey)))
                     .remove(bedArr[i].getId()));
-
         }
         validBedsFound.put(bedTypeFoundKey, resValues);
         user.addStayReport(new StayReport(curShelter, user, (ArrayList<Bed>) resValues));
