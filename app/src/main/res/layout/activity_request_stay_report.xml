@@ -4,41 +4,131 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#D2B4DE"
     tools:context="edu.gatech.cs2340.shelterme.controllers.RequestStayReport">
+
+    <RelativeLayout
+        android:layout_width="370dp"
+        android:layout_height="601dp"
+        android:paddingLeft="14dp"
+        android:paddingRight="4dp"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:singleLine="false"
+            android:text="The Atlanta Day Center for Women and Children"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:fontFamily="serif" />
+
+        <TextView
+            android:id="@+id/moreInfo"
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:layout_below="@+id/header"
+            app:fontFamily="serif"
+            android:text="Request a stay:"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_light"
+            android:textSize="20sp"
+            android:textStyle="italic" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/typeOfBed"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="120dp"
+                android:text="Select a bed type:"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:fontFamily="serif" />
+
+            <Spinner
+                android:id="@+id/bedType"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                app:fontFamily="serif"
+                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+
+            <TextView
+                android:id="@+id/selectBed"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"
+                app:fontFamily="serif"
+                android:textColor="@android:color/black"
+                android:text="Number of beds requested:" />
+
+            <Spinner
+                android:id="@+id/numOfBeds"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:entries="1 Bed"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                app:fontFamily="serif"
+                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+
+            <CheckBox
+                android:id="@+id/checkAgreement"
+                android:layout_width="match_parent"
+                android:layout_marginTop="13dp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/agreement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="By checking, I hearby declare that I have read and agreed to the Rules and Agreements of this shelter."
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:fontFamily="serif" />
+
+            <Button
+                android:id="@+id/submit"
+                android:layout_width="350dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="25dp"
+                android:text="Submit Request"
+                android:textSize="20sp"
+                tools:background="#C67EDC" />
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="350dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="25dp"
+                android:textSize="20sp"
+                android:contentDescription="This cancels the form and returns to previuos page"
+                android:text="Cancel"
+                tools:background="#AA6FBC" />
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
     </android.support.design.widget.AppBarLayout>
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/content_request_stay_report" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        app:layout_anchor="@+id/include"
-        app:layout_anchorGravity="right|center"
-        app:srcCompat="@android:drawable/ic_delete" />
+    <include layout="@layout/content_request_stay_report" />
 
 </android.support.design.widget.CoordinatorLayout>
