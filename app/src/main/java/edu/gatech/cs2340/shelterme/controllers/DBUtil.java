@@ -279,7 +279,8 @@ public class DBUtil {
 //    FirebaseDatabase ref = FirebaseDatabase.getInstance("https://shelterme-2340.firebaseio.com/");
 
     public void updateShelterVacanciesAndBeds(Shelter s, HashMap<String, Collection<Bed>> reserved, User u) {
-        String key = s.getShelterKey() + "_" + s.getShelterName();
+        String key = String.format("%s_%s/beds", s.getShelterKey(), s.getShelterName());  // Sorry, Mom :,(
+
         String bedTypeKey = s.findValidBedType(u.generateKey());
         DatabaseReference ref = sheltersRef.child(key);
 
@@ -294,20 +295,30 @@ public class DBUtil {
 //            updateKey += "/"+ids[i];
 //        }
 
-        /*
+
         // may need to update individual beds...
-        Map<String, Object> update = new HashMap<>();
+//        Map<String, Object> update = new HashMap<>();
         for (String bedKey : reserved.keySet()) {
             String jsonPath;
             if (!bedKey.equals("O")) {
                 for (Bed bed : reserved.get(bedKey)) {
-                    jsonPath = String.format("/%s/%s", bedKey, bed.getId());
-                    ref.child(jsonPath).setValue(bed);
+                    jsonPath = String.format("%s/%s", bedKey, bed.getId());
+                    Log.e("jsonPath = ", jsonPath);
+                    ref.child(jsonPath).removeValue(new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//                            Log.e("removeValue Complete?", databaseError.getMessage());
+                        }
+                    });
+                    String occPath = String.format("O/%s", bed.getId());
+                    Log.e("occPath = ", occPath);
+//                    ref.child(occPath).setValue(bed);
+                    ref.child("O").child(bed.getId()).setValue(bed);
 //                update.put(jsonPath, bed);
                 }
             }
         }
-        */
+
 
         try {
 //            ref.updateChildren(update);

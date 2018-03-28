@@ -390,7 +390,7 @@ public class Shelter implements Parcelable{
         Collection<Bed> occValues = new ArrayList<>();
 
         for (int i = 0; i < numBeds; i++) {
-            bedArr[i].setOccupant(user);
+            bedArr[i].setOccupantEmail(user);
             // remove the valid bed from this shelter's beds list & place in the occupied list
             occupied.put(bedArr[i].getId(), bedArr[i]);
             occValues.add(bedArr[i]);
@@ -454,8 +454,8 @@ public class Shelter implements Parcelable{
 //        DBUtil dbUtil = DBUtil.getInstance();
         for (String bedId : curShelter.beds.get("O").keySet()) {
             Bed bed = curShelter.beds.get("O").remove(bedId);
-            User occupant = bed.getOccupant();
-            bed.removeOccupant();
+            User occupant = bed.currentOccupant();
+            bed.removeOccupant(occupant);
             occupant.clearOccupiedBed();
             StayReport curStay = occupant.getCurrentStayReport();
             if (curStay != null && curStay.isActive())
@@ -507,7 +507,7 @@ public class Shelter implements Parcelable{
 
     public Bed getBedOccupiedBy(User user) {
         for (Bed b : this.beds.get("O").values()) {
-            User occupant = b.getOccupant();
+            User occupant = b.currentOccupant();
             if (occupant != null && occupant.equals(user)) {
                 return b;
             }

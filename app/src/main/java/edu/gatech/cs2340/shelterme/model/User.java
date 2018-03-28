@@ -83,7 +83,8 @@ public class User extends Account {
     public StayReport getCurrentStayReport () {
         StayReport cur;
         if (!this.stayReports.isEmpty()) {
-            cur = ((Stack<StayReport>)this.stayReports).peek();
+//            cur = ((Stack<StayReport>)this.stayReports).peek();
+            cur = (this.stayReports).get(stayReports.size() - 1);
             if (!cur.isActive()) {
                 for (StayReport s : stayReports) {
                     if (s.isActive()) {
