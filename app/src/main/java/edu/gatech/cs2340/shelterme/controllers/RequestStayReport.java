@@ -63,4 +63,4 @@ public class RequestStayReport extends AppCompatActivity {
 }
 
 // Check that vacancies > numBedsReserved
-// Use Shelter.reserveBed for checking in, and Shelter.clearOccupiedBeds for checking out
+// Use Shelter.reserveBed for checking in, and Shelter.undoReservation for checking out

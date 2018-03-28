@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
@@ -293,6 +294,7 @@ public class DBUtil {
 //            updateKey += "/"+ids[i];
 //        }
 
+        /*
         // may need to update individual beds...
         Map<String, Object> update = new HashMap<>();
         for (String bedKey : reserved.keySet()) {
@@ -303,6 +305,7 @@ public class DBUtil {
 //                update.put(jsonPath, bed);
             }
         }
+        */
 
         try {
 //            ref.updateChildren(update);
@@ -340,21 +343,16 @@ public class DBUtil {
     public void updateUserOccupancyAndStayReports(User u) {
         String key = u.getEmail().substring(0, u.getEmail().indexOf('@'));
         usersRef.child(key).child("isOccupyingBed").setValue(u.isOccupyingBed());
-        // TODO: Figure out how to make a User's StayReportList readable into Firebase
-       /* ObjectMapper mapper = new ObjectMapper();
-        GenericTypeIndicator<Map<String,Object>> indicator = new GenericTypeIndicator<Map<String, Object>>() {};
-        TestChild value = mapper.convertValue(dataSnapshot.getValue(indicator), TestChild.class);
-        GenericTypeIndicator<List<StayReport>>  = new GenericTypeIndicator<List<StayReport>>() {};
-        List<StayReport> srlist = new Stack<>();
-        srlist.addAll(u.getStayReports());
-        usersRef.child(key).child("stayReports").setValue(srlist); */
-
-//        Map<String, Object> update = new HashMap<>();
-//        update.put("isOccupyingBed", u.isOccupyingBed());
-//        update.put("stayReports", (u.getStayReports()));
-//        Map<String, Map<String, Object>> userUpdate = new HashMap<>();
-//        userUpdate.put(key, update);
-//        usersRef.setValue(userUpdate);
+        List<StayReport> reports = u.getStayReports();
+        if (reports == null) {
+            Log.e("Getting StayReports: ", "User.getStayReports == null");
+            reports = new Stack<StayReport>();
+        }
+        try {
+            usersRef.child(key).child("stayReports").setValue(reports);
+        } catch (DatabaseException de) {
+            Log.e("UpdateStayReports: ", de.getMessage());
+        }
     }
 
     public void updateUserInfo(User u) {

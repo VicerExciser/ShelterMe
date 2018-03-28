@@ -365,6 +365,8 @@ public class Shelter implements Parcelable{
             throw new IllegalArgumentException("User cannot be null.");
         } else if (user.isOccupyingBed()) {
             throw new IllegalArgumentException("User must not have already reserved a bed.");
+        } else if (user.getCurrentStayReport() != null && user.getCurrentStayReport().isActive()) {
+            throw new IllegalArgumentException("User is currently checked in already at this or another shelter.");
         }
         String userKey = user.generateKey();
         String bedTypeFoundKey = findValidBedType(userKey);
@@ -486,7 +488,7 @@ public class Shelter implements Parcelable{
         if (currentStay != null) {
             currentStay.checkOut();
             user.clearOccupiedBed();
-            for (Bed bed : currentStay.getReservedBeds()) {
+            /*for (Bed bed : currentStay.getReservedBeds()) {
                 if (bed != null) {
                     bed.removeOccupant();
                     String bedId = bed.getId();
@@ -494,7 +496,8 @@ public class Shelter implements Parcelable{
                     curShelter.beds.get(bed.getSavedBedKey()).put(bedId, bed);
                     curShelter.vacancies++;
                 }
-            }
+            } */
+
         } //else {
 //            Model.getInstance().displayErrorMessage("No current shelter reservations found!", Shelter.this);
 //        }

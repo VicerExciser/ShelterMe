@@ -41,6 +41,7 @@ public class Bed {
     public void setOccupant(User occupant) {
         this.occupant = occupant;
         this.occupant.setIsOccupyingBed(true);
+//        this.occupant.setOccupyingBed(true);
         this.isOccupied = true;
     }
 

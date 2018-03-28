@@ -47,10 +47,12 @@ public class Model {
         shelters = new HashMap<>();
     }
 
+    // Map: <Email, Account>
     public static HashMap<String, Account> getAccountListPointer() {
         return accounts;
     }
 
+    // Map: <ShelterName, Shelter>
     public static HashMap<String, Shelter> getShelterListPointer() {
         return shelters;
     }
