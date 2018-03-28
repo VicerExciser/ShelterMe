@@ -122,6 +122,7 @@
             android:layout_alignRight="@+id/FamilyCheck"
             android:layout_toEndOf="@+id/ageSpinner"
             android:layout_toRightOf="@+id/ageSpinner"
+            android:checked="true"
             android:text="Show All" />
 
     </RelativeLayout>

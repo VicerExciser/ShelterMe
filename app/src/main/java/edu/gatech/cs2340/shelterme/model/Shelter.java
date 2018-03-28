@@ -365,6 +365,8 @@ public class Shelter implements Parcelable{
             throw new IllegalArgumentException("User cannot be null.");
         } else if (user.isOccupyingBed()) {
             throw new IllegalArgumentException("User must not have already reserved a bed.");
+        } else if (user.getCurrentStayReport() != null && user.getCurrentStayReport().isActive()) {
+            throw new IllegalArgumentException("User is currently checked in already at this or another shelter.");
         }
         String userKey = user.generateKey();
         String bedTypeFoundKey = findValidBedType(userKey);
@@ -376,9 +378,9 @@ public class Shelter implements Parcelable{
         HashMap<String, Collection<Bed>> validBedsFound = new HashMap<>();
         // values will hold pointers to our newly reserved bed objects
         Collection<Bed> resValues = new ArrayList<>();
-        HashMap<String,Bed> poop = (HashMap<String, Bed>) curShelter.getBeds().get(bedTypeFoundKey);
-        Bed[] bedArr = new Bed[poop.values().size()];
-        bedArr = (Bed[])((poop.values().toArray(bedArr)));
+        HashMap<String,Bed> validBeds = (HashMap<String, Bed>) curShelter.getBeds().get(bedTypeFoundKey);
+        Bed[] bedArr = new Bed[validBeds.values().size()];
+        bedArr = (Bed[])((validBeds.values().toArray(bedArr)));
 
         LinkedHashMap<String, Bed> occupied = curShelter.getBeds().get("O");
         if (occupied == null) {
@@ -388,13 +390,12 @@ public class Shelter implements Parcelable{
         Collection<Bed> occValues = new ArrayList<>();
 
         for (int i = 0; i < numBeds; i++) {
-            bedArr[i].setOccupant(user);
+            bedArr[i].setOccupantEmail(user);
             // remove the valid bed from this shelter's beds list & place in the occupied list
             occupied.put(bedArr[i].getId(), bedArr[i]);
             occValues.add(bedArr[i]);
             resValues.add(((HashMap<String, Bed>)(curShelter.getBeds().get(bedTypeFoundKey)))
                     .remove(bedArr[i].getId()));
-
         }
         validBedsFound.put(bedTypeFoundKey, resValues);
         user.addStayReport(new StayReport(curShelter, user, (ArrayList<Bed>) resValues));
@@ -453,8 +454,8 @@ public class Shelter implements Parcelable{
 //        DBUtil dbUtil = DBUtil.getInstance();
         for (String bedId : curShelter.beds.get("O").keySet()) {
             Bed bed = curShelter.beds.get("O").remove(bedId);
-            User occupant = bed.getOccupant();
-            bed.removeOccupant();
+            User occupant = bed.currentOccupant();
+            bed.removeOccupant(occupant);
             occupant.clearOccupiedBed();
             StayReport curStay = occupant.getCurrentStayReport();
             if (curStay != null && curStay.isActive())
@@ -486,7 +487,7 @@ public class Shelter implements Parcelable{
         if (currentStay != null) {
             currentStay.checkOut();
             user.clearOccupiedBed();
-            for (Bed bed : currentStay.getReservedBeds()) {
+            /*for (Bed bed : currentStay.getReservedBeds()) {
                 if (bed != null) {
                     bed.removeOccupant();
                     String bedId = bed.getId();
@@ -494,7 +495,8 @@ public class Shelter implements Parcelable{
                     curShelter.beds.get(bed.getSavedBedKey()).put(bedId, bed);
                     curShelter.vacancies++;
                 }
-            }
+            } */
+
         } //else {
 //            Model.getInstance().displayErrorMessage("No current shelter reservations found!", Shelter.this);
 //        }
@@ -505,7 +507,7 @@ public class Shelter implements Parcelable{
 
     public Bed getBedOccupiedBy(User user) {
         for (Bed b : this.beds.get("O").values()) {
-            User occupant = b.getOccupant();
+            User occupant = b.currentOccupant();
             if (occupant != null && occupant.equals(user)) {
                 return b;
             }

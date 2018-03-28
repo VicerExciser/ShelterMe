@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
@@ -278,7 +279,8 @@ public class DBUtil {
 //    FirebaseDatabase ref = FirebaseDatabase.getInstance("https://shelterme-2340.firebaseio.com/");
 
     public void updateShelterVacanciesAndBeds(Shelter s, HashMap<String, Collection<Bed>> reserved, User u) {
-        String key = s.getShelterKey() + "_" + s.getShelterName();
+        String key = String.format("%s_%s/beds", s.getShelterKey(), s.getShelterName());  // Sorry, Mom :,(
+
         String bedTypeKey = s.findValidBedType(u.generateKey());
         DatabaseReference ref = sheltersRef.child(key);
 
@@ -293,16 +295,30 @@ public class DBUtil {
 //            updateKey += "/"+ids[i];
 //        }
 
+
         // may need to update individual beds...
-        Map<String, Object> update = new HashMap<>();
+//        Map<String, Object> update = new HashMap<>();
         for (String bedKey : reserved.keySet()) {
             String jsonPath;
-            for (Bed bed : reserved.get(bedKey)) {
-                jsonPath = String.format("/%s/%s", bedKey, bed.getId());
-                ref.child(jsonPath).setValue(bed);
+            if (!bedKey.equals("O")) {
+                for (Bed bed : reserved.get(bedKey)) {
+                    jsonPath = String.format("%s/%s", bedKey, bed.getId());
+                    Log.e("jsonPath = ", jsonPath);
+                    ref.child(jsonPath).removeValue(new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//                            Log.e("removeValue Complete?", databaseError.getMessage());
+                        }
+                    });
+                    String occPath = String.format("O/%s", bed.getId());
+                    Log.e("occPath = ", occPath);
+//                    ref.child(occPath).setValue(bed);
+                    ref.child("O").child(bed.getId()).setValue(bed);
 //                update.put(jsonPath, bed);
+                }
             }
         }
+
 
         try {
 //            ref.updateChildren(update);
@@ -340,21 +356,16 @@ public class DBUtil {
     public void updateUserOccupancyAndStayReports(User u) {
         String key = u.getEmail().substring(0, u.getEmail().indexOf('@'));
         usersRef.child(key).child("isOccupyingBed").setValue(u.isOccupyingBed());
-        // TODO: Figure out how to make a User's StayReportList readable into Firebase
-       /* ObjectMapper mapper = new ObjectMapper();
-        GenericTypeIndicator<Map<String,Object>> indicator = new GenericTypeIndicator<Map<String, Object>>() {};
-        TestChild value = mapper.convertValue(dataSnapshot.getValue(indicator), TestChild.class);
-        GenericTypeIndicator<List<StayReport>>  = new GenericTypeIndicator<List<StayReport>>() {};
-        List<StayReport> srlist = new Stack<>();
-        srlist.addAll(u.getStayReports());
-        usersRef.child(key).child("stayReports").setValue(srlist); */
-
-//        Map<String, Object> update = new HashMap<>();
-//        update.put("isOccupyingBed", u.isOccupyingBed());
-//        update.put("stayReports", (u.getStayReports()));
-//        Map<String, Map<String, Object>> userUpdate = new HashMap<>();
-//        userUpdate.put(key, update);
-//        usersRef.setValue(userUpdate);
+        List<StayReport> reports = u.getStayReports();
+        if (reports == null) {
+            Log.e("Getting StayReports: ", "User.getStayReports == null");
+            reports = new Stack<StayReport>();
+        }
+        try {
+            usersRef.child(key).child("stayReports").setValue(reports);
+        } catch (DatabaseException de) {
+            Log.e("UpdateStayReports: ", de.getMessage());
+        }
     }
 
     public void updateUserInfo(User u) {

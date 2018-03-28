@@ -8,7 +8,8 @@ public class Bed {
     // Had to change Bed id to a String in the form: "bed_1" for the sake of serialization
 
     private String id;
-    private User occupant;
+//    private User occupant;
+    private String occupantEmail;
     private boolean isOccupied;
     private boolean isFamily;       //designates if the bed is of "family type" or for a single person
     private boolean menOnly;        //designates if there is a gender restriction against women
@@ -38,15 +39,31 @@ public class Bed {
                 false, "FFF000_200_F");
     }
 
-    public void setOccupant(User occupant) {
-        this.occupant = occupant;
-        this.occupant.setIsOccupyingBed(true);
+    public User currentOccupant() {
+        return ((User)Model.getAccountByEmail(this.occupantEmail));
+    }
+
+    public String getOccupantEmail() {
+        return this.occupantEmail;
+    }
+
+    public void setOccupantEmail(User occupant) {
+        this.occupantEmail = occupant.getEmail();
+        if (!this.isOccupied) {
+            modifyOccupant(occupant);
+        }
+    }
+
+    private void modifyOccupant(User occupant) {
+//        this.occupant = occupant;
+        occupant.setIsOccupyingBed(true);
+//        this.occupant.setOccupyingBed(true);
         this.isOccupied = true;
     }
 
-    public void removeOccupant() {
-        this.occupant.clearOccupiedBed();
-        this.occupant = null;
+    public void removeOccupant(User occupant) {
+        occupant.clearOccupiedBed();
+        this.occupantEmail = null;
         this.isOccupied = false;
     }
 
@@ -55,9 +72,9 @@ public class Bed {
         return id;
     }
 
-    public User getOccupant() {
-        return occupant;
-    }
+//    public User getOccupant() {
+//        return occupant;
+//    }
 
     public boolean getIsOccupied() {
         return isOccupied;

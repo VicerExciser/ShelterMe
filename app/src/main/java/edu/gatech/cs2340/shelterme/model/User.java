@@ -1,15 +1,9 @@
 package edu.gatech.cs2340.shelterme.model;
 
 import android.util.Log;
-import android.util.LongSparseArray;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
-
-import edu.gatech.cs2340.shelterme.model.Account;
 
 /**
  * Created by austincondict on 2/12/18.
@@ -40,7 +34,8 @@ public class User extends Account {
         this.age = age;
         this.sex = sex;
         this.isVeteran = false;
-        this.isOccupyingBed = false;
+        this.setIsOccupyingBed(false);
+//        this.setOccupyingBed(false);
         this.stayingAt = null;
 //        this.stayReports = new HashMap<>();
         this.stayReports = new Stack<StayReport>();
@@ -81,13 +76,15 @@ public class User extends Account {
     }
 
     public void addStayReport(StayReport stay) {
-        ((Stack<StayReport>)this.stayReports).push(stay);
+//        ((Stack<StayReport>)this.stayReports).push(stay);
+        ((List<StayReport>) this.stayReports).add(stay);
     }
 
     public StayReport getCurrentStayReport () {
         StayReport cur;
         if (!this.stayReports.isEmpty()) {
-            cur = ((Stack<StayReport>)this.stayReports).peek();
+//            cur = ((Stack<StayReport>)this.stayReports).peek();
+            cur = (this.stayReports).get(stayReports.size() - 1);
             if (!cur.isActive()) {
                 for (StayReport s : stayReports) {
                     if (s.isActive()) {
@@ -134,11 +131,17 @@ public class User extends Account {
 
     public void setIsOccupyingBed(boolean tf) {
         this.isOccupyingBed = tf;
-//        this.occupiedBed = bed;
+//        setOccupyingBed(tf);
     }
+
+//    public void setOccupyingBed(boolean tf) {
+//        this.isOccupyingBed = tf;
+////        setIsOccupyingBed(tf);
+//    }
 
     public void clearOccupiedBed() {
         setIsOccupyingBed(false);
+//        setOccupyingBed(false);
         this.setStayingAt(null);
     }
 
@@ -162,6 +165,10 @@ public class User extends Account {
                 && this.password == u.password;
 
     }
+
+//    public void setOccupyingBed(boolean occupyingBed) {
+//        isOccupyingBed = occupyingBed;
+//    }
 
 //    public Bed getOccupiedBed() {
 ////        return occupiedBed;
