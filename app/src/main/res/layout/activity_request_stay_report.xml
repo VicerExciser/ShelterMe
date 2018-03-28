@@ -25,14 +25,14 @@
             android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:fontFamily="serif" />
+            android:fontFamily="serif" />
 
         <TextView
             android:id="@+id/moreInfo"
             android:layout_width="match_parent"
             android:layout_height="68dp"
             android:layout_below="@+id/header"
-            app:fontFamily="serif"
+            android:fontFamily="serif"
             android:text="Request a stay:"
             android:textAlignment="center"
             android:textColor="@android:color/background_light"
@@ -52,7 +52,7 @@
                 android:text="Select a bed type:"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                app:fontFamily="serif" />
+                android:fontFamily="serif" />
 
             <Spinner
                 android:id="@+id/bedType"
@@ -60,7 +60,7 @@
                 android:layout_height="30dp"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
-                app:fontFamily="serif"
+                android:fontFamily="serif"
                 tools:textColor="@color/common_google_signin_btn_text_dark_default" />
 
             <TextView
@@ -69,7 +69,7 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:textSize="18sp"
-                app:fontFamily="serif"
+                android:fontFamily="serif"
                 android:textColor="@android:color/black"
                 android:text="Number of beds requested:" />
 
@@ -78,10 +78,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_marginTop="5dp"
-                android:entries="1 Bed"
+                android:entries="@string/one_bed"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
-                app:fontFamily="serif"
+                android:fontFamily="serif"
                 tools:textColor="@color/common_google_signin_btn_text_dark_default" />
 
             <CheckBox
@@ -98,7 +98,7 @@
                 android:text="By checking, I hearby declare that I have read and agreed to the Rules and Agreements of this shelter."
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                app:fontFamily="serif" />
+                android:fontFamily="serif" />
 
             <Button
                 android:id="@+id/submit"

@@ -30,7 +30,7 @@ public class StayReport {
     public StayReport(Shelter shelter, User account, ArrayList<Bed> bedlist) {
         this.setActive(true);
         this.setShelterName(shelter.getShelterName());
-        account.setStayingAt(shelter);
+//        account.setStayingAt(shelter);
         account.setIsOccupyingBed(true);
         setAccountEmail(account.getEmail());
         Date timestamp = (Calendar.getInstance().getTime());

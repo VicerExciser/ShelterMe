@@ -440,6 +440,8 @@ public class DBUtil {
             }
 
             ref.child("vacancies").setValue(s.getVacancies());
+            ref.child("familyCapacity").setValue(s.familyCapacity);
+            ref.child("singleCapacity").setValue(s.singleCapacity);
         } catch (Exception e) {
             Log.e("UpdateShelters: ", e.getMessage());
 //            updateShelterInfo(s);

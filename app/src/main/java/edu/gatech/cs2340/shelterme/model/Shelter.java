@@ -20,8 +20,8 @@ public class Shelter implements Parcelable {
 
     private String shelterName;
     private String shelterKey;
-    private int familyCapacity;     // # of family accommodations
-    private int singleCapacity;     // # of single-person beds
+    public int familyCapacity;     // # of family accommodations
+    public int singleCapacity;     // # of single-person beds
     private String capacityStr;
     private String restrictions;
 //    private boolean takesFamilies;
@@ -87,6 +87,8 @@ public class Shelter implements Parcelable {
         notes = parcel.readString();
         vacancies = parcel.readInt();
 //        beds = parcel.readHashMap();
+        singleCapacity = parcel.readInt();
+        familyCapacity = parcel.readInt();
     }
 
     public String toString() {
@@ -382,11 +384,11 @@ public class Shelter implements Parcelable {
     }
 
     public HashMap<String, Collection<Bed>> reserveBed() {
-        return reserveBed(1);
+        return reserveBed("Single", 1);
     }
 
     // Equivalent for checking in w/ a StayReport
-    public HashMap<String, Collection<Bed>> reserveBed(int numBeds) { //function takes in User and returns ID of bed(s) being reserved
+    public HashMap<String, Collection<Bed>> reserveBed(String type, int numBeds) { //function takes in User and returns ID of bed(s) being reserved
         User user = ((User) (Model.getInstance().getCurrUser()));
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null.");
@@ -395,11 +397,22 @@ public class Shelter implements Parcelable {
         } else if (user.getCurrentStayReport() != null && user.getCurrentStayReport().isActive()) {
             throw new IllegalArgumentException("User is currently checked in already at this or another shelter.");
         }
+
+        Shelter curShelter = Model.getInstance().verifyShelterParcel(this);
         String userKey = user.generateKey();
         String bedTypeFoundKey = findValidBedType(userKey);
 
-        Shelter curShelter = Model.getInstance().verifyShelterParcel(this);
-
+        if (type.equals("Family")) {
+            if (bedTypeFoundKey.charAt(0) != 'T') {
+                bedTypeFoundKey = "T" + bedTypeFoundKey.substring(1);
+            }
+            curShelter.familyCapacity -= numBeds;
+        } else if (type.equals("Single")) {
+            if (bedTypeFoundKey.charAt(0) != 'F') {
+                bedTypeFoundKey = "F" + bedTypeFoundKey.substring(1);
+            }
+            curShelter.singleCapacity -= numBeds;
+        }
 
         // ValidBedsFound is our structure containing all beds that must be updated in the database
         HashMap<String, Collection<Bed>> validBedsFound = new HashMap<>();
@@ -525,12 +538,12 @@ public class Shelter implements Parcelable {
                 if (b.getId().equals(id)) {
                     beds.add(b);
                     bedKeys.add(b.getSavedBedKey());
-                    occupied.remove(b);
                     curShelter.getBeds().get(b.getSavedBedKey()).put(id, b);
                     b.removeOccupant(user.getEmail());
                 }
             }
         }
+        occupied.removeAll(beds);
         for (String key : bedKeys) {
             if (bedKeys.size() > 1) {
                 Collection<Bed> beds1 = new ArrayList<>();
@@ -539,8 +552,18 @@ public class Shelter implements Parcelable {
                         beds1.add(b);
                     }
                 }
+                if (key.charAt(0) == 'T') {
+                    curShelter.familyCapacity += beds1.size();
+                } else if (key.charAt(0) == 'F') {
+                    curShelter.singleCapacity += beds1.size();
+                }
                 reserved.put(key, beds1);
             } else {
+                if (key.charAt(0) == 'T') {
+                    curShelter.familyCapacity += beds.size();
+                } else if (key.charAt(0) == 'F') {
+                    curShelter.singleCapacity += beds.size();
+                }
                 reserved.put(key, beds);
             }
         }
@@ -665,6 +688,8 @@ public class Shelter implements Parcelable {
         dest.writeString(this.phone);
         dest.writeString(this.notes);
         dest.writeInt(this.vacancies);
+        dest.writeInt(this.singleCapacity);
+        dest.writeInt(this.familyCapacity);
 //        dest.writeMap(this.beds);
     }
 

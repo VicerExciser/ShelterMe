@@ -18,7 +18,7 @@ public class User extends Account {
     private Sex sex;
     public boolean isVeteran;
     public boolean isOccupyingBed;
-    private Shelter stayingAt;
+//    private Shelter stayingAt;
 //    private HashMap<Long, StayReport> stayReports;
 //    private LongSparseArray<StayReport> stayReports;
     private List<StayReport> stayReports;
@@ -36,7 +36,7 @@ public class User extends Account {
         this.isVeteran = false;
         this.setIsOccupyingBed(false);
 //        this.setOccupyingBed(false);
-        this.stayingAt = null;
+//        this.stayingAt = null;
 //        this.stayReports = new HashMap<>();
         this.stayReports = new Stack<StayReport>();
         Log.e("USER_KEY", this.generateKey());
@@ -143,16 +143,16 @@ public class User extends Account {
     public void clearOccupiedBed() {
         setIsOccupyingBed(false);
 //        setOccupyingBed(false);
-        this.setStayingAt(null);
+//        this.setStayingAt(null);
     }
 
-    public Shelter getStayingAt() {
-        return this.stayingAt;
-    }
-
-    public void setStayingAt(Shelter currentShelter) {
-        this.stayingAt = currentShelter;
-    }
+//    public Shelter getStayingAt() {
+//        return this.stayingAt;
+//    }
+//
+//    public void setStayingAt(Shelter currentShelter) {
+//        this.stayingAt = currentShelter;
+//    }
 
     @Override
     public boolean equals(Object o) {

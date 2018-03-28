@@ -39,7 +39,6 @@ public class ViewSheltersPage extends AppCompatActivity {
     private AgeRange selectedAgeRange = AgeRange.ANYONE;
     private GenderAccepted selectedGender = GenderAccepted.ANY;
     private ListView shelterList;
-    private User currentUser;
 
 
     @Override
@@ -56,7 +55,7 @@ public class ViewSheltersPage extends AppCompatActivity {
         });
 
         shelterList = findViewById(R.id.shelterList);
-        currentUser = ((User)model.getCurrUser());
+        User currentUser = ((User) model.getCurrUser());
 
         //default to registered criteria
 //        final Button criteriaCheck = (Button) findViewById(R.id.yesCrit);
