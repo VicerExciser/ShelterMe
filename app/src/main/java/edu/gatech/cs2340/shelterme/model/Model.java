@@ -42,9 +42,13 @@ public class Model {
     private Model() {
         dbUtil = DBUtil.getInstance();
 
-        accounts = new HashMap<>();
-//        loadShelters();
-        shelters = new HashMap<>();
+//        accounts = new HashMap<>();
+//        DBUtil.initAccounts();
+//        shelters = new HashMap<>();
+//        DBUtil.initShelters();
+
+        accounts = DBUtil.getAccountListPointer();
+        shelters = DBUtil.getShelterListPointer();
     }
 
     // Map: <Email, Account>
@@ -141,11 +145,12 @@ public class Model {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
+                        dialog.dismiss();
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+//        sleepForSecond();
     }
 
     public void displayErrorMessage(String error, Context callerClass) {
@@ -156,12 +161,19 @@ public class Model {
                 .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // co nothing
+                        dialog.dismiss();
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+//        sleepForSecond();
     }
 
-
+    private void sleepForSecond() {
+        try {
+            java.util.concurrent.TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException ie) {
+            Log.e("StayReport success", "sleep() threw an InterruptedException");
+        }
+    }
 }

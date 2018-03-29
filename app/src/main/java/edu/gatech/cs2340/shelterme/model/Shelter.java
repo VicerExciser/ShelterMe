@@ -14,26 +14,27 @@ import java.util.*;
  * Created by austincondict on 2/18/18.
  */
 
-public class Shelter implements Parcelable{
+public class Shelter implements Parcelable {
     // Had to change shelterKey to String in the form: "s_1" for the sake of serialization
     // (throws DatabaseException otherwise)
 
     private String shelterName;
     private String shelterKey;
-    private int familyCapacity;     // # of family accommodations
-    private int singleCapacity;     // # of single-person beds
+    public int familyCapacity;     // # of family accommodations
+    public int singleCapacity;     // # of single-person beds
     private String capacityStr;
     private String restrictions;
 //    private boolean takesFamilies;
 
-//    private Location location;
+    //    private Location location;
     private double latitude;
     private double longitude;
     private String notes;
     private String phone;
     private String address;
 
-    private HashMap<String, LinkedHashMap<String, Bed>> beds;
+//    private HashMap<String, LinkedHashMap<String, Bed>> beds;
+    private HashMap<String, HashMap<String, Bed>> beds;
     private Bed lastBedAdded;
     private int vacancies;
 
@@ -53,7 +54,7 @@ public class Shelter implements Parcelable{
                    double latitude, String address, String specNotes, String num) {
         shelterKey = key;
         if (key != null && !shelterKey.contains("s_"))
-             shelterKey = "s_" + key;
+            shelterKey = "s_" + key;
         shelterName = name;
         this.capacityStr = capacity;
         this.restrictions = restrictions;
@@ -65,12 +66,13 @@ public class Shelter implements Parcelable{
         familyCapacity = 0;
         singleCapacity = 0;
         this.beds = new HashMap<>();
-        LinkedHashMap<String, Bed> occupiedBeds = new LinkedHashMap<>();
+//        LinkedHashMap<String, Bed> occupiedBeds = new LinkedHashMap<>();
+        HashMap<String, Bed> occupiedBeds = new HashMap<>();
         this.beds.put("O", occupiedBeds);
         if (restrictions != null)
             processRestrictions(this.restrictions);
         else
-            Log.v("Shelter", "restrictions for "+name+" were not found\n"+this.toString());
+            Log.v("Shelter", "restrictions for " + name + " were not found\n" + this.toString());
     }
 
     public Shelter(Parcel parcel) {
@@ -85,6 +87,8 @@ public class Shelter implements Parcelable{
         notes = parcel.readString();
         vacancies = parcel.readInt();
 //        beds = parcel.readHashMap();
+        singleCapacity = parcel.readInt();
+        familyCapacity = parcel.readInt();
     }
 
     public String toString() {
@@ -95,7 +99,7 @@ public class Shelter implements Parcelable{
     public String detail() {
         String buff = "============================================================================================\n";
         String description = String.format(" Shelter no. %s\n %s: %s\n Located at %s (%2.6f, %2.6f)\n Phone: %s\n " +
-                "Currently accepting: %s", this.shelterKey, this.shelterName, this.notes,
+                        "Currently accepting: %s", this.shelterKey, this.shelterName, this.notes,
                 this.address, this.longitude, this.latitude, this.phone, this.restrictions);
         if (!this.capacityStr.equals("N/A")) {
             description += " with a capacity of " + this.capacityStr;
@@ -162,7 +166,7 @@ public class Shelter implements Parcelable{
     // make this set totalCapacity & call:
     //   addNewBeds(int numberOfSingleBeds, boolean isFamily, boolean menOnly, boolean womenOnly,
     //       Age minAge, Age maxAge, boolean veteranOnly)
-    private void parseCapacity(String cp, boolean fm, boolean mo, boolean wo, int mna, int mxa, boolean vo ) {
+    private void parseCapacity(String cp, boolean fm, boolean mo, boolean wo, int mna, int mxa, boolean vo) {
 //        this.takesFamilies=fm;
         int singleBeds = 0;
         int familyBeds = 0;
@@ -205,19 +209,41 @@ public class Shelter implements Parcelable{
         }
         Age minAge, maxAge;
         switch (mna) {
-            case 0:  minAge = Age.MINAGE; break;
-            case 6:  minAge = Age.CHILDREN_BASE; break;
-            case 16: minAge = Age.YOUNGADULTS_BASE; break;
-            case 26: minAge = Age.ADULTS_BASE; break;
-            default: minAge = Age.MINAGE; break;
+            case 0:
+                minAge = Age.MINAGE;
+                break;
+            case 6:
+                minAge = Age.CHILDREN_BASE;
+                break;
+            case 16:
+                minAge = Age.YOUNGADULTS_BASE;
+                break;
+            case 26:
+                minAge = Age.ADULTS_BASE;
+                break;
+            default:
+                minAge = Age.MINAGE;
+                break;
         }
         switch (mxa) {
-            case 5:   maxAge = Age.BABIES; break;
-            case 15:  maxAge = Age.CHILDREN_CAP; break;
-            case 25:  maxAge = Age.YOUNGADULTS_CAP; break;
-            case 65:  maxAge = Age.ADULTS_CAP; break;
-            case 200: maxAge = Age.MAXAGE; break;
-            default:  maxAge = Age.MAXAGE; break;
+            case 5:
+                maxAge = Age.BABIES;
+                break;
+            case 15:
+                maxAge = Age.CHILDREN_CAP;
+                break;
+            case 25:
+                maxAge = Age.YOUNGADULTS_CAP;
+                break;
+            case 65:
+                maxAge = Age.ADULTS_CAP;
+                break;
+            case 200:
+                maxAge = Age.MAXAGE;
+                break;
+            default:
+                maxAge = Age.MAXAGE;
+                break;
         }
         //this.setVacancies(singleBeds + familyBeds);
         if (singleBeds > 0)
@@ -231,7 +257,8 @@ public class Shelter implements Parcelable{
         int val = -1;
         try {
             val = Integer.valueOf(text.trim());
-        } catch (NumberFormatException nfe) { }
+        } catch (NumberFormatException nfe) {
+        }
         return val;
     }
 
@@ -250,18 +277,20 @@ public class Shelter implements Parcelable{
         bedKey += maxAge.getAgeKeyVal();
         bedKey += veteranOnly ? "T" : "F";
         int lastId = lastBedAdded == null ? 0 : Integer.valueOf(lastBedAdded.getId().substring(4));
-                                                // trimming off the "bed_" part of Id ^
+        // trimming off the "bed_" part of Id ^
 
 
-        LinkedHashMap<String, Bed> bedType;
+//        LinkedHashMap<String, Bed> bedType;
+        HashMap<String, Bed> bedType;
         if (getBeds().containsKey(bedKey)) { // if this type of bed already exists, add it to the existing bed list
             bedType = getBeds().get(bedKey);
         } else {    // if this is a new bed type, create the new bed type and add it to the beds hashmap
-            bedType = new LinkedHashMap<>();
+//            bedType = new LinkedHashMap<>();
+            bedType = new HashMap<>();
             getBeds().put(bedKey, bedType);
         }
         for (int i = lastId + 1; i < lastId + numberOfBeds + 1; i++) {
-            Bed newBed = new Bed("bed_"+i, isFamily, menOnly, womenOnly, minAge, maxAge, veteranOnly, bedKey);
+            Bed newBed = new Bed("bed_" + i, isFamily, menOnly, womenOnly, minAge, maxAge, veteranOnly, bedKey);
             bedType.put(String.valueOf(newBed.getId()), newBed);
             this.vacancies++;
             if (isFamily)
@@ -342,7 +371,7 @@ public class Shelter implements Parcelable{
                     if (userAge > maxAge || userAge < minAge) { //make sure user is within the appropriate age range
                         thisBedOpen = false;
                     }
-                    if (((HashMap<String, Bed>)(curShelter.beds.get(bedKey))).size() == 0) { //cannot have 0 vacancies of this bed type to be valid for use
+                    if (((HashMap<String, Bed>) (curShelter.beds.get(bedKey))).size() == 0) { //cannot have 0 vacancies of this bed type to be valid for use
                         thisBedOpen = false;
                     }
                     if (thisBedOpen) {
@@ -355,12 +384,12 @@ public class Shelter implements Parcelable{
     }
 
     public HashMap<String, Collection<Bed>> reserveBed() {
-        return reserveBed(1);
+        return reserveBed("Single", 1);
     }
 
     // Equivalent for checking in w/ a StayReport
-    public HashMap<String, Collection<Bed>> reserveBed(int numBeds) { //function takes in User and returns ID of bed(s) being reserved
-        User user = ((User)(Model.getInstance().getCurrUser()));
+    public HashMap<String, Collection<Bed>> reserveBed(String type, int numBeds) { //function takes in User and returns ID of bed(s) being reserved
+        User user = ((User) (Model.getInstance().getCurrUser()));
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null.");
         } else if (user.isOccupyingBed()) {
@@ -368,39 +397,52 @@ public class Shelter implements Parcelable{
         } else if (user.getCurrentStayReport() != null && user.getCurrentStayReport().isActive()) {
             throw new IllegalArgumentException("User is currently checked in already at this or another shelter.");
         }
+
+        Shelter curShelter = Model.getInstance().verifyShelterParcel(this);
         String userKey = user.generateKey();
         String bedTypeFoundKey = findValidBedType(userKey);
 
-        Shelter curShelter = Model.getInstance().verifyShelterParcel(this);
-
+        if (type.equals("Family")) {
+            if (bedTypeFoundKey.charAt(0) != 'T') {
+                bedTypeFoundKey = "T" + bedTypeFoundKey.substring(1);
+            }
+            curShelter.familyCapacity -= numBeds;
+        } else if (type.equals("Single")) {
+            if (bedTypeFoundKey.charAt(0) != 'F') {
+                bedTypeFoundKey = "F" + bedTypeFoundKey.substring(1);
+            }
+            curShelter.singleCapacity -= numBeds;
+        }
 
         // ValidBedsFound is our structure containing all beds that must be updated in the database
         HashMap<String, Collection<Bed>> validBedsFound = new HashMap<>();
         // values will hold pointers to our newly reserved bed objects
         Collection<Bed> resValues = new ArrayList<>();
-        HashMap<String,Bed> validBeds = (HashMap<String, Bed>) curShelter.getBeds().get(bedTypeFoundKey);
+        HashMap<String, Bed> validBeds = (HashMap<String, Bed>) curShelter.getBeds().get(bedTypeFoundKey);
         Bed[] bedArr = new Bed[validBeds.values().size()];
-        bedArr = (Bed[])((validBeds.values().toArray(bedArr)));
+        bedArr = (Bed[]) ((validBeds.values().toArray(bedArr)));
 
-        LinkedHashMap<String, Bed> occupied = curShelter.getBeds().get("O");
+        // Necessary to even account for "O"?
+//        LinkedHashMap<String, Bed> occupied = curShelter.getBeds().get("O");
+        HashMap<String, Bed> occupied = curShelter.getBeds().get("O");
         if (occupied == null) {
-            occupied = new LinkedHashMap<>();
+//            occupied = new LinkedHashMap<>();
+            occupied = new HashMap<>();
             curShelter.beds.put("O", occupied);
         }
-        Collection<Bed> occValues = new ArrayList<>();
+//        Collection<Bed> occValues = new ArrayList<>();
 
         for (int i = 0; i < numBeds; i++) {
-            bedArr[i].setOccupantEmail(user);
+            bedArr[i].setOccupantEmail(user.getEmail());
             // remove the valid bed from this shelter's beds list & place in the occupied list
             occupied.put(bedArr[i].getId(), bedArr[i]);
-            occValues.add(bedArr[i]);
-            resValues.add(((HashMap<String, Bed>)(curShelter.getBeds().get(bedTypeFoundKey)))
+//            occValues.add(bedArr[i]);
+            resValues.add(((HashMap<String, Bed>) (curShelter.getBeds().get(bedTypeFoundKey)))
                     .remove(bedArr[i].getId()));
         }
         validBedsFound.put(bedTypeFoundKey, resValues);
         user.addStayReport(new StayReport(curShelter, user, (ArrayList<Bed>) resValues));
-        validBedsFound.put("O", occValues);
-//        values = curShelter.getBeds().get("O").values();
+//        validBedsFound.put("O", occValues);
         int newVac = curShelter.getVacancies() - numBeds;
         curShelter.setVacancies(newVac);
 
@@ -447,6 +489,7 @@ public class Shelter implements Parcelable{
         return validBedsFound;
     }
 
+    /*
     // TODO: Fix for Firebase compatibility
     // Clears all occupied beds for this shelter
     public void clearOccupiedBeds() {
@@ -454,8 +497,8 @@ public class Shelter implements Parcelable{
 //        DBUtil dbUtil = DBUtil.getInstance();
         for (String bedId : curShelter.beds.get("O").keySet()) {
             Bed bed = curShelter.beds.get("O").remove(bedId);
-            User occupant = bed.currentOccupant();
-            bed.removeOccupant(occupant);
+            User occupant = (User)Model.getAccountByEmail(bed.getOccupantEmail());
+            bed.removeOccupant(occupant.getEmail());
             occupant.clearOccupiedBed();
             StayReport curStay = occupant.getCurrentStayReport();
             if (curStay != null && curStay.isActive())
@@ -467,47 +510,75 @@ public class Shelter implements Parcelable{
             }
             curShelter.vacancies++;
         }
-
-//        dbUtil.updateShelterVacanciesAndBeds(curShelter);
-
     }
+    */
 
     // TODO: Fix for Firebase compatibility
     // Equivalent for checking out w/ a StayReport
-    public void undoReservation() {
-        User user = ((User)(Model.getInstance().getCurrUser()));
-        Shelter curShelter = Model.getInstance().verifyShelterParcel(this);
+    public HashMap<String, Collection<Bed>> undoReservation(StayReport curStay) {
+        Model model = Model.getInstance();
+        User user = ((User)(model.getCurrUser()));
+//        User user = ((User) (Model.getAccountByEmail(curStay.getAccountEmail())));
+        Shelter curShelter = model.verifyShelterParcel(this);
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null.");
         } else if (!user.isOccupyingBed()) {
             throw new IllegalArgumentException("User must have bed reserved.");
         }
-//        Bed bed = this.getBedOccupiedBy(user);
-        StayReport currentStay = user.getCurrentStayReport();
-        if (currentStay != null) {
-            currentStay.checkOut();
-            user.clearOccupiedBed();
-            /*for (Bed bed : currentStay.getReservedBeds()) {
-                if (bed != null) {
-                    bed.removeOccupant();
-                    String bedId = bed.getId();
-                    curShelter.beds.get("O").remove(bedId);
-                    curShelter.beds.get(bed.getSavedBedKey()).put(bedId, bed);
-                    curShelter.vacancies++;
-                }
-            } */
 
-        } //else {
-//            Model.getInstance().displayErrorMessage("No current shelter reservations found!", Shelter.this);
-//        }
-//        DBUtil dbUtil = DBUtil.getInstance();
-//        dbUtil.updateShelterVacanciesAndBeds(curShelter);
-//        dbUtil.updateUserOccupancyAndStayReports(user);
+        List<String> bedIds = curStay.getReservedBeds();
+        Collection<Bed> beds = new ArrayList<>();
+        HashMap<String, Collection<Bed>> reserved = new HashMap<>();
+        Set<String> bedKeys = new HashSet<>();
+
+        Collection<Bed> occupied = curShelter.getBeds().get("O").values();
+
+        for (String id : bedIds) {
+            for (Bed b : occupied) {
+                if (b.getId().equals(id)) {
+                    beds.add(b);
+                    bedKeys.add(b.getSavedBedKey());
+                    curShelter.getBeds().get(b.getSavedBedKey()).put(id, b);
+                    b.removeOccupant(user.getEmail());
+                }
+            }
+        }
+        occupied.removeAll(beds);
+        for (String key : bedKeys) {
+            if (bedKeys.size() > 1) {
+                Collection<Bed> beds1 = new ArrayList<>();
+                for (Bed b : beds) {
+                    if (b.getSavedBedKey().equals(key)) {
+                        beds1.add(b);
+                    }
+                }
+                if (key.charAt(0) == 'T') {
+                    curShelter.familyCapacity += beds1.size();
+                } else if (key.charAt(0) == 'F') {
+                    curShelter.singleCapacity += beds1.size();
+                }
+                reserved.put(key, beds1);
+            } else {
+                if (key.charAt(0) == 'T') {
+                    curShelter.familyCapacity += beds.size();
+                } else if (key.charAt(0) == 'F') {
+                    curShelter.singleCapacity += beds.size();
+                }
+                reserved.put(key, beds);
+            }
+        }
+
+        curStay.checkOut();
+        user.clearOccupiedBed();
+        int newVac = curShelter.getVacancies() + beds.size();
+        curShelter.setVacancies(newVac);
+
+        return reserved;
     }
 
     public Bed getBedOccupiedBy(User user) {
         for (Bed b : this.beds.get("O").values()) {
-            User occupant = b.currentOccupant();
+            User occupant = (User)Model.getAccountByEmail(b.getOccupantEmail());
             if (occupant != null && occupant.equals(user)) {
                 return b;
             }
@@ -617,6 +688,8 @@ public class Shelter implements Parcelable{
         dest.writeString(this.phone);
         dest.writeString(this.notes);
         dest.writeInt(this.vacancies);
+        dest.writeInt(this.singleCapacity);
+        dest.writeInt(this.familyCapacity);
 //        dest.writeMap(this.beds);
     }
 
@@ -637,11 +710,13 @@ public class Shelter implements Parcelable{
 //        return takesFamilies;
 //    }
 
-    public HashMap<String, LinkedHashMap<String, Bed>> getBeds() {
+//    public HashMap<String, LinkedHashMap<String, Bed>> getBeds() {
+    public HashMap<String, HashMap<String, Bed>> getBeds() {
         return beds;
     }
 
-    public void setBeds(HashMap<String, LinkedHashMap<String, Bed>> beds) {
+//    public void setBeds(HashMap<String, LinkedHashMap<String, Bed>> beds) {
+    public void setBeds(HashMap<String, HashMap<String, Bed>> beds) {
         this.beds = beds;
     }
 
@@ -666,4 +741,6 @@ public class Shelter implements Parcelable{
                 && this.address.equals(s.address)
                 && this.phone.equals(s.phone);
     }
+
+    // TODO: Implement an Overridden hashCode() method
 }

@@ -13,12 +13,12 @@ public class User extends Account {
 
 //    Question secQuest;
 //    String secAns;
-    private boolean isFamily;
+    public boolean isFamily;
     private int age;
     private Sex sex;
-    private boolean isVeteran;
-    private boolean isOccupyingBed;
-    private Shelter stayingAt;
+    public boolean isVeteran;
+    public boolean isOccupyingBed;
+//    private Shelter stayingAt;
 //    private HashMap<Long, StayReport> stayReports;
 //    private LongSparseArray<StayReport> stayReports;
     private List<StayReport> stayReports;
@@ -36,7 +36,7 @@ public class User extends Account {
         this.isVeteran = false;
         this.setIsOccupyingBed(false);
 //        this.setOccupyingBed(false);
-        this.stayingAt = null;
+//        this.stayingAt = null;
 //        this.stayReports = new HashMap<>();
         this.stayReports = new Stack<StayReport>();
         Log.e("USER_KEY", this.generateKey());
@@ -81,7 +81,7 @@ public class User extends Account {
     }
 
     public StayReport getCurrentStayReport () {
-        StayReport cur;
+        StayReport cur = null;
         if (!this.stayReports.isEmpty()) {
 //            cur = ((Stack<StayReport>)this.stayReports).peek();
             cur = (this.stayReports).get(stayReports.size() - 1);
@@ -89,12 +89,13 @@ public class User extends Account {
                 for (StayReport s : stayReports) {
                     if (s.isActive()) {
                         cur = s;
+                        break;
                     }
                 }
             }
-            return cur;
+//            return cur;
         }
-        return null;
+        return cur;
     }
 
     public String getName() {
@@ -142,16 +143,16 @@ public class User extends Account {
     public void clearOccupiedBed() {
         setIsOccupyingBed(false);
 //        setOccupyingBed(false);
-        this.setStayingAt(null);
+//        this.setStayingAt(null);
     }
 
-    public Shelter getStayingAt() {
-        return this.stayingAt;
-    }
-
-    public void setStayingAt(Shelter currentShelter) {
-        this.stayingAt = currentShelter;
-    }
+//    public Shelter getStayingAt() {
+//        return this.stayingAt;
+//    }
+//
+//    public void setStayingAt(Shelter currentShelter) {
+//        this.stayingAt = currentShelter;
+//    }
 
     @Override
     public boolean equals(Object o) {

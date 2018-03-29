@@ -39,30 +39,43 @@ public class Bed {
                 false, "FFF000_200_F");
     }
 
-    public User currentOccupant() {
-        return ((User)Model.getAccountByEmail(this.occupantEmail));
-    }
+//    public User currentOccupant() {
+//        return ((User)Model.getAccountByEmail(this.occupantEmail));
+//    }
 
     public String getOccupantEmail() {
         return this.occupantEmail;
     }
 
-    public void setOccupantEmail(User occupant) {
-        this.occupantEmail = occupant.getEmail();
+//    public void setOccupantEmail(User occupant) {
+//        this.occupantEmail = occupant.getEmail();
+//        if (!this.isOccupied) {
+//            modifyOccupant(occupant);
+//        }
+//    }
+
+    public void setOccupantEmail(String email) {
+        this.occupantEmail = email;
         if (!this.isOccupied) {
-            modifyOccupant(occupant);
+            modifyOccupant(email);
         }
     }
 
-    private void modifyOccupant(User occupant) {
+    private void modifyOccupant(String occupantEmail) {
 //        this.occupant = occupant;
-        occupant.setIsOccupyingBed(true);
+        ((User)Model.getAccountByEmail(occupantEmail)).setIsOccupyingBed(true);
 //        this.occupant.setOccupyingBed(true);
         this.isOccupied = true;
     }
 
-    public void removeOccupant(User occupant) {
-        occupant.clearOccupiedBed();
+//    public void removeOccupant(User occupant) {
+//        occupant.clearOccupiedBed();
+//        this.occupantEmail = null;
+//        this.isOccupied = false;
+//    }
+
+    public void removeOccupant(String email) {
+        ((User)Model.getAccountByEmail(email)).clearOccupiedBed();
         this.occupantEmail = null;
         this.isOccupied = false;
     }
