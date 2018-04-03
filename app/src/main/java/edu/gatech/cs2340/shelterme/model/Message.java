@@ -59,4 +59,9 @@ public class Message {
     public void address() {
         isAddressed = true;
     }
+
+    @Override
+    public String toString() {
+        return senderEmail + "\n" + timeSent;
+    }
 }
