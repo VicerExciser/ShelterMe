@@ -29,6 +29,12 @@ public class HomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
+        Button map = findViewById(R.id.mapButton);
+        map.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                startActivity(new Intent(HomePage.this, MapsActivity.class));
+            }
+        });
         Button logout = findViewById(R.id.logoutbutton);
         logout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {

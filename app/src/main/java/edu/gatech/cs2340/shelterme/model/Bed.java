@@ -63,7 +63,9 @@ public class Bed {
 
     private void modifyOccupant(String occupantEmail) {
 //        this.occupant = occupant;
-        ((User)Model.getAccountByEmail(occupantEmail)).setIsOccupyingBed(true);
+            User user = (User) Model.getAccountByEmail(occupantEmail);
+        if(user != null)
+        user.setIsOccupyingBed(true);
 //        this.occupant.setOccupyingBed(true);
         this.isOccupied = true;
     }
