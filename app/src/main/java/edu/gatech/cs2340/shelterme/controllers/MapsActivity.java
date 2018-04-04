@@ -154,7 +154,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng loc = new LatLng(33.7490, 84.3880);
+        LatLng loc = new LatLng(33.7490, -84.3880);
         List<Marker> markers = populateMap();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
         ready = true;
