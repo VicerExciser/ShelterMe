@@ -5,4 +5,24 @@ package edu.gatech.cs2340.shelterme.model;
  */
 
 public class UnlockRequest extends Message {
+    private String lockedUserEmail;
+
+    public UnlockRequest(User lockedUser, String message, Account sender) {
+        super(message, sender);
+        this.lockedUserEmail = lockedUser.getEmail();
+    }
+
+    public UnlockRequest() {
+        super();
+        this.lockedUserEmail = new User().getEmail();
+    }
+
+
+    public String getLockedUserEmail() {
+        return lockedUserEmail;
+    }
+
+    public void setLockedUserEmail(String lockedUserEmail) {
+        this.lockedUserEmail = lockedUserEmail;
+    }
 }

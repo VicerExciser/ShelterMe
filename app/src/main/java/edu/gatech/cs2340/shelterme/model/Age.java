@@ -25,4 +25,8 @@ public enum Age {
     public String getAgeKeyVal() {
         return ageKeyVal;
     }
+
+    public void setAgeKeyVal(String ageKeyVal) {
+        this.ageKeyVal = ageKeyVal;
+    }
 }
