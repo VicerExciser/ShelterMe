@@ -1,33 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.gatech.cs2340.shelterme.controllers.CreateShelter">
+    tools:context=".activity_create_shelter">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/Title"
+        android:layout_width="373dp"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="                            Create Shleter"
+        tools:layout_editor_absoluteX="6dp"
+        tools:layout_editor_absoluteY="3dp" />
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
-
-    <include layout="@layout/content_create_shelter" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <EditText
+        android:id="@+id/inputName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:ems="10"
+        android:hint="Name"
+        android:inputType="textPersonName"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="93dp" />
 
-</android.support.design.widget.CoordinatorLayout>
+    <EditText
+        android:id="@+id/inputAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Address"
+        android:inputType="textPersonName"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="161dp" />
+
+    <EditText
+        android:id="@+id/inputPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Phone Number"
+        android:inputType="textPersonName"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="232dp" />
+
+    <EditText
+        android:id="@+id/inputRestriction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Restrictions"
+        android:inputType="textPersonName"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="305dp" />
+
+    <EditText
+        android:id="@+id/inputCapacity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Capacity"
+        android:inputType="textPersonName"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="378dp" />
+
+    <Button
+        android:id="@+id/createButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create"
+        tools:layout_editor_absoluteX="279dp"
+        tools:layout_editor_absoluteY="446dp" />
+
+</android.support.constraint.ConstraintLayout>
