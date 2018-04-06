@@ -25,8 +25,10 @@ import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
 public class MainActivity extends AppCompatActivity {
+
     DBUtil dbUtil = DBUtil.getInstance();
     Model model = Model.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // MUST COMMENT THIS OUT TO PREVENT SHELTER DATA FROM BEING OVERWRITTEN
-        loadShelters();
+//        loadShelters();
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         model.getAllShelterDetails();
     }

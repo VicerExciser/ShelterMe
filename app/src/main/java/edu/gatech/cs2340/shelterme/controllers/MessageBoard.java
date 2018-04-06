@@ -11,8 +11,12 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import edu.gatech.cs2340.shelterme.R;
+import edu.gatech.cs2340.shelterme.model.Message;
+import edu.gatech.cs2340.shelterme.model.MessageBoardModel;
 
 public class MessageBoard extends AppCompatActivity {
 
@@ -20,17 +24,16 @@ public class MessageBoard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_board);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        ListView messageListView = (ListView) findViewById(R.id._messageListView);
+
+        ArrayAdapter<Message> allMessageArrayAdapter = new ArrayAdapter<Message>(this, android.R.layout.simple_list_item_1,
+                MessageBoardModel.messages);
+
+        messageListView.setAdapter(allMessageArrayAdapter);
+
+        ArrayAdapter<Message> unaddressedMessageArrayAdapter = new ArrayAdapter<Message>(this, android.R.layout.simple_list_item_1,
+                MessageBoardModel.unaddressedMessages);
     }
 
 }

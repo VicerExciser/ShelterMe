@@ -51,5 +51,6 @@
     <string name="title_activity_request_page">RequestPage</string>
     <string name="title_activity_stay_report">StayReport</string>
 
+    <string name="one_bed">1 Bed</string>
 
 </resources>

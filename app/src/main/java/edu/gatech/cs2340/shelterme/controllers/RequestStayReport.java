@@ -3,15 +3,26 @@
  */
 package edu.gatech.cs2340.shelterme.controllers;
 
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Spinner;
+import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -23,44 +34,194 @@ import edu.gatech.cs2340.shelterme.model.User;
 
 public class RequestStayReport extends AppCompatActivity {
 
+    DBUtil dbUtil = DBUtil.getInstance();
+    Model model = Model.getInstance();
+    private static final int MAX_BEDS_ALLOWED = 5;
+    private Shelter shelterParcel;
+    private boolean isSingle, isFam, agreed;//, acknowledged;
+    private String selectedBedType;
+    private Integer selctedNumber;
+    private ArrayList<Integer> singleNums;
+    private ArrayList<Integer> famNums;
+    private Spinner numBedsSpin;
+    private ArrayAdapter<Integer> singleAdapter;
+    private ArrayAdapter<Integer> famAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_stay_report);
 
         Intent intent = getIntent();
-        final Shelter shelterParcel = intent.getParcelableExtra("Shelter");
-        final Shelter shelter = Model.getInstance().verifyShelterParcel(shelterParcel);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        shelterParcel = intent.getParcelableExtra("Shelter");
+        final Shelter shelter = model.verifyShelterParcel(shelterParcel);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        TextView header = findViewById(R.id.header);
+        header.setText(shelter.getShelterName());
+
+        isFam = false;
+        isSingle = false;
+        final ArrayList<String> types = new ArrayList<>(1);
+        if (shelter.getSingleCapacity() > 0) {
+            types.add("Single");
+            isSingle = true;
+            if (shelter.getFamilyCapacity() > 0) {
+                types.add("Family");
+                isFam = true;
+            }
+        } else if (shelter.getFamilyCapacity() > 0) {
+                types.add("Family");
+                isFam = true;
+        }
+
+        Spinner bedTypeSpin = findViewById(R.id.bedType);
+        ArrayAdapter<String> btsAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, types.toArray(new String[types.size()]));
+        bedTypeSpin.setAdapter(btsAdapter);
+        bedTypeSpin.setSelection(0);
+        selectedBedType = types.get(0);
+        bedTypeSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedBedType = types.get(position);
+                updateNumBeds();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+
+        singleNums = new ArrayList<>(1);
+        if (isSingle) {
+            int sc = shelter.getSingleCapacity();
+            int max = sc < MAX_BEDS_ALLOWED ? sc : MAX_BEDS_ALLOWED;
+            for (int i = 1; i <= max; i++) {
+                singleNums.add(i);
+            }
+        }
+        singleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,
+                singleNums.toArray(new Integer[singleNums.size()]));
+
+        famNums = new ArrayList<>(1);
+        if (isFam) {
+            int fc = shelter.getFamilyCapacity();
+            int max = fc < MAX_BEDS_ALLOWED ? fc : MAX_BEDS_ALLOWED;
+            for (int i = 1; i <= max; i++) {
+                famNums.add(i);
+            }
+        }
+        famAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,
+                famNums.toArray(new Integer[famNums.size()]));
+
+        numBedsSpin = findViewById(R.id.numOfBeds);
+        updateNumBeds();
+        numBedsSpin.setSelection(0);
+        selctedNumber = (Integer)numBedsSpin.getSelectedItem();
+        numBedsSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selctedNumber = (Integer)numBedsSpin.getSelectedItem();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        agreed = false;
+        CheckBox agreeCheck = findViewById(R.id.checkAgreement);
+        agreeCheck.setChecked(agreed);
+        agreeCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                agreed = isChecked;
+            }
+        });
+
+        Button submit = findViewById(R.id.submit);
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    HashMap<String, Collection<Bed>> reserved = shelter.reserveBed(/*numBedsReserved*/);
-                    for (String s : reserved.keySet()) {
-                        Log.e("BED_KEY", s);
-                        for (Bed b : reserved.get(s)) {
-                            Log.e("\nKEY_ID", b.getId());
+                boolean success = true;
+                User user = (User)model.getCurrUser();
+                if (agreed) {
+                    if (shelter.getVacancies() >= selctedNumber) {
+                        try {
+                            HashMap<String, Collection<Bed>> reserved = shelter.reserveBed(selectedBedType, selctedNumber);
+                            for (String s : reserved.keySet()) {
+                                Log.e("BED_KEY", s);
+                                for (Bed b : reserved.get(s)) {
+                                    Log.e("\nKEY_ID", b.getId());
+                                }
+                            }
+                            dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, true);
+                            dbUtil.updateUserOccupancyAndStayReports(user);
+                        } catch (IllegalArgumentException iae) {
+                            model.displayErrorMessage(iae.getMessage(), RequestStayReport.this);
+                            success = false;
                         }
+                    } else {
+                        model.displayErrorMessage("This shelter does not have "
+                                + String.valueOf(selctedNumber) + " bed(s) available", RequestStayReport.this);
+                        success = false;
                     }
-                    User user = (User)Model.getInstance().getCurrUser();
-                    DBUtil dbUtil = DBUtil.getInstance();
-                    dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, user);
-                    dbUtil.updateUserOccupancyAndStayReports(user);
-                } catch (IllegalArgumentException iae) {
-                    Model.getInstance().displayErrorMessage(iae.getMessage(), RequestStayReport.this);
+                }else {
+                    model.displayErrorMessage("Must agree to shelter terms to submit a request",
+                            RequestStayReport.this);
+                    success = false;
+                }
+                if (success) {
+                    @SuppressLint("DefaultLocale") String message = String.format("Your reservation for %d bed(s) "
+                            + "at %s was confirmed for %s", selctedNumber, shelter.getShelterName(),
+                            user.getCurrentStayReport().getCheckInDate());
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(RequestStayReport.this);
+                    dialog.setTitle("Success!").setMessage(message)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    returnToDetailsPage();
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert).show();
                 }
             }
         });
 
+        Button cancel = findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                returnToDetailsPage();
+            }
+        });
 
+    }
 
+    private void returnToDetailsPage() {
+        Shelter shelter = model.verifyShelterParcel(shelterParcel);
+        Intent newIntent = new Intent(RequestStayReport.this, ShelterDetailsPage.class);
+        newIntent.putExtra("Shelter", shelter);
+//        try {
+//            java.util.concurrent.TimeUnit.SECONDS.sleep(1);
+//        } catch (InterruptedException ie) {
+//            Log.e("StayReport success", "sleep() threw an InterruptedException");
+//        }
+        startActivity(newIntent);
+    }
+
+    private void updateNumBeds() {
+        if (selectedBedType.equals("Single")) {
+            numBedsSpin.setAdapter(singleAdapter);
+        }
+        else if (selectedBedType.equals("Family")) {
+            numBedsSpin.setAdapter(famAdapter);
+        }
     }
 
 }
 
 // Check that vacancies > numBedsReserved
-// Use Shelter.reserveBed for checking in, and Shelter.clearOccupiedBeds for checking out
+// Use Shelter.reserveBed for checking in, and Shelter.undoReservation for checking out

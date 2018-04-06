@@ -45,8 +45,6 @@ public class RegistrationPage extends AppCompatActivity {
     private Spinner securityQuestionSpinner;
     private Spinner selectSexSpinner;
     private Spinner accountTypeSpinner;
-    private Button submitButton;
-    private Button cancelButton;
     private TextView sexPrompt;
     private TextView dobPrompt;
     private TextView powPrompt;
@@ -110,14 +108,14 @@ public class RegistrationPage extends AppCompatActivity {
         accountTypeSpinner.setAdapter(adapter2);
         accountTypeSpinner.setSelection(0);
 
-        submitButton = findViewById(R.id.submitButton);
+        Button submitButton = findViewById(R.id.submitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 validateInputs();
             }
         });
-        cancelButton = findViewById(R.id.cancelButton);
+        Button cancelButton = findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

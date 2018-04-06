@@ -78,6 +78,13 @@
             android:label="@string/title_activity_message_board"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".controllers.MapsActivity"
+            android:label="MapsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDyslbp96nQQ9EtbkReICW9jxDjDMoLgu8"/>
+        <activity
             android:name=".controllers.RequestPage"
             android:label="@string/title_activity_request_page"
             android:theme="@style/AppTheme.NoActionBar" />

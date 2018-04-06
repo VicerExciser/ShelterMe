@@ -8,4 +8,79 @@
     tools:context="edu.gatech.cs2340.shelterme.controllers.AdminHomePage"
     tools:showIn="@layout/activity_admin_home_page">
 
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#000000"
+        tools:layout_editor_absoluteY="8dp">
+
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#CEF6EC"
+            android:text="Log Out" />
+
+        <TextView
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="44dp"
+            android:fontFamily="cursive"
+            android:text="ShelterMe"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/logo"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@mipmap/cssocialgood" />
+
+        <Button
+            android:id="@+id/manageAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="@android:dimen/notification_large_icon_height"
+            android:layout_above="@+id/viewRequest"
+            android:layout_alignEnd="@+id/viewRequest"
+            android:layout_alignLeft="@+id/viewRequest"
+            android:layout_alignRight="@+id/viewRequest"
+            android:layout_alignStart="@+id/viewRequest"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#FBEFF2"
+            android:text="Manage User Accounts" />
+
+        <Button
+            android:id="@+id/viewRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="@android:dimen/notification_large_icon_height"
+            android:layout_above="@+id/addShelter"
+            android:layout_alignEnd="@+id/addShelter"
+            android:layout_alignLeft="@+id/addShelter"
+            android:layout_alignRight="@+id/addShelter"
+            android:layout_alignStart="@+id/addShelter"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#F8E0E6"
+            android:text="View Pending Requests" />
+
+        <Button
+            android:id="@+id/addShelter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:background="@android:drawable/bottom_bar"
+            android:backgroundTint="#F6CED8"
+            android:text="Add New Shelter" />
+
+    </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

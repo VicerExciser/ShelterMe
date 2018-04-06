@@ -13,7 +13,7 @@ import android.view.View;
 
 import edu.gatech.cs2340.shelterme.R;
 
-public class RequestPage extends AppCompatActivity {
+public class SendAdminRequest extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
