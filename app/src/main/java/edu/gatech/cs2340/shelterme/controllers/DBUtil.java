@@ -36,7 +36,7 @@ import static android.content.ContentValues.TAG;
 
 public class DBUtil {
 
-    public static final DBUtil ourInstance = new DBUtil();
+    public static volatile DBUtil dbUtilInstance;// = new DBUtil();
 
     private final Map<String, User> users = new HashMap<String, User>();
     private final Map<String, Admin> admins = new HashMap<String, Admin>();
@@ -46,41 +46,25 @@ public class DBUtil {
 
     // Write a message to the database
     private static FirebaseDatabase database;// = FirebaseDatabase.getInstance();
-//    const root = firebase.database().ref();
     private static DatabaseReference rootRef;// = database.getReference(/*"message"*/);
-
     private static DatabaseReference usersRef;// = rootRef.child("users");
-
     private static DatabaseReference employeesRef;// = rootRef.child("employees");
     private static DatabaseReference adminsRef;// = rootRef.child("admins");
     private static DatabaseReference sheltersRef;// = rootRef.child("shelters");
 
+    public static DBUtil getInstance() {
+
+        return dbUtilInstance;
+    }
 
     // TODO: Add ChildUpdateListeners, etc. to DBReferences
-
-
-//    myRef.setValue("Hello, World!");
-
-    // Read from the database
-//myRef.addValueEventListener(new ValueEventListener() {
-//        @Override
-//        public void onDataChange(DataSnapshot dataSnapshot) {
-//            // This method is called once with the initial value and again
-//            // whenever data at this location is updated.
-//            String value = dataSnapshot.getValue(String.class);
-//            Log.d(TAG, "Value is: " + value);
-//        }
-//
-//        @Override
-//        public void onCancelled(DatabaseError error) {
-//            // Failed to read value
-//            Log.w(TAG, "Failed to read value.", error.toException());
-//        }
-//    });
+    /*  A note on ensuring Firebase read/writes are thread-safe:
+        Enclose variables that can be accessed by more than one thread in a synchronized block.
+        This approach will prevent one thread from reading the variable while another is writing to it.
+     */
 
     private DBUtil() {
-//        accountList = Model.getAccountListPointer();
-//        shelterList = Model.getShelterListPointer();
+
 
         database = FirebaseDatabase.getInstance();
 //        database.setPersistenceEnabled(true);
@@ -98,9 +82,12 @@ public class DBUtil {
            to update the database contents whenever data is changed
          */
 
+        // Read from the database
         usersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                 try {
                     for (DataSnapshot child : children) {
@@ -115,7 +102,10 @@ public class DBUtil {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) { }
+            public void onCancelled(DatabaseError databaseError) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", databaseError.toException());
+            }
          });
 
         employeesRef.addValueEventListener(new ValueEventListener() {
@@ -180,9 +170,6 @@ public class DBUtil {
         return (HashMap<String, Shelter>)shelterList;
     }
 
-    public static DBUtil getInstance() {
-        return ourInstance;
-    }
 
     public static DatabaseReference getRef() {
         return database.getReference();
@@ -253,7 +240,6 @@ public class DBUtil {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Employee emp = dataSnapshot.getValue(Employee.class);
-//                Model.getAccountListPointer().put(emp.getEmail(), emp);
                 accountList.put(emp.getEmail(), emp);
             }
 
@@ -274,14 +260,12 @@ public class DBUtil {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Shelter shelter = dataSnapshot.getValue(Shelter.class);
-//                Model.getShelterListPointer().put(shelter.getShelterName(), shelter);
                 shelterList.put(shelter.getShelterName(), shelter);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Shelter shelter = dataSnapshot.getValue(Shelter.class);
-//                Model.getShelterListPointer().put(shelter.getShelterName(), shelter);
                 shelterList.put(shelter.getShelterName(), shelter);
             }
 
@@ -298,23 +282,12 @@ public class DBUtil {
 
     // Primary key = email (String up to '@' symbol)
     public void addAccount(Account newAccount) {
-//        String branch = "";
-//        if (newAccount instanceof User) {
-//            branch = "users";
-//        } else if (newAccount instanceof Employee) {
-//            branch = ""
-//        } else if (newAccount instanceof Admin) {
-//
-//        }
         String branch = newAccount instanceof User ? "users"
                 : (newAccount instanceof Employee ? "employees"
                 : (newAccount instanceof Admin ? "admins" : ""));
         if (branch.isEmpty()) return;
-//        DatabaseReference newAcctRef = rootRef.child(branch).push();
-//        newAccount.setID(newAcctRef.getKey());
         String key = newAccount.getEmail().substring(0, newAccount.getEmail().indexOf('@'));
         rootRef.child(branch).child(key).setValue(newAccount,
-//        newAcctRef.setValue(newAccount,
                 new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -378,10 +351,7 @@ public class DBUtil {
 
     // Primary key = shelterKey_shelterName
     public void addShelter(Shelter newShelter) {
-//        DatabaseReference newSheltRef = sheltersRef.push();
-//        newShelter.setDbID(newSheltRef.getKey());
         String key = newShelter.getShelterKey() + "_" + newShelter.getShelterName();
-//        newSheltRef.setValue(newShelter,
         sheltersRef.child(key).setValue(newShelter,
                 new DatabaseReference.CompletionListener() {
             @Override
@@ -396,8 +366,6 @@ public class DBUtil {
         sheltersRef.child(key).child("beds").setValue(newShelter.getBeds());
 
     }
-
-//    FirebaseDatabase ref = FirebaseDatabase.getInstance("https://shelterme-2340.firebaseio.com/");
 
     public void updateShelterVacanciesAndBeds(Shelter s, HashMap<String, Collection<Bed>> reserved,
                                               boolean reserving) {
@@ -425,18 +393,12 @@ public class DBUtil {
 //                            String occPath = String.format("O/%s", bed.getId());
 //                            Log.e("occPath = ", occPath);
 //                    ref.child(occPath).setValue(bed);
-                                bedsRef.child(occPath)/*.child(bed.getId())*/.setValue(bed);
+                                bedsRef.child(occPath).setValue(bed);
                             } else {
                                 bedsRef.child(occPath).removeValue();
                                 bedsRef.child(jsonPath).setValue(bed);
                             }
                         }
-//                    }
-//                } else {
-//                    for (Bed bed : reserved.get(bedKey)) {
-//                        String occPath = String.format("O/%s", bed.getId());
-//                    }
-//                }
             }
 
             ref.child("vacancies").setValue(s.getVacancies());

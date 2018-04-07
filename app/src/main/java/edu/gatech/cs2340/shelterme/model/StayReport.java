@@ -102,4 +102,21 @@ public class StayReport {
     }
 
 
+    @Override
+    public boolean equals(Object other) {
+//        if (other == this) return true;
+        return (other == this) || ((other instanceof StayReport)
+                && ((StayReport) other).checkInDate.equalsIgnoreCase(this.checkInDate)
+                && ((StayReport) other).shelterName.equalsIgnoreCase(this.shelterName)
+                && ((StayReport) other).accountEmail.equalsIgnoreCase(this.accountEmail));
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + this.checkInDate.toLowerCase().hashCode();
+        result = 31 * result + this.shelterName.toLowerCase().hashCode();
+        result = 31 * result + this.accountEmail.toLowerCase().hashCode();
+        return result;
+    }
 }

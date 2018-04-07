@@ -131,7 +131,7 @@
             android:layout_alignLeft="@+id/log"
             android:layout_alignStart="@+id/log"
             android:layout_below="@+id/logo1"
-            app:srcCompat="@mipmap/cssocialgood" />
+            app:srcCompat="@mipmap/cs_social_good" />
 
     </RelativeLayout>
 

@@ -7,10 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Bed;
@@ -35,7 +33,7 @@ public class HomePage extends AppCompatActivity {
                 startActivity(new Intent(HomePage.this, MapsActivity.class));
             }
         });
-        Button logout = findViewById(R.id.logoutbutton);
+        Button logout = findViewById(R.id.logoutButton);
         logout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 android.content.Intent myIntent1 = new android.content.Intent(view.getContext(), MainActivity.class);

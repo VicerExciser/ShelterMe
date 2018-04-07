@@ -43,6 +43,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean updated = false;
     private boolean ready = false;
 
+    int updateCounter = 0;
+    final int updatesForInit = 2;   // signifies initialization is complete (to be compared against updateCounter)
+    boolean ignoreUpdate = false;   // to avoid unnecessary subroutine calls
+
 //    private enum GenderAccepted {
 //        ANY("Any gender"),
 //        MEN("Men only"),
@@ -70,21 +74,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         shelters = new HashMap<>(Model.getShelterListPointer());
 
-        showAllCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
+        CompoundButton.OnCheckedChangeListener checkListen = new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                showAll = isChecked;
+                showAll = updateCounter >= updatesForInit ? isChecked : showAll;
                 updated = true;
-                updateSearch(familyCheck.isChecked());
+                Log.e("OnCheckedChangeListener", "showAll checked = "+showAll);
+                if (updateCounter != 0)
+                    updateSearch(familyCheck.isChecked());
+                else
+                    updateCounter++;
             }
-        });
+        };
         // For initially displaying all shelters:
         showAllCheck.post(new Runnable() {
             @Override
             public void run() {
-                showAllCheck.setChecked(showAll);
+                showAllCheck.setChecked(true);
+                Log.e("Maps runnable", "showAll should be checked");
             }
         });
+//        showAllCheck.setOnCheckedChangeListener(null);
+//        showAllCheck.setChecked(true);
+        showAllCheck.setOnCheckedChangeListener(checkListen);
 
         ArrayAdapter<String> adapterGen = new ArrayAdapter(this,android.R.layout.simple_spinner_item, GenderAccepted.values());
         adapterGen.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -93,17 +104,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         familyCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // TODO: Incorporate other search criteria to be applied?
-//                showAll = false;
-                showAllCheck.setChecked(false);
+                if (isChecked && showAllCheck.isChecked()) {
+                    if (updateCounter >= updatesForInit) {
+                        ignoreUpdate = true;
+                        showAllCheck.setChecked(false);
+                        ignoreUpdate = false;
+                    }
+                }
                 updated = true;
-                updateSearch(isChecked);
+                if (updateCounter != 0)
+                    updateSearch(isChecked);
+                else
+                    updateCounter++;
             }
         });
 
         genderSpinMap.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                showAllCheck.setChecked(false);
+                if (updateCounter >= updatesForInit) {
+                    ignoreUpdate = true;
+                    showAllCheck.setChecked(false);
+                    ignoreUpdate = false;
+                }
                 switch (position) {
                     case 0:
                         selectedGender = GenderAccepted.ANY;
@@ -116,13 +139,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         break;
                 }
                 updated = true;
-                updateSearch(familyCheck.isChecked());
+                if (updateCounter != 0)
+                    updateSearch(familyCheck.isChecked());
+                else
+                    updateCounter++;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
         });
-
     }
 
     @Override
@@ -152,46 +177,47 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             //}
             //System.out.println("IN THE LOOOOOOOOOOOOOOOOOOP");
         //}
-        updated = false;
+        updated = ignoreUpdate = false;
         return markers;
     }
 
 
     private void updateSearch(boolean isChecked) {
-        shelters.clear();
-        if (showAll) {
-            for (Shelter s : Model.getShelterListPointer().values()) {
-                shelters.put(s.getShelterName(), s);
-            }
-        } else {
-            for (Shelter s : Model.getShelterListPointer().values()) {
-                for (String key : s.getBeds().keySet()) {
-                    if (key.length() > 1) {
-                        //Log.e("ViewShelters", "key = " + key);
-                        if (familyChoiceMatchesKey(key, isChecked) && s.getVacancies() > 0) {
-                            if (genderChoiceMatchesKey(key)) {
-                                shelters.put(s.getShelterName(), s);
+        if (!ignoreUpdate) {
+            shelters.clear();
+            updateCounter++;
+            if (showAll) {
+                for (Shelter s : Model.getShelterListPointer().values()) {
+                    shelters.put(s.getShelterName(), s);
+                }
+            } else {
+                for (Shelter s : Model.getShelterListPointer().values()) {
+                    for (String key : s.getBeds().keySet()) {
+                        if (key.length() > 1) {
+                            if (familyChoiceMatchesKey(key, isChecked) && s.getVacancies() > 0) {
+                                if (genderChoiceMatchesKey(key)) {
+                                    shelters.put(s.getShelterName(), s);
+                                }
                             }
                         }
                     }
                 }
             }
+            if (ready) {
+                populateMap();
+            }
         }
-        if(ready) {
-            populateMap();
-        }
-        //updateResults();
+        Log.e("updateSearch", "updateCounter = "+updateCounter);
     }
 
     private boolean genderChoiceMatchesKey(String key) {
-//        Log.e("ViewShelters", key);
         boolean match = false;
         if ((selectedGender.equals(GenderAccepted.MEN) && key.charAt(1) == 'T')
                 ^ (selectedGender.equals(GenderAccepted.WOMEN) && key.charAt(2) == 'T')) {
             match = true;
         }
         else if (selectedGender.equals(GenderAccepted.ANY)
-                /*||*/ && (key.charAt(1) == 'F' && key.charAt(2) == 'F')) {
+                && (key.charAt(1) == 'F' && key.charAt(2) == 'F')) {
             match = true;
         }
         return match;
@@ -202,7 +228,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (famChecked && key.charAt(0) == 'T') {
             match = true;
         }
-        else if (famChecked == false && key.charAt(0) == 'F')//key.charAt(1) == 'F' &&  key.charAt(2) == 'F') // FFF000_200_F
+        else if (!famChecked && key.charAt(0) == 'F')//key.charAt(1) == 'F' &&  key.charAt(2) == 'F') // FFF000_200_F
             match = true;
         return match;
     }

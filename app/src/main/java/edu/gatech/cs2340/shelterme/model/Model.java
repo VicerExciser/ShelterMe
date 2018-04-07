@@ -22,34 +22,34 @@ import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.controllers.DBUtil;
 
 
-// SINGLETON
+// SINGLETON -- Updated to be Thread-Safe for Synchronization
 public class Model {
-    private static final Model ourInstance = new Model();
-    // ^ when exactly does this get executed?
-
+    private static volatile Model modelInstance;
+    private static volatile DBUtil dbUtil;
     private static final String TAG = "Model";
-
-    private DBUtil dbUtil;// = DBUtil.getInstance();
 
     private static HashMap<String, Account> accounts;
     private static HashMap<String, Shelter> shelters;
     private Account currUser;
 
-    public static Model getInstance() {
-        return ourInstance;
-    }
-
     private Model() {
         dbUtil = DBUtil.getInstance();
-
-//        accounts = new HashMap<>();
-//        DBUtil.initAccounts();
-//        shelters = new HashMap<>();
-//        DBUtil.initShelters();
-
         accounts = DBUtil.getAccountListPointer();
         shelters = DBUtil.getShelterListPointer();
     }
+
+    public static Model getInstance() {
+        if (modelInstance == null) {
+            synchronized (Model.class) {
+                if (modelInstance == null) {
+                    modelInstance = new Model();
+                }
+            }
+        }
+        return modelInstance;
+    }
+
+
 
     // Map: <Email, Account>
     public static HashMap<String, Account> getAccountListPointer() {
