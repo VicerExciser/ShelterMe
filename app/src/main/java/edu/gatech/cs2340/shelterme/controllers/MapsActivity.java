@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.gatech.cs2340.shelterme.R;
+import edu.gatech.cs2340.shelterme.model.GenderAccepted;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
@@ -33,32 +34,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap mMap;
     private Model model = Model.getInstance();
-    //private List<Shelter> shelters = new ArrayList<>();
-
     private ArrayAdapter<String> adapter;
     private HashMap<String, Shelter> shelters;
     //private Model model = Model.getInstance();
-    private boolean showAll;
+    private boolean showAll = true;
     private GenderAccepted selectedGender = GenderAccepted.ANY;
     //private ListView shelterList;
     private boolean updated = false;
     private boolean ready = false;
 
-    private enum GenderAccepted {
-        ANY("Any gender"),
-        MEN("Men only"),
-        WOMEN("Women only");
-
-        private final String _msg;
-        GenderAccepted(String msg) { _msg = msg; }
-        public String toString() { return _msg; }
-    }
+//    private enum GenderAccepted {
+//        ANY("Any gender"),
+//        MEN("Men only"),
+//        WOMEN("Women only");
+//
+//        private final String _msg;
+//        GenderAccepted(String msg) { _msg = msg; }
+//        public String toString() { return _msg; }
+//    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_activity);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -69,7 +69,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         final CheckBox showAllCheck = (CheckBox) findViewById(R.id.showAllMap);
 
         shelters = new HashMap<>(Model.getShelterListPointer());
-        System.out.print(shelters);
+
         showAllCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -78,29 +78,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 updateSearch(familyCheck.isChecked());
             }
         });
-        ArrayAdapter<String> adapterGen = new ArrayAdapter(this,android.R.layout.simple_spinner_item, MapsActivity.GenderAccepted.values());
+        // For initially displaying all shelters:
+        showAllCheck.post(new Runnable() {
+            @Override
+            public void run() {
+                showAllCheck.setChecked(showAll);
+            }
+        });
+
+        ArrayAdapter<String> adapterGen = new ArrayAdapter(this,android.R.layout.simple_spinner_item, GenderAccepted.values());
         adapterGen.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinMap.setAdapter(adapterGen);
 
-        // Omit shelters where this user is ineligible to stay  <- nah
-
-
-        //adapter = new ArrayAdapter<>(MapsActivity.this, R.layout.list_item, R.id.shelter_name,
-          //      shelters.keySet().toArray(new String[shelters.keySet().size()]));
-        //shelterList.setAdapter(adapter);
-
-
-
         familyCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO: Incorporate other search criteria to be applied
+                // TODO: Incorporate other search criteria to be applied?
 //                showAll = false;
                 showAllCheck.setChecked(false);
                 updated = true;
                 updateSearch(isChecked);
             }
         });
-
 
         genderSpinMap.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -125,30 +123,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onNothingSelected(AdapterView<?> parent) { }
         });
 
-        //SearchView inputSearch = findViewById(R.id.inputSearch);
-        //inputSearch.setQueryHint("Search by Name");
-//        inputSearch.setSelected(true);
-        //inputSearch.setIconifiedByDefault(false);
-        //inputSearch.setSelected(false);
-        //inputSearch.setImeOptions(1);
-        //inputSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            //@Override
-            //public boolean onQueryTextSubmit(String query) {
-              //  MapsActivity.this.adapter.getFilter().filter(query);
-               // showAllCheck.setChecked(false);
-                //return false;
-            //}
-
-            //@Override
-            //public boolean onQueryTextChange(String newText) {
-                //MapsActivity.this.adapter.getFilter().filter(newText);
-                //return false;
-            //}
-        //});
-
-
-        if (!showAllCheck.isChecked())
-            showAllCheck.setChecked(true);
     }
 
     @Override
@@ -183,10 +157,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    //filling spinners
-
-
-
     private void updateSearch(boolean isChecked) {
         shelters.clear();
         if (showAll) {
@@ -213,11 +183,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //updateResults();
     }
 
-    /*private void updateResults() {
-        adapter = new ArrayAdapter<>(MapsActivity.this, R.layout.list_item, R.id.shelter_name,
-                shelters.keySet().toArray(new String[shelters.keySet().size()]));
-        shelterList.setAdapter(adapter);
-    }*/
     private boolean genderChoiceMatchesKey(String key) {
 //        Log.e("ViewShelters", key);
         boolean match = false;
@@ -230,8 +195,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             match = true;
         }
         return match;
-
     }
+
     private boolean familyChoiceMatchesKey(String key, boolean famChecked) {
         boolean match = false;
         if (famChecked && key.charAt(0) == 'T') {
@@ -241,6 +206,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             match = true;
         return match;
     }
-
 
 }

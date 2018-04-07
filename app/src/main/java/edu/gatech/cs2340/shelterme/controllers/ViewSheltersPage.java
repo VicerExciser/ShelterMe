@@ -25,6 +25,7 @@ import java.util.List;
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Account;
 import edu.gatech.cs2340.shelterme.model.Age;
+import edu.gatech.cs2340.shelterme.model.GenderAccepted;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.User;
@@ -54,8 +55,6 @@ public class ViewSheltersPage extends AppCompatActivity {
         });
 
         shelterList = findViewById(R.id.shelterList);
-        //User currentUser = ((User) model.getCurrUser());
-
 
         final Spinner ageSpin = (Spinner) findViewById(R.id.ageSpinner);
         final Spinner genderSpin = (Spinner) findViewById(R.id.genderSpinner);
@@ -63,7 +62,13 @@ public class ViewSheltersPage extends AppCompatActivity {
 
         final CheckBox showAllCheck = (CheckBox) findViewById(R.id.showAll);
         showAll = true;
-        showAllCheck.setChecked(showAll);
+        // To display all shelters by default:
+        showAllCheck.post(new Runnable() {
+            @Override
+            public void run() {
+                showAllCheck.setChecked(showAll);
+            }
+        });
 
         showAllCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -72,7 +77,6 @@ public class ViewSheltersPage extends AppCompatActivity {
                 updateSearch(familyCheck.isChecked());
             }
         });
-
 
         //filling spinners
         ArrayAdapter<String> adapterAge = new ArrayAdapter(this,android.R.layout.simple_spinner_item, AgeRange.values());
@@ -181,8 +185,8 @@ public class ViewSheltersPage extends AppCompatActivity {
         });
 
 
-        if (!showAllCheck.isChecked())
-            showAllCheck.setChecked(true);
+//        if (!showAllCheck.isChecked())
+//            showAllCheck.setChecked(true);
     }
 
     private void updateSearch(boolean isChecked) {
@@ -300,14 +304,14 @@ public class ViewSheltersPage extends AppCompatActivity {
         public String toString() { return _msg; }
     }
 
-    private enum GenderAccepted {
-        ANY("Any gender"),
-        MEN("Men only"),
-        WOMEN("Women only");
-
-        private final String _msg;
-        GenderAccepted(String msg) { _msg = msg; }
-        public String toString() { return _msg; }
-    }
+//    private enum GenderAccepted {
+//        ANY("Any gender"),
+//        MEN("Men only"),
+//        WOMEN("Women only");
+//
+//        private final String _msg;
+//        GenderAccepted(String msg) { _msg = msg; }
+//        public String toString() { return _msg; }
+//    }
 
 }

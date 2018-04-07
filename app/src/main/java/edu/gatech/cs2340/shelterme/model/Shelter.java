@@ -387,7 +387,12 @@ public class Shelter implements Parcelable {
         return reserveBed("Single", 1);
     }
 
-    // Equivalent for checking in w/ a StayReport
+    /**
+     * Equivalent for checking in a User to a Shelter with a StayReport
+     * @param type
+     * @param numBeds
+     * @return
+     */
     public HashMap<String, Collection<Bed>> reserveBed(String type, int numBeds) { //function takes in User and returns ID of bed(s) being reserved
         if (type == null) {
             throw new IllegalArgumentException("Bed type cannot be null.");
@@ -454,47 +459,6 @@ public class Shelter implements Parcelable {
 //        validBedsFound.put("O", occValues);
         int newVac = curShelter.getVacancies() - numBeds;
         curShelter.setVacancies(newVac);
-
-//
-////                curShelter.getBeds().get(bedTypeFoundKey); //collection of beds of appropriate type
-//
-////        HashMap<String, ArrayList<String>> bedsToReserve = new HashMap<>();
-//
-//
-////        String[] bedIds = new String[numBeds];
-//        for (int i = 0; i < numBeds; i++) {
-//            String foundBedKey = (String) bedTypeFound.keySet().toArray()[0];
-//
-//            Bed foundBed = bedTypeFound.remove(foundBedKey); //remove first bed in the collection
-//            foundBed.setOccupant(user);
-////            user.setOccupyingBed();
-//            bedArr[i] = foundBed;
-//
-//            String bedId = String.valueOf(foundBed.getId());
-////            bedTypeFound.remove(bedId);   <- Isn't this redundant?
-//            bedsToReserve.put(bedTypeFoundKey, bedId); // or should I use foundBedKey?
-////            bedIds[i] = bedId;
-//
-//
-////            curShelter.getBeds().get("O").put(bedId, foundBed);
-//            occupied.put(bedId, foundBed);
-//            curShelter.beds.put("O", occupied); // necessary?
-//            curShelter.vacancies--;
-//        }
-//        user.addStayReport(new StayReport(this, user, bedArr));
-//
-////        this.vacancies--;
-////        this.vacancies -= numBeds;
-//
-////        DBUtil dbUtil = DBUtil.getInstance();
-////        try {
-////            dbUtil.updateShelterVacanciesAndBeds(curShelter);
-////            dbUtil.updateUserOccupancyAndStayReports(user);
-////        } catch (DatabaseException de) {
-////            Log.e("RESERVE_BEDS", de.getMessage());
-////        }
-////        return bedIds;
-//
         return validBedsFound;
     }
 
