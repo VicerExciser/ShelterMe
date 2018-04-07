@@ -47,12 +47,6 @@ public class Bed {
         return this.occupantEmail;
     }
 
-//    public void setOccupantEmail(User occupant) {
-//        this.occupantEmail = occupant.getEmail();
-//        if (!this.isOccupied) {
-//            modifyOccupant(occupant);
-//        }
-//    }
 
     public void setOccupantEmail(String email) {
         this.occupantEmail = email;
@@ -62,19 +56,11 @@ public class Bed {
     }
 
     private void modifyOccupant(String occupantEmail) {
-//        this.occupant = occupant;
-            User user = (User) Model.getAccountByEmail(occupantEmail);
-        if(user != null)
-        user.setIsOccupyingBed(true);
-//        this.occupant.setOccupyingBed(true);
+        User occupant = (User) Model.getAccountByEmail(occupantEmail);
+        if (occupant != null)
+            occupant.setIsOccupyingBed(true);
         this.isOccupied = true;
     }
-
-//    public void removeOccupant(User occupant) {
-//        occupant.clearOccupiedBed();
-//        this.occupantEmail = null;
-//        this.isOccupied = false;
-//    }
 
     public void removeOccupant(String email) {
         ((User)Model.getAccountByEmail(email)).clearOccupiedBed();

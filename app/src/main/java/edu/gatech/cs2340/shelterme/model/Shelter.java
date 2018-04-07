@@ -389,6 +389,15 @@ public class Shelter implements Parcelable {
 
     // Equivalent for checking in w/ a StayReport
     public HashMap<String, Collection<Bed>> reserveBed(String type, int numBeds) { //function takes in User and returns ID of bed(s) being reserved
+        if (type == null) {
+            throw new IllegalArgumentException("Bed type cannot be null.");
+        }
+        if (numBeds < 0) {
+            throw new IllegalArgumentException("Number of beds must be a positive integer.");
+        } else if (numBeds == 0) {
+            return null;
+        }
+
         User user = ((User) (Model.getInstance().getCurrUser()));
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null.");
@@ -513,7 +522,7 @@ public class Shelter implements Parcelable {
     }
     */
 
-    // TODO: Fix for Firebase compatibility
+
     // Equivalent for checking out w/ a StayReport
     public HashMap<String, Collection<Bed>> undoReservation(StayReport curStay) {
         Model model = Model.getInstance();

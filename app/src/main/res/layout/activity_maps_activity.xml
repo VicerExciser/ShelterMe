@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="450dp"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="68dp"
         tools:context="edu.gatech.cs2340.shelterme.controllers.MapsActivity" />
