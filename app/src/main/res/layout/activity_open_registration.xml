@@ -35,7 +35,8 @@
             android:layout_alignStart="@+id/user_icon"
             android:layout_centerVertical="true"
             android:backgroundTint="@android:color/transparent"
-            app:srcCompat="@mipmap/ic_launcher_foreground" />
+            app:srcCompat="@mipmap/ic_launcher_foreground"
+            tools:ignore="VectorDrawableCompat" />
 
         <ImageButton
             android:id="@+id/admin_icon"

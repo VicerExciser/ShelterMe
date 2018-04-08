@@ -62,7 +62,7 @@
             android:text="Send Admin Request" />
 
         <ImageView
-            android:id="@+id/cs+sg"
+            android:id="@+id/cs_sg_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/title"

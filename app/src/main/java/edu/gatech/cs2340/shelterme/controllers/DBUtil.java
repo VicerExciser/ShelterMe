@@ -67,7 +67,7 @@ public class DBUtil {
 
 
         database = FirebaseDatabase.getInstance();
-//        database.setPersistenceEnabled(true);
+        database.setPersistenceEnabled(true);    // Enables persistent data caching if user goes offline or app restarts
         rootRef = database.getReference();
 //        rootRef.keepSynced(true);
         usersRef = rootRef.child("users");
@@ -377,28 +377,23 @@ public class DBUtil {
         try {
             for (String bedKey : reserved.keySet()) {
                 String jsonPath, occPath;
-//                if (reserving) {
-//                    if (!bedKey.equals("O")) {
-                        for (Bed bed : reserved.get(bedKey)) {
-                            jsonPath = String.format("%s/%s", bedKey, bed.getId());
-                            occPath = String.format("O/%s", bed.getId());
-//                            Log.e("jsonPath = ", jsonPath);
-                            if (reserving) {
-                                bedsRef.child(jsonPath).removeValue(new DatabaseReference.CompletionListener() {
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-//                            Log.e("removeValue Complete?", databaseError.getMessage());
-                                    }
-                                });
-//                            String occPath = String.format("O/%s", bed.getId());
-//                            Log.e("occPath = ", occPath);
-//                    ref.child(occPath).setValue(bed);
-                                bedsRef.child(occPath).setValue(bed);
-                            } else {
-                                bedsRef.child(occPath).removeValue();
-                                bedsRef.child(jsonPath).setValue(bed);
+                for (Bed bed : reserved.get(bedKey)) {
+                    jsonPath = String.format("%s/%s", bedKey, bed.getId());
+                    occPath = String.format("O/%s", bed.getId());
+                    Log.e("jsonPath = ", jsonPath);
+                    if (reserving) {
+                        bedsRef.child(jsonPath).removeValue(new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//                                  Log.e("removeValue Complete?", databaseError.getMessage());
                             }
-                        }
+                        });
+                        bedsRef.child(occPath).setValue(bed);
+                    } else {
+                        bedsRef.child(occPath).removeValue();
+                        bedsRef.child(jsonPath).setValue(bed);
+                    }
+                }
             }
 
             ref.child("vacancies").setValue(s.getVacancies());
