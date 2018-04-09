@@ -1,11 +1,10 @@
 package edu.gatech.cs2340.shelterme.model;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MessageBoardModel {
-    public static List<Message> messages = new ArrayList<>();
+    public static List<Message> messages = new LinkedList<>();
     public static List<Message> unaddressedMessages = new LinkedList<>();
 
     public static void addressMessage(Message message) {
@@ -14,8 +13,8 @@ public class MessageBoardModel {
     }
 
     private static void addMessageToMessageBoard(Message message) {
-        messages.add(message);
-        unaddressedMessages.add(message);
+        messages.add(0, message); //adds newest messages to top of list
+        unaddressedMessages.add(0, message);
     }
 
     public static void sendNewMessage(String message, User sender) {
