@@ -55,8 +55,6 @@ public class RequestStayReport extends AppCompatActivity {
         Intent intent = getIntent();
         shelterParcel = intent.getParcelableExtra("Shelter");
         final Shelter shelter = model.verifyShelterParcel(shelterParcel);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
         TextView header = findViewById(R.id.header);
         header.setText(shelter.getShelterName());

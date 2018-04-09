@@ -22,7 +22,7 @@
             android:text="Log Out" />
 
         <TextView
-            android:id="@+id/logo"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -62,12 +62,12 @@
             android:text="Send Admin Request" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/cs_sg_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/logo"
+            android:layout_below="@+id/title"
             android:layout_centerHorizontal="true"
-            app:srcCompat="@mipmap/cssocialgood" />
+            app:srcCompat="@mipmap/cs_social_good" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

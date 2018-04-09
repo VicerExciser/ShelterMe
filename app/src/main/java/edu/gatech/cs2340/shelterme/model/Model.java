@@ -5,51 +5,38 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
-
-import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.controllers.DBUtil;
 
 
-// SINGLETON
+// SINGLETON -- Updated to be Thread-Safe for Synchronization
 public class Model {
-    private static final Model ourInstance = new Model();
-    // ^ when exactly does this get executed?
-
+    private static volatile Model modelInstance;
+    private static volatile DBUtil dbUtil;
     private static final String TAG = "Model";
-
-    private DBUtil dbUtil;// = DBUtil.getInstance();
 
     private static HashMap<String, Account> accounts;
     private static HashMap<String, Shelter> shelters;
     private Account currUser;
 
-    public static Model getInstance() {
-        return ourInstance;
-    }
-
     private Model() {
         dbUtil = DBUtil.getInstance();
-
-//        accounts = new HashMap<>();
-//        DBUtil.initAccounts();
-//        shelters = new HashMap<>();
-//        DBUtil.initShelters();
-
         accounts = DBUtil.getAccountListPointer();
         shelters = DBUtil.getShelterListPointer();
     }
+
+    public static Model getInstance() {
+        if (modelInstance == null) {
+            synchronized (Model.class) {
+                if (modelInstance == null) {
+                    modelInstance = new Model();
+                }
+            }
+        }
+        return modelInstance;
+    }
+
+
 
     // Map: <Email, Account>
     public static HashMap<String, Account> getAccountListPointer() {

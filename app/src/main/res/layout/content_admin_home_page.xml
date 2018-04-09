@@ -22,7 +22,7 @@
             android:text="Log Out" />
 
         <TextView
-            android:id="@+id/logo"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -41,9 +41,9 @@
             android:id="@+id/imageView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/logo"
+            android:layout_below="@+id/title"
             android:layout_centerHorizontal="true"
-            app:srcCompat="@mipmap/cssocialgood" />
+            app:srcCompat="@mipmap/cs_social_good" />
 
         <Button
             android:id="@+id/manageAccount"
