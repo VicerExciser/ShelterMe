@@ -75,7 +75,7 @@
             android:layout_above="@+id/viewShelters"
             android:layout_toEndOf="@+id/imageView2"
             android:layout_toRightOf="@+id/imageView2"
-            android:text="Button" />
+            android:text="Map" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
