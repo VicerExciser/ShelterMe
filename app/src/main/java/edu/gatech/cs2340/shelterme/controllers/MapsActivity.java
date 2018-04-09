@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.gatech.cs2340.shelterme.R;
+import edu.gatech.cs2340.shelterme.model.GenderAccepted;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
@@ -33,32 +34,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap mMap;
     private Model model = Model.getInstance();
-    //private List<Shelter> shelters = new ArrayList<>();
-
     private ArrayAdapter<String> adapter;
     private HashMap<String, Shelter> shelters;
     //private Model model = Model.getInstance();
-    private boolean showAll;
+    private boolean showAll = true;
     private GenderAccepted selectedGender = GenderAccepted.ANY;
     //private ListView shelterList;
     private boolean updated = false;
     private boolean ready = false;
 
-    private enum GenderAccepted {
-        ANY("Any gender"),
-        MEN("Men only"),
-        WOMEN("Women only");
+    int updateCounter = 0;
+    final int updatesForInit = 2;   // signifies initialization is complete (to be compared against updateCounter)
+    boolean ignoreUpdate = false;   // to avoid unnecessary subroutine calls
 
-        private final String _msg;
-        GenderAccepted(String msg) { _msg = msg; }
-        public String toString() { return _msg; }
-    }
+//    private enum GenderAccepted {
+//        ANY("Any gender"),
+//        MEN("Men only"),
+//        WOMEN("Women only");
+//
+//        private final String _msg;
+//        GenderAccepted(String msg) { _msg = msg; }
+//        public String toString() { return _msg; }
+//    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_activity);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -69,43 +73,60 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         final CheckBox showAllCheck = (CheckBox) findViewById(R.id.showAllMap);
 
         shelters = new HashMap<>(Model.getShelterListPointer());
-        System.out.print(shelters);
-        showAllCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
+        CompoundButton.OnCheckedChangeListener checkListen = new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                showAll = isChecked;
+                showAll = updateCounter >= updatesForInit ? isChecked : showAll;
                 updated = true;
-                updateSearch(familyCheck.isChecked());
+                Log.e("OnCheckedChangeListener", "showAll checked = "+showAll);
+                if (updateCounter != 0)
+                    updateSearch(familyCheck.isChecked());
+                else
+                    updateCounter++;
+            }
+        };
+        // For initially displaying all shelters:
+        showAllCheck.post(new Runnable() {
+            @Override
+            public void run() {
+                showAllCheck.setChecked(true);
+                Log.e("Maps runnable", "showAll should be checked");
             }
         });
-        ArrayAdapter<String> adapterGen = new ArrayAdapter(this,android.R.layout.simple_spinner_item, MapsActivity.GenderAccepted.values());
+//        showAllCheck.setOnCheckedChangeListener(null);
+//        showAllCheck.setChecked(true);
+        showAllCheck.setOnCheckedChangeListener(checkListen);
+
+        ArrayAdapter<String> adapterGen = new ArrayAdapter(this,android.R.layout.simple_spinner_item, GenderAccepted.values());
         adapterGen.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinMap.setAdapter(adapterGen);
 
-        // Omit shelters where this user is ineligible to stay  <- nah
-
-
-        //adapter = new ArrayAdapter<>(MapsActivity.this, R.layout.list_item, R.id.shelter_name,
-          //      shelters.keySet().toArray(new String[shelters.keySet().size()]));
-        //shelterList.setAdapter(adapter);
-
-
-
         familyCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO: Incorporate other search criteria to be applied
-//                showAll = false;
-                showAllCheck.setChecked(false);
+                // TODO: Incorporate other search criteria to be applied?
+                if (isChecked && showAllCheck.isChecked()) {
+                    if (updateCounter >= updatesForInit) {
+                        ignoreUpdate = true;
+                        showAllCheck.setChecked(false);
+                        ignoreUpdate = false;
+                    }
+                }
                 updated = true;
-                updateSearch(isChecked);
+                if (updateCounter != 0)
+                    updateSearch(isChecked);
+                else
+                    updateCounter++;
             }
         });
-
 
         genderSpinMap.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                showAllCheck.setChecked(false);
+                if (updateCounter >= updatesForInit) {
+                    ignoreUpdate = true;
+                    showAllCheck.setChecked(false);
+                    ignoreUpdate = false;
+                }
                 switch (position) {
                     case 0:
                         selectedGender = GenderAccepted.ANY;
@@ -118,37 +139,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         break;
                 }
                 updated = true;
-                updateSearch(familyCheck.isChecked());
+                if (updateCounter != 0)
+                    updateSearch(familyCheck.isChecked());
+                else
+                    updateCounter++;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
         });
-
-        //SearchView inputSearch = findViewById(R.id.inputSearch);
-        //inputSearch.setQueryHint("Search by Name");
-//        inputSearch.setSelected(true);
-        //inputSearch.setIconifiedByDefault(false);
-        //inputSearch.setSelected(false);
-        //inputSearch.setImeOptions(1);
-        //inputSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            //@Override
-            //public boolean onQueryTextSubmit(String query) {
-              //  MapsActivity.this.adapter.getFilter().filter(query);
-               // showAllCheck.setChecked(false);
-                //return false;
-            //}
-
-            //@Override
-            //public boolean onQueryTextChange(String newText) {
-                //MapsActivity.this.adapter.getFilter().filter(newText);
-                //return false;
-            //}
-        //});
-
-
-        if (!showAllCheck.isChecked())
-            showAllCheck.setChecked(true);
     }
 
     @Override
@@ -178,69 +177,60 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             //}
             //System.out.println("IN THE LOOOOOOOOOOOOOOOOOOP");
         //}
-        updated = false;
+        updated = ignoreUpdate = false;
         return markers;
     }
 
 
-    //filling spinners
-
-
-
     private void updateSearch(boolean isChecked) {
-        shelters.clear();
-        if (showAll) {
-            for (Shelter s : Model.getShelterListPointer().values()) {
-                shelters.put(s.getShelterName(), s);
-            }
-        } else {
-            for (Shelter s : Model.getShelterListPointer().values()) {
-                for (String key : s.getBeds().keySet()) {
-                    if (key.length() > 1) {
-                        //Log.e("ViewShelters", "key = " + key);
-                        if (familyChoiceMatchesKey(key, isChecked) && s.getVacancies() > 0) {
-                            if (genderChoiceMatchesKey(key)) {
-                                shelters.put(s.getShelterName(), s);
+        if (!ignoreUpdate) {
+            shelters.clear();
+            updateCounter++;
+            if (showAll) {
+                for (Shelter s : Model.getShelterListPointer().values()) {
+                    shelters.put(s.getShelterName(), s);
+                }
+            } else {
+                for (Shelter s : Model.getShelterListPointer().values()) {
+                    for (String key : s.getBeds().keySet()) {
+                        if (key.length() > 1) {
+                            if (familyChoiceMatchesKey(key, isChecked) && s.getVacancies() > 0) {
+                                if (genderChoiceMatchesKey(key)) {
+                                    shelters.put(s.getShelterName(), s);
+                                }
                             }
                         }
                     }
                 }
             }
+            if (ready) {
+                populateMap();
+            }
         }
-        if(ready) {
-            populateMap();
-        }
-        //updateResults();
+        Log.e("updateSearch", "updateCounter = "+updateCounter);
     }
 
-    /*private void updateResults() {
-        adapter = new ArrayAdapter<>(MapsActivity.this, R.layout.list_item, R.id.shelter_name,
-                shelters.keySet().toArray(new String[shelters.keySet().size()]));
-        shelterList.setAdapter(adapter);
-    }*/
     private boolean genderChoiceMatchesKey(String key) {
-//        Log.e("ViewShelters", key);
         boolean match = false;
         if ((selectedGender.equals(GenderAccepted.MEN) && key.charAt(1) == 'T')
                 ^ (selectedGender.equals(GenderAccepted.WOMEN) && key.charAt(2) == 'T')) {
             match = true;
         }
         else if (selectedGender.equals(GenderAccepted.ANY)
-                /*||*/ && (key.charAt(1) == 'F' && key.charAt(2) == 'F')) {
+                && (key.charAt(1) == 'F' && key.charAt(2) == 'F')) {
             match = true;
         }
         return match;
-
     }
+
     private boolean familyChoiceMatchesKey(String key, boolean famChecked) {
         boolean match = false;
         if (famChecked && key.charAt(0) == 'T') {
             match = true;
         }
-        else if (famChecked == false && key.charAt(0) == 'F')//key.charAt(1) == 'F' &&  key.charAt(2) == 'F') // FFF000_200_F
+        else if (!famChecked && key.charAt(0) == 'F')//key.charAt(1) == 'F' &&  key.charAt(2) == 'F') // FFF000_200_F
             match = true;
         return match;
     }
-
 
 }

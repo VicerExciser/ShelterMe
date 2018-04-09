@@ -52,5 +52,10 @@
     <string name="title_activity_stay_report">StayReport</string>
 
     <string name="one_bed">1 Bed</string>
+    <string name="shelterme">ShelterMe</string>
+    <string name="log_out">LOG OUT</string>
+    <string name="view_all_shelters">VIEW ALL SHELTERS</string>
+    <string name="map_of_nearby_shelters">MAP OF NEARBY SHELTERS</string>
+    <string name="check_out_from_current_shelter_stay">CHECK OUT FROM CURRENT SHELTER STAY</string>
 
 </resources>

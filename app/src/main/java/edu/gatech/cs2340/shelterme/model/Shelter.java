@@ -290,7 +290,8 @@ public class Shelter implements Parcelable {
             getBeds().put(bedKey, bedType);
         }
         for (int i = lastId + 1; i < lastId + numberOfBeds + 1; i++) {
-            Bed newBed = new Bed("bed_" + i, isFamily, menOnly, womenOnly, minAge, maxAge, veteranOnly, bedKey);
+            Bed newBed = new Bed("bed_" + i, isFamily, menOnly, womenOnly, minAge, maxAge,
+                    veteranOnly, bedKey, this.shelterName);
             bedType.put(String.valueOf(newBed.getId()), newBed);
             this.vacancies++;
             if (isFamily)
@@ -387,8 +388,22 @@ public class Shelter implements Parcelable {
         return reserveBed("Single", 1);
     }
 
-    // Equivalent for checking in w/ a StayReport
+    /**
+     * Equivalent for checking in a User to a Shelter with a StayReport
+     * @param type
+     * @param numBeds
+     * @return
+     */
     public HashMap<String, Collection<Bed>> reserveBed(String type, int numBeds) { //function takes in User and returns ID of bed(s) being reserved
+        if (type == null) {
+            throw new IllegalArgumentException("Bed type cannot be null.");
+        }
+        if (numBeds < 0) {
+            throw new IllegalArgumentException("Number of beds must be a positive integer.");
+        } else if (numBeds == 0) {
+            return null;
+        }
+
         User user = ((User) (Model.getInstance().getCurrUser()));
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null.");
@@ -445,47 +460,6 @@ public class Shelter implements Parcelable {
 //        validBedsFound.put("O", occValues);
         int newVac = curShelter.getVacancies() - numBeds;
         curShelter.setVacancies(newVac);
-
-//
-////                curShelter.getBeds().get(bedTypeFoundKey); //collection of beds of appropriate type
-//
-////        HashMap<String, ArrayList<String>> bedsToReserve = new HashMap<>();
-//
-//
-////        String[] bedIds = new String[numBeds];
-//        for (int i = 0; i < numBeds; i++) {
-//            String foundBedKey = (String) bedTypeFound.keySet().toArray()[0];
-//
-//            Bed foundBed = bedTypeFound.remove(foundBedKey); //remove first bed in the collection
-//            foundBed.setOccupant(user);
-////            user.setOccupyingBed();
-//            bedArr[i] = foundBed;
-//
-//            String bedId = String.valueOf(foundBed.getId());
-////            bedTypeFound.remove(bedId);   <- Isn't this redundant?
-//            bedsToReserve.put(bedTypeFoundKey, bedId); // or should I use foundBedKey?
-////            bedIds[i] = bedId;
-//
-//
-////            curShelter.getBeds().get("O").put(bedId, foundBed);
-//            occupied.put(bedId, foundBed);
-//            curShelter.beds.put("O", occupied); // necessary?
-//            curShelter.vacancies--;
-//        }
-//        user.addStayReport(new StayReport(this, user, bedArr));
-//
-////        this.vacancies--;
-////        this.vacancies -= numBeds;
-//
-////        DBUtil dbUtil = DBUtil.getInstance();
-////        try {
-////            dbUtil.updateShelterVacanciesAndBeds(curShelter);
-////            dbUtil.updateUserOccupancyAndStayReports(user);
-////        } catch (DatabaseException de) {
-////            Log.e("RESERVE_BEDS", de.getMessage());
-////        }
-////        return bedIds;
-//
         return validBedsFound;
     }
 
@@ -513,12 +487,11 @@ public class Shelter implements Parcelable {
     }
     */
 
-    // TODO: Fix for Firebase compatibility
+
     // Equivalent for checking out w/ a StayReport
     public HashMap<String, Collection<Bed>> undoReservation(StayReport curStay) {
         Model model = Model.getInstance();
         User user = ((User)(model.getCurrUser()));
-//        User user = ((User) (Model.getAccountByEmail(curStay.getAccountEmail())));
         Shelter curShelter = model.verifyShelterParcel(this);
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null.");
@@ -588,10 +561,6 @@ public class Shelter implements Parcelable {
     // ^ can also do user.getCurrentStayReport().getReservedBeds();
 
 
-//    public boolean getTakesFamilies() {
-//        return this.isTakesFamilies();
-//    }
-
     public String getShelterName() {
         return this.shelterName;
     }
@@ -600,9 +569,6 @@ public class Shelter implements Parcelable {
         return this.shelterKey;
     }
 
-//    public int getCapacity() {
-//        return this.familyCapacity + this.singleCapacity;
-//    }
     public String getCapacityStr() {
         return this.capacityStr;
     }
@@ -614,10 +580,6 @@ public class Shelter implements Parcelable {
     public int getSingleCapacity() {
         return this.singleCapacity;
     }
-
-//    public void setCapacity(int capacity) {
-//        this.totalCapacity = capacity;
-//    }
 
     public String getRestrictions() {
         return restrictions;
@@ -650,14 +612,6 @@ public class Shelter implements Parcelable {
     public void setNotes(String notes) {
         this.notes = notes;
     }
-
-//    public ContactsContract.CommonDataKinds.Phone getPhoneNumber() {
-//        return phoneNumber;
-//    }
-//
-//    public void setPhoneNumber(ContactsContract.CommonDataKinds.Phone phoneNumber) {
-//        this.phoneNumber = phoneNumber;
-//    }
 
     public String getPhone() { return this.phone; }
 
@@ -706,16 +660,11 @@ public class Shelter implements Parcelable {
     };
 
 
-//    public boolean isTakesFamilies() {
-//        return takesFamilies;
-//    }
 
-//    public HashMap<String, LinkedHashMap<String, Bed>> getBeds() {
     public HashMap<String, HashMap<String, Bed>> getBeds() {
         return beds;
     }
 
-//    public void setBeds(HashMap<String, LinkedHashMap<String, Bed>> beds) {
     public void setBeds(HashMap<String, HashMap<String, Bed>> beds) {
         this.beds = beds;
     }
@@ -729,18 +678,24 @@ public class Shelter implements Parcelable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null || !(o instanceof Shelter)) {
-            return false;
-        }
-        if (this == o) {
-            return true;
-        }
-        Shelter s = (Shelter) o;
-        return this.shelterName.equalsIgnoreCase(s.shelterName)
-                && this.address.equals(s.address)
-                && this.phone.equals(s.phone);
+    public boolean equals(Object other) {
+        return (other == this) || ((other instanceof Shelter)
+                && this.shelterKey.equals(((Shelter)other).shelterKey)
+                && this.shelterName.equalsIgnoreCase(((Shelter)other).shelterName)
+//                && this.restrictions.equalsIgnoreCase(((Shelter)other).restrictions);
+                && this.address.equalsIgnoreCase(((Shelter)other).address)
+                && this.phone.equals(((Shelter)other).phone));
     }
 
-    // TODO: Implement an Overridden hashCode() method
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + this.shelterKey.hashCode();
+        result = 31 * result + this.shelterName.toLowerCase().hashCode();
+//        result = 31 * result + this.restrictions.toLowerCase().hashCode();
+        result = 31 * result + this.address.toLowerCase().hashCode();
+        result = 31 * result + this.phone.hashCode();
+        return result;
+    }
+
 }

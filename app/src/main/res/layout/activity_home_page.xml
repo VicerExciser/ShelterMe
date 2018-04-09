@@ -7,75 +7,96 @@
     tools:context="edu.gatech.cs2340.shelterme.controllers.HomePage">
 
     <RelativeLayout
-        android:id="@+id/relativeLayout2"
+        android:id="@+id/relative_layout_user_home"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="#000000"
-        tools:layout_editor_absoluteY="8dp">
-
-        <Button
-            android:id="@+id/checkOut"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:text="Check Out From Current Shelter Stay" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/logo"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="44dp"
             android:fontFamily="cursive"
-            android:text="ShelterMe"
+            android:text="@string/shelterme"
             android:textColor="#FFFFFF"
             android:textSize="40sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <Button
-            android:id="@+id/logoutbutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="65dp"
-            android:background="@android:drawable/bottom_bar"
-            android:backgroundTint="#FFFFFF"
-            android:text="Logout" />
-
-        <Button
-            android:id="@+id/viewShelters"
-            android:layout_width="wrap_content"
-            android:layout_height="@android:dimen/notification_large_icon_height"
-            android:layout_above="@+id/logoutbutton"
-            android:layout_alignEnd="@+id/logoutbutton"
-            android:layout_alignLeft="@+id/logoutbutton"
-            android:layout_alignRight="@+id/logoutbutton"
-            android:layout_alignStart="@+id/logoutbutton"
-            android:layout_marginBottom="28dp"
-            android:text="VIEW SHELTERS" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:targetApi="jelly_bean" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/cs_sg_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/logo"
+            android:layout_below="@+id/title"
             android:layout_centerHorizontal="true"
-            app:srcCompat="@mipmap/cssocialgood" />
+            app:srcCompat="@mipmap/cs_social_good"
+            tools:ignore="ContentDescription" />
 
-        <Button
-            android:id="@+id/mapButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/viewShelters"
-            android:layout_toEndOf="@+id/imageView2"
-            android:layout_toRightOf="@+id/imageView2"
-            android:text="Map" />
+        <LinearLayout
+            android:id="@+id/linear_layout_user_home"
+            android:layout_width="match_parent"
+            android:layout_height="255dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/cs_sg_logo"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:divider="@drawable/empty_tall_divider"
+            android:orientation="vertical"
+            android:showDividers="middle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cs_sg_logo">
 
+            <Button
+                android:id="@+id/viewShelters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@android:drawable/btn_default_small"
+                android:backgroundTint="#FFFFFF"
+                android:text="@string/view_all_shelters"
+                tools:targetApi="lollipop" />
+
+            <Button
+                android:id="@+id/mapButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/btn_default_small"
+                android:backgroundTint="#FFFFFF"
+                android:text="@string/map_of_nearby_shelters"
+                tools:targetApi="lollipop" />
+
+
+            <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/btn_default_small"
+                android:backgroundTint="#FFFFFF"
+                android:text="@string/log_out"
+                tools:targetApi="lollipop" />
+
+            <Button
+                android:id="@+id/checkOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/btn_default_small"
+                android:backgroundTint="#FFFFFF"
+                android:text="@string/check_out_from_current_shelter_stay"
+                tools:targetApi="lollipop" />
+        </LinearLayout>
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

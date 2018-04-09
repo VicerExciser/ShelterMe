@@ -10,12 +10,9 @@ public abstract class Account {
     int password;       // hashed user password
     boolean accountLocked;  // account state (locked or unlocked)
     String email;           // contact info (email address)
-//    int age;
-//    Sex sex;
     Question secQuest;
     String secAns;
-//    DatabaseReference accountID;
-//    String id;
+    private Type accountType;
 
     public Account(String name, String username, String email, int password,
                    Question secQuest, String secAns) {
@@ -23,28 +20,10 @@ public abstract class Account {
         this.username = username;
         this.password = password;
         this.email = email;
-//        this.sex = sex;
-//        this.age = age;
         this.secQuest = secQuest;
         this.secAns = secAns;
         accountLocked = false;
     }
-
-//    public void setAccountID(DatabaseReference ref) {
-//        this.accountID = ref;
-//    }
-//
-//    public DatabaseReference getAccountID() {
-//        return this.accountID;
-//    }
-
-//    public void setID(String refKey) {
-//        this.id = refKey;
-//    }
-//
-//    public String getID() {
-//        return this.id;
-//    }
 
     public String getName() {
         return this.name;
@@ -56,14 +35,40 @@ public abstract class Account {
 
     public String getEmail() { return this.email; }
 
-//    public abstract boolean getIsFamily();
-//    public abstract String generateKey();
-
     public boolean validatePassword(int pw) {
         return pw == this.password;
     }
 
 
+
+    @Override
+    public boolean equals(Object other) {
+//        if (other == this) return true;
+        return (other == this) || ((other instanceof Account)
+                && ((Account) other).email.equalsIgnoreCase(this.email)
+                && ((Account) other).name.equalsIgnoreCase(this.name)
+                && ((Account) other).username.equalsIgnoreCase(this.username)
+                && ((Account) other).password == this.password);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + this.username.toLowerCase().hashCode();
+        result = 31 * result + this.email.toLowerCase().hashCode();
+        result = 31 * result + this.name.toLowerCase().hashCode();
+        result = 31 * result + this.password;
+        result = 31 * result + this.accountType.toString().toLowerCase().hashCode();
+        return result;
+    }
+
+    public Type getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(Type accountType) {
+        this.accountType = accountType;
+    }
 
 
     public enum Sex {
