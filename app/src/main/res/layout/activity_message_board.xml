@@ -6,8 +6,29 @@
     android:layout_height="match_parent"
     tools:context="edu.gatech.cs2340.shelterme.controllers.MessageBoard">
 
-    <ListView
-        android:id="@+id/_messageListView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/_showAddressedCheckBox"
+            android:layout_width="164dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:checked="false"
+            android:onClick="onCheckBoxClicked"
+            android:text="Only Unaddressed" />
+
+        <ListView
+            android:id="@+id/_messageListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
+    </RelativeLayout>
+
 </android.support.design.widget.CoordinatorLayout>
