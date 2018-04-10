@@ -1,7 +1,9 @@
 package edu.gatech.cs2340.shelterme.controllers;
 
 
+import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.google.firebase.database.ChildEventListener;
@@ -34,54 +36,64 @@ import edu.gatech.cs2340.shelterme.model.User;
 
 import static android.content.ContentValues.TAG;
 
-public class DBUtil {
+// Properly configured implementation of Runnable interface so that not all work done on main thread
+public class DBUtil implements Runnable {
 
-    public static volatile DBUtil dbUtilInstance;// = new DBUtil();
+    private static volatile DBUtil dbUtilInstance;// = new DBUtil();
 
-    private final Map<String, User> users = new HashMap<String, User>();
-    private final Map<String, Admin> admins = new HashMap<String, Admin>();
-    private final Map<String, Employee> employees = new HashMap<>();
-    private static Map<String, Account> accountList = new HashMap<>();// = Model.getAccountListPointer();
-    private static Map<String, Shelter> shelterList = new HashMap<>();// = Model.getShelterListPointer();
+    private static volatile Map<String, User> users = new HashMap<String, User>();
+    private static volatile Map<String, Admin> admins = new HashMap<String, Admin>();
+    private static volatile Map<String, Employee> employees = new HashMap<>();
+    private static volatile Map<String, Account> accountList = new HashMap<>();// = Model.getAccountListPointer();
+    private static volatile Map<String, Shelter> shelterList = new HashMap<>();// = Model.getShelterListPointer();
 
     // Write a message to the database
-    private static FirebaseDatabase database;// = FirebaseDatabase.getInstance();
-    private static DatabaseReference rootRef;// = database.getReference(/*"message"*/);
-    private static DatabaseReference usersRef;// = rootRef.child("users");
-    private static DatabaseReference employeesRef;// = rootRef.child("employees");
-    private static DatabaseReference adminsRef;// = rootRef.child("admins");
-    private static DatabaseReference sheltersRef;// = rootRef.child("shelters");
+    private static volatile FirebaseDatabase database;// = FirebaseDatabase.getInstance();
+    private static volatile DatabaseReference rootRef;// = database.getReference(/*"message"*/);
+    private static volatile DatabaseReference usersRef;// = rootRef.child("users");
+    private static volatile DatabaseReference employeesRef;// = rootRef.child("employees");
+    private static volatile DatabaseReference adminsRef;// = rootRef.child("admins");
+    private static volatile DatabaseReference sheltersRef;// = rootRef.child("shelters");
 
     public static DBUtil getInstance() {
-
+        if (dbUtilInstance == null) {
+            synchronized (DBUtil.class) {
+                if (dbUtilInstance == null) {
+                    dbUtilInstance = new DBUtil();
+                }
+            }
+        }
         return dbUtilInstance;
     }
 
-    // TODO: Add ChildUpdateListeners, etc. to DBReferences
     /*  A note on ensuring Firebase read/writes are thread-safe:
         Enclose variables that can be accessed by more than one thread in a synchronized block.
         This approach will prevent one thread from reading the variable while another is writing to it.
      */
 
     private DBUtil() {
-
-
         database = FirebaseDatabase.getInstance();
         database.setPersistenceEnabled(true);    // Enables persistent data caching if user goes offline or app restarts
         rootRef = database.getReference();
 //        rootRef.keepSynced(true);
+    }
+
+    @Override
+    public void run() {
         usersRef = rootRef.child("users");
         employeesRef = rootRef.child("employees");
         adminsRef = rootRef.child("admins");
         sheltersRef = rootRef.child("shelters");
-
         initAccounts();
         initShelters();
+        maintainAccounts();
+        maintainShelters();
+    }
 
-        /* The following onDataChange methods are demonstrative of how to configure Firebase
-           to update the database contents whenever data is changed
-         */
-
+    /* The following onDataChange methods are demonstrative of how to configure Firebase
+       to update the database contents whenever data is changed
+     */
+    private void maintainAccounts() {
         // Read from the database
         usersRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -92,8 +104,14 @@ public class DBUtil {
                 try {
                     for (DataSnapshot child : children) {
                         User user = child.getValue(User.class);
-                        users.put(user.getEmail(), user);
-                        accountList.put(user.getEmail(), user);
+                        if (user != null) {
+                            synchronized (users) {
+                            users.put(user.getEmail(), user);
+                            }
+                            synchronized (accountList) {
+                            accountList.put(user.getEmail(), user);
+                            }
+                        }
                     }
                 } catch (com.google.firebase.database.DatabaseException dbe) {
                     Log.e("userDataChange", dbe.getMessage());
@@ -106,100 +124,129 @@ public class DBUtil {
                 // Failed to read value
                 Log.w(TAG, "Failed to read value.", databaseError.toException());
             }
-         });
+        });
 
         employeesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-
-                for (DataSnapshot child : children) {
-                    Employee emp = child.getValue(Employee.class);
-                    employees.put(emp.getEmail(), emp);
-                    accountList.put(emp.getEmail(), emp);
+                try {
+                    for (DataSnapshot child : children) {
+                        Employee emp = child.getValue(Employee.class);
+                        if (emp != null) {
+                            synchronized (employees) {
+                            employees.put(emp.getEmail(), emp);
+                            }
+                            synchronized (accountList) {
+                            accountList.put(emp.getEmail(), emp);
+                            }
+                        }
+                    }
+                } catch (com.google.firebase.database.DatabaseException dbe) {
+                    Log.e("employeeDataChange", dbe.getMessage());
+                    dbe.printStackTrace();
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) { }
-         });
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
-         adminsRef.addValueEventListener(new ValueEventListener() {
+        adminsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-
-                for (DataSnapshot child : children) {
-                    Admin admin = child.getValue(Admin.class);
-                    admins.put(admin.getEmail(), admin);
-                    accountList.put(admin.getEmail(), admin);
+                try {
+                    for (DataSnapshot child : children) {
+                        Admin admin = child.getValue(Admin.class);
+                        if (admin != null) {
+                            synchronized (admins) {
+                            admins.put(admin.getEmail(), admin);
+                            }
+                            synchronized (accountList) {
+                            accountList.put(admin.getEmail(), admin);
+                            }
+                        }
+                    }
+                } catch (com.google.firebase.database.DatabaseException dbe) {
+                    Log.e("adminDataChange", dbe.getMessage());
+                    dbe.printStackTrace();
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) { }
-         });
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+    //
+    private void maintainShelters() {
+        sheltersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                try {
+                    for (DataSnapshot child : children) {
+                        Shelter shelter = child.getValue(Shelter.class);
+                        if (shelter != null) {
+                            synchronized (shelterList) {
+                            shelterList.put(shelter.getShelterName(), shelter);
+                            }
+                        }
+                    }
+                } catch (com.google.firebase.database.DatabaseException dbe) {
+                    Log.e("shelterDataChange", dbe.getMessage());
+                    dbe.printStackTrace();
+                }
+            }
 
-         sheltersRef.addValueEventListener(new ValueEventListener() {
-             @Override
-             public void onDataChange(DataSnapshot dataSnapshot) {
-                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                 try {
-                     for (DataSnapshot child : children) {
-                         Shelter shelter = child.getValue(Shelter.class);
-                         shelterList.put(shelter.getShelterName(), shelter);
-                     }
-                 } catch (com.google.firebase.database.DatabaseException dbe) {
-                     Log.e("shelterDataChange", dbe.getMessage());
-                     dbe.printStackTrace();
-                 }
-             }
-
-             @Override
-             public void onCancelled(DatabaseError databaseError) { }
-         });
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
-    // Map: <Email, Account>
-    public static HashMap<String, Account> getAccountListPointer() {
-        return (HashMap<String, Account>)accountList;
-    }
-
-    // Map: <ShelterName, Shelter>
-    public static HashMap<String, Shelter> getShelterListPointer() {
-        return (HashMap<String, Shelter>)shelterList;
-    }
-
-
-    public static DatabaseReference getRef() {
-        return database.getReference();
-    }
-
-    public static void initAccounts() {
+    private static void initAccounts() {
         Query usersQueryRef = usersRef.orderByKey();
         usersQueryRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 User user = dataSnapshot.getValue(User.class);
-//                Model.getAccountListPointer().put(user.getEmail(), user);
-                accountList.put(user.getEmail(), user);
+                if (user != null) {
+                    synchronized (accountList) {
+                    accountList.put(user.getEmail(), user);
+                    }
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 User user = dataSnapshot.getValue(User.class);
-//                Model.getAccountListPointer().put(user.getEmail(), user);
-                accountList.put(user.getEmail(), user);
+                if (user != null) {
+                    synchronized (accountList) {
+                    accountList.put(user.getEmail(), user);
+                    }
+                }
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && user != null) {
+                    synchronized (accountList) {
+                    accountList.remove(user.getEmail(), user);
+                    }
+                }
+            }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
 
         Query adminsQueryRef = adminsRef.orderByKey();
@@ -207,25 +254,40 @@ public class DBUtil {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Admin admin = dataSnapshot.getValue(Admin.class);
-//                Model.getAccountListPointer().put(admin.getEmail(), admin);
-                accountList.put(admin.getEmail(), admin);
+                if (admin != null) {
+                    synchronized (accountList) {
+                    accountList.put(admin.getEmail(), admin);
+                    }
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Admin admin = dataSnapshot.getValue(Admin.class);
-//                Model.getAccountListPointer().put(admin.getEmail(), admin);
-                accountList.put(admin.getEmail(), admin);
+                if (admin != null) {
+                    synchronized (accountList) {
+                    accountList.put(admin.getEmail(), admin);
+                    }
+                }
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Admin admin = dataSnapshot.getValue(Admin.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && admin != null) {
+                    synchronized (accountList) {
+                    accountList.remove(admin.getEmail(), admin);
+                    }
+                }
+            }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
 
         Query empsQueryRef = employeesRef.orderByKey();
@@ -233,52 +295,102 @@ public class DBUtil {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Employee emp = dataSnapshot.getValue(Employee.class);
-//                Model.getAccountListPointer().put(emp.getEmail(), emp);
-                accountList.put(emp.getEmail(), emp);
+                if (emp != null) {
+                    synchronized (accountList) {
+                    accountList.put(emp.getEmail(), emp);
+                    }
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Employee emp = dataSnapshot.getValue(Employee.class);
-                accountList.put(emp.getEmail(), emp);
+                if (emp != null) {
+                    synchronized (accountList) {
+                    accountList.put(emp.getEmail(), emp);
+                    }
+                }
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Employee emp = dataSnapshot.getValue(Employee.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && emp != null) {
+                    synchronized (accountList) {
+                    accountList.remove(emp.getEmail(), emp);
+                    }
+                }
+            }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
     }
 
-    public static void initShelters() {
+    private static void initShelters() {
         Query shelterQueryRef = sheltersRef.orderByKey();
         shelterQueryRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Shelter shelter = dataSnapshot.getValue(Shelter.class);
-                shelterList.put(shelter.getShelterName(), shelter);
+                if (shelter != null) {
+                    synchronized (shelterList) {
+                    shelterList.put(shelter.getShelterName(), shelter);
+                    }
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Shelter shelter = dataSnapshot.getValue(Shelter.class);
-                shelterList.put(shelter.getShelterName(), shelter);
+                if (shelter != null) {
+                    synchronized (shelterList) {
+                    shelterList.put(shelter.getShelterName(), shelter);
+                    }
+                }
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Shelter shelter = dataSnapshot.getValue(Shelter.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && shelter != null) {
+                    synchronized (shelterList) {
+                    shelterList.remove(shelter.getShelterName(), shelter);
+                    }
+                }
+            }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
     }
+
+
+    // Map: <Email, Account>
+    public static HashMap<String, Account> getAccountListPointer() {
+        return (HashMap<String, Account>) accountList;
+    }
+
+    // Map: <ShelterName, Shelter>
+    public static HashMap<String, Shelter> getShelterListPointer() {
+        return (HashMap<String, Shelter>) shelterList;
+    }
+
+    public static DatabaseReference getRef() {
+        return database.getReference();
+    }
+
+
 
     // Primary key = email (String up to '@' symbol)
     public void addAccount(Account newAccount) {
@@ -289,18 +401,18 @@ public class DBUtil {
         String key = newAccount.getEmail().substring(0, newAccount.getEmail().indexOf('@'));
         rootRef.child(branch).child(key).setValue(newAccount,
                 new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    Log.v("DBUtil", "Data could not be saved " + databaseError.getMessage());
-                } else {
-                    Log.v("DBUtil", "Data saved successfully.");
-                }
-            }
-        });
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            Log.v("DBUtil", "Data could not be saved " + databaseError.getMessage());
+                        } else {
+                            Log.v("DBUtil", "Data saved successfully.");
+                        }
+                    }
+                });
 //        newAccount.setAccountID(newAcctRef);
         if (branch.equals("users")) {
-            usersRef.child(key).child("stayReports").setValue(((User)newAccount).getStayReports());
+            usersRef.child(key).child("stayReports").setValue(((User) newAccount).getStayReports());
         }
 
     }
@@ -334,8 +446,8 @@ public class DBUtil {
 //            }
 //        }
 //        return target;
-      //  return Model.getAccountByEmail(emailAddress);
-   // }
+    //  return Model.getAccountByEmail(emailAddress);
+    // }
 
     public String getEmailAssociatedWithUsername(String username) {
         if (Model.isValidEmailAddress(username)) return username;
@@ -354,15 +466,15 @@ public class DBUtil {
         String key = newShelter.getShelterKey() + "_" + newShelter.getShelterName();
         sheltersRef.child(key).setValue(newShelter,
                 new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    Log.v("DBUtil", "Data could not be saved " + databaseError.getMessage());
-                } else {
-                    Log.v("DBUtil", "Data saved successfully.");
-                }
-            }
-        });
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            Log.v("DBUtil", "Data could not be saved " + databaseError.getMessage());
+                        } else {
+                            Log.v("DBUtil", "Data saved successfully.");
+                        }
+                    }
+                });
         sheltersRef.child(key).child("beds").setValue(newShelter.getBeds());
 
     }
@@ -430,4 +542,11 @@ public class DBUtil {
         usersRef.child(key).setValue(u);
     }
 
+    /*
+    map of Messages:
+    get DB ref: FirebaseReference messageRef = rootRef.child("messages")
+    add listener for data change
+
+    */
 }
+

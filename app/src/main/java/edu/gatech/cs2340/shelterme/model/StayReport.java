@@ -21,7 +21,9 @@ public class StayReport {
     private String checkOutDate;
     private String accountEmail;
 
-    public StayReport() {}
+    public StayReport() {
+        this(new Shelter(), new User(), new ArrayList<Bed>());
+    }
 
     public StayReport(Shelter shelter, User account, ArrayList<Bed> bedlist) {
         this.setActive(true);

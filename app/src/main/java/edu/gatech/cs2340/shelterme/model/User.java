@@ -27,7 +27,7 @@ public class User extends Account {
         this.isVeteran = false;
         this.setIsOccupyingBed(false);
         this.stayReports = new Stack<StayReport>();
-        Log.e("USER_KEY", this.generateKey());
+//        Log.e("USER_KEY", this.generateKey());
         super.setAccountType(Type.USER);
     }
 
@@ -111,6 +111,12 @@ public class User extends Account {
 
     public void clearOccupiedBed() {
         setIsOccupyingBed(false);
+    }
+
+    public void clearStayReportHistory() {
+        this.stayReports.clear();
+        if (stayReports == null)
+            this.stayReports = new Stack<StayReport>();
     }
 
 

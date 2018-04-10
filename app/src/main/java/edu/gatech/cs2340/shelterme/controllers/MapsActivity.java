@@ -93,8 +93,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.e("Maps runnable", "showAll should be checked");
             }
         });
-//        showAllCheck.setOnCheckedChangeListener(null);
-//        showAllCheck.setChecked(true);
         showAllCheck.setOnCheckedChangeListener(checkListen);
 
         ArrayAdapter<String> adapterGen = new ArrayAdapter(this,android.R.layout.simple_spinner_item, GenderAccepted.values());
@@ -156,8 +154,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng loc = new LatLng(33.7490, -84.3880);
         List<Marker> markers = populateMap();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(11));
         ready = true;
-        //mMap.setOnMarkerClickListener()
     }
 
     public List<Marker> populateMap(){
@@ -170,13 +168,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     markers.add(marker);
                 }
         }
-        //for(Marker m: markers) {
-          //  if (!shelters.containsKey(m.getTitle())) {
-            //    m.remove();
-              //  System.out.println("TRYING TO REMOVE");
-            //}
-            //System.out.println("IN THE LOOOOOOOOOOOOOOOOOOP");
-        //}
+
         updated = ignoreUpdate = false;
         return markers;
     }
@@ -228,8 +220,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (famChecked && key.charAt(0) == 'T') {
             match = true;
         }
-        else if (!famChecked && key.charAt(0) == 'F')//key.charAt(1) == 'F' &&  key.charAt(2) == 'F') // FFF000_200_F
+        else if (!famChecked && key.charAt(0) == 'F') {
             match = true;
+        }
         return match;
     }
 
