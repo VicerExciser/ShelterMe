@@ -353,6 +353,7 @@ public class RegistrationPage extends AppCompatActivity {
             // Process DOB and Sex if regular User:
             String dob;
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
             int age = 0;
             Account.Sex sex = Account.Sex.MALE;
             String selectedWorkplace; //enteredWorkplace;
@@ -363,8 +364,11 @@ public class RegistrationPage extends AppCompatActivity {
                 if (!dob.isEmpty() && !dob.equals(dateOfBirthField.getHint().toString())) {
                     delim = dob.indexOf('/');
                     int enteredYear = Integer.parseInt(dob.substring(delim + 1));
-                    // TODO: Calculate for month of birth as well for more accurate age read-in
+                    int enteredMonth = Integer.parseInt(dob.substring(0, delim));
+                    int monthDiff = currentMonth - enteredMonth;
                     age = currentYear - enteredYear;
+                    if (monthDiff < 0)
+                        age -= 1;
                     if (age == 0)
                         return;
                 } else {
@@ -382,7 +386,6 @@ public class RegistrationPage extends AppCompatActivity {
 //                model.displayErrorMessage("At which shelter do you work?", this);
 //                return;
 //            }
-//            // TODO: Search thru archived Shelters to verify this workplace exists
 //            // This is temporary placeholder for future code
 //            workplace = new Shelter();
                 selectedWorkplace = String.valueOf(shelterSpinner.getSelectedItem());

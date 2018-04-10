@@ -422,17 +422,25 @@ public class Shelter implements Parcelable {
             if (bedTypeFoundKey.charAt(0) != 'T') {
                 bedTypeFoundKey = "T" + bedTypeFoundKey.substring(1);
             }
-            curShelter.familyCapacity -= numBeds;
+            if (curShelter.familyCapacity - numBeds >= 0)
+                curShelter.familyCapacity -= numBeds;
+            else
+                throw new IllegalArgumentException("Too many beds requested!");
         } else if (type.equals("Single")) {
             if (bedTypeFoundKey.charAt(0) != 'F') {
                 bedTypeFoundKey = "F" + bedTypeFoundKey.substring(1);
             }
-            curShelter.singleCapacity -= numBeds;
+            if (curShelter.singleCapacity - numBeds >= 0)
+                curShelter.singleCapacity -= numBeds;
+            else
+                throw new IllegalArgumentException("Too many beds requested!");
+        } else {
+            throw new IllegalArgumentException("Bed type must either be 'Single' or 'Family'");
         }
 
         // ValidBedsFound is our structure containing all beds that must be updated in the database
         HashMap<String, Collection<Bed>> validBedsFound = new HashMap<>();
-        // values will hold pointers to our newly reserved bed objects
+        // resValues will hold pointers to our newly reserved bed objects
         Collection<Bed> resValues = new ArrayList<>();
         HashMap<String, Bed> validBeds = (HashMap<String, Bed>) curShelter.getBeds().get(bedTypeFoundKey);
         Bed[] bedArr = new Bed[validBeds.values().size()];

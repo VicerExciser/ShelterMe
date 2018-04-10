@@ -105,6 +105,10 @@ public class Model {
         System.out.println(s.toString());
     }
 
+    public void removeShelter(String name) {
+        shelters.remove(name);
+    }
+
 
     public void getShelterDetails(Shelter s) {
         Log.v(TAG, s.detail());

@@ -542,5 +542,11 @@ public class DBUtil implements Runnable {
         usersRef.child(key).setValue(u);
     }
 
+    /*
+    map of Messages:
+    get DB ref: FirebaseReference messageRef = rootRef.child("messages")
+    add listener for data change
+
+    */
 }
 
