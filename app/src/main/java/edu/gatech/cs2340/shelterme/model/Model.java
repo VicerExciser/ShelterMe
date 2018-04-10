@@ -11,7 +11,7 @@ import edu.gatech.cs2340.shelterme.controllers.DBUtil;
 
 // SINGLETON -- Updated to be Thread-Safe for Synchronization
 public class Model {
-    private static volatile Model modelInstance;
+    private static volatile Model modelInstance; // Volatile so multiple threads can access
     private static volatile DBUtil dbUtil;
     private static final String TAG = "Model";
 
@@ -20,18 +20,24 @@ public class Model {
     private Account currUser;
 
     private Model() {
-        dbUtil = DBUtil.getInstance();
-        accounts = DBUtil.getAccountListPointer();
-        shelters = DBUtil.getShelterListPointer();
+        while (dbUtil == null) {
+            dbUtil = DBUtil.getInstance();
+        }
+        while (accounts == null) {
+            accounts = DBUtil.getAccountListPointer();
+        }
+        while (shelters == null) {
+            shelters = DBUtil.getShelterListPointer();
+        }
     }
 
     public static Model getInstance() {
-        if (modelInstance == null) {
-            synchronized (Model.class) {
+//        if (modelInstance == null) {
+//            synchronized (Model.class) {
                 if (modelInstance == null) {
                     modelInstance = new Model();
-                }
-            }
+//                }
+//            }
         }
         return modelInstance;
     }
@@ -55,6 +61,7 @@ public class Model {
     }
 
     public Account getCurrUser() {return currUser;}
+    public void setCurrUser(String email, User usr) { this.currUser = usr;}
     public void setCurrUser(String email) {currUser = getAccountByEmail(email);}
 
     public void addToAccounts(Account acct) {

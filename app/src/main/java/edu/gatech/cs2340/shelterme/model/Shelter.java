@@ -390,9 +390,10 @@ public class Shelter implements Parcelable {
 
     /**
      * Equivalent for checking in a User to a Shelter with a StayReport
-     * @param type
-     * @param numBeds
-     * @return
+     * @param type The type of bed to be reserved (Single or Family)
+     * @param numBeds An integer from 1 to 5 for the quantity of beds to reserve at this shelter
+     * @return A HashMap that maps a bedKey (representative of the User type that can legitimately
+     *          sleep in this bed) to a collection of bedIDs (i.e. bed_50)
      */
     public HashMap<String, Collection<Bed>> reserveBed(String type, int numBeds) { //function takes in User and returns ID of bed(s) being reserved
         if (type == null) {
@@ -437,11 +438,8 @@ public class Shelter implements Parcelable {
         Bed[] bedArr = new Bed[validBeds.values().size()];
         bedArr = (Bed[]) ((validBeds.values().toArray(bedArr)));
 
-        // Necessary to even account for "O"?
-//        LinkedHashMap<String, Bed> occupied = curShelter.getBeds().get("O");
         HashMap<String, Bed> occupied = curShelter.getBeds().get("O");
         if (occupied == null) {
-//            occupied = new LinkedHashMap<>();
             occupied = new HashMap<>();
             curShelter.beds.put("O", occupied);
         }
@@ -451,13 +449,11 @@ public class Shelter implements Parcelable {
             bedArr[i].setOccupantEmail(user.getEmail());
             // remove the valid bed from this shelter's beds list & place in the occupied list
             occupied.put(bedArr[i].getId(), bedArr[i]);
-//            occValues.add(bedArr[i]);
             resValues.add(((HashMap<String, Bed>) (curShelter.getBeds().get(bedTypeFoundKey)))
                     .remove(bedArr[i].getId()));
         }
         validBedsFound.put(bedTypeFoundKey, resValues);
         user.addStayReport(new StayReport(curShelter, user, (ArrayList<Bed>) resValues));
-//        validBedsFound.put("O", occValues);
         int newVac = curShelter.getVacancies() - numBeds;
         curShelter.setVacancies(newVac);
         return validBedsFound;

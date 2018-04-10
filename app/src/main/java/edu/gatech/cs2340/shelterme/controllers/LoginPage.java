@@ -89,6 +89,17 @@ public class LoginPage extends AppCompatActivity {
         int password = mPasswordView.getText().toString().hashCode();
         String email = DBUtil.getInstance().getEmailAssociatedWithUsername(username);
         Account attempting = Model.getAccountByEmail(email);
+
+        if (Model.getAccountListPointer().isEmpty())
+            Log.e("attemptLogin", "Account list is empty!");
+        else {
+            int count = 0;
+            for (Account acct : Model.getAccountListPointer().values()) {
+                Log.e("Account " + count, acct.getUsername());
+                count++;
+            }
+        }
+
         if (username.equals("lady") && password == "password".hashCode()) {
             model.setCurrUser("lady@shelterme.com");
             return true;
