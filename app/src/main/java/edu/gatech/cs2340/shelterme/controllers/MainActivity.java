@@ -26,8 +26,8 @@ import edu.gatech.cs2340.shelterme.model.Shelter;
 
 public class MainActivity extends AppCompatActivity {
 
-    DBUtil dbUtil = DBUtil.getInstance();
-    Model model = Model.getInstance();
+    DBUtil dbUtil; // = DBUtil.getInstance();
+    Model model; // = Model.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +67,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(myIntent, 0);
             }
         });
+
+        dbUtil = DBUtil.getInstance();
+        model = Model.getInstance();
+        Thread backgroundThread = new Thread(dbUtil);
+        backgroundThread.start();   // Init & run thread for maintaining database
 
         // MUST COMMENT THIS OUT TO PREVENT SHELTER DATA FROM BEING OVERWRITTEN
 //        loadShelters();
