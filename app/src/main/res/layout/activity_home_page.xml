@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="44dp"
             android:fontFamily="cursive"
             android:text="@string/shelterme"
             android:textColor="#FFFFFF"
@@ -98,6 +99,4 @@
                 tools:targetApi="lollipop" />
         </LinearLayout>
     </RelativeLayout>
-
-
 </android.support.constraint.ConstraintLayout>
