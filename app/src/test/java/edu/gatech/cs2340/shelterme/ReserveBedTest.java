@@ -62,7 +62,7 @@ public class ReserveBedTest {
 //    private Set<String> resultKeys, expectedKeys;
     private Collection<Bed> resultVals;//, expectedVald;
     private static Shelter currShelter;
-    private static User previousUser;
+    private static User nullUser;
     private static User currUser;
     private List<StayReport> userStayReports;
 //    private boolean userIsOccupyingBed;
@@ -224,9 +224,9 @@ public class ReserveBedTest {
     @Test
     public void testInvalidUserData() {
         int failCount = 0;
-        currUser = null;
-        mockModel.setCurrUser(null, null);
-        when(Model.getInstance().getCurrUser()).thenReturn(null);
+        nullUser = null;
+        mockModel.setCurrUser(null, nullUser);
+        when(Model.getInstance().getCurrUser()).thenReturn(nullUser);
         assertNull(mockModel.getCurrUser());
 
 
@@ -235,8 +235,8 @@ public class ReserveBedTest {
             currShelter.reserveBed("Single", 5);
         } catch (IllegalArgumentException iae) {
             failCount++;
-            currUser = new User(userFullName, username, userEmail, userPassword, userSex, userAge,
-                    userIsFamily, secQuest, secAns);
+//            currUser = new User(userFullName, username, userEmail, userPassword, userSex, userAge,
+//                    userIsFamily, secQuest, secAns);
             mockModel.setCurrUser(userEmail, currUser);
             when(Model.getInstance().getCurrUser()).thenReturn((User)currUser);
         }
