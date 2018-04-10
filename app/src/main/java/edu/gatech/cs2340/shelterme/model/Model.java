@@ -32,16 +32,15 @@ public class Model {
     }
 
     public static Model getInstance() {
-//        if (modelInstance == null) {
-//            synchronized (Model.class) {
+        if (modelInstance == null) {
+            synchronized (Model.class) {
                 if (modelInstance == null) {
                     modelInstance = new Model();
-//                }
-//            }
+                }
+            }
         }
         return modelInstance;
     }
-
 
 
     // Map: <Email, Account>

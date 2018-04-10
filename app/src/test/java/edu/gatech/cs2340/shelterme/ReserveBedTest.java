@@ -1,7 +1,5 @@
 package edu.gatech.cs2340.shelterme;
 
-import android.view.Display;
-
 import edu.gatech.cs2340.shelterme.controllers.DBUtil;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.Bed;
@@ -10,8 +8,6 @@ import edu.gatech.cs2340.shelterme.model.StayReport;
 import edu.gatech.cs2340.shelterme.model.Account;
 import edu.gatech.cs2340.shelterme.model.Model;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,28 +15,20 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 // .keySet() returns a Set<String>
 // .values() returns a Collection<Bed>
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
-import java.util.Set;
-import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
@@ -50,24 +38,21 @@ import static org.junit.Assert.*;
  *
  * @author Austin Condict
  */
-//@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(JUnit4.class)
 @PrepareForTest({ FirebaseDatabase.class, Model.class, DBUtil.class })
 public class ReserveBedTest {
-    public static final long TIMEOUT = 200;
 
     /* Necessary fields for testing outcomes of reserveBed */
-    private Map<String, Collection<Bed>> reservedResults;//, reservedExpected;
-//    private Set<String> resultKeys, expectedKeys;
-    private Collection<Bed> resultVals;//, expectedVald;
+    private Map<String, Collection<Bed>> reservedResults;
+    private static Map<String, Shelter> mockShelterList;
+    private Collection<Bed> resultVals;
     private static Shelter currShelter;
     private static User nullUser;
     private static User currUser;
     private List<StayReport> userStayReports;
-//    private boolean userIsOccupyingBed;
     private static String userKey;
-    private static String bedKeyExpected = "FTF026_200F";
+    private static String bedKeyExpected = "FTF026_200_F";
     private static String bedType = "Single";
     private static int bedsToReserve = 5;
 
@@ -110,16 +95,13 @@ public class ReserveBedTest {
     public static void setup() {
         mockModel = Mockito.mock(Model.class);
         mockDBUtil = Mockito.mock(DBUtil.class);
-
-//        previousUser = (User)(mockModel.getCurrUser());
         currUser = new User(userFullName, username, userEmail, userPassword, userSex, userAge,
                 userIsFamily, secQuest, secAns);
-//        mockModel.setCurrUser(userEmail, currUser);
-//        model.addToAccounts(currUser);
         currShelter = new Shelter(shelterKey, shelterName, capacityStr, restrictions, longitude,
                 latitude, address, notes, phone);
-//        model.addShelter(currShelter);
         userKey = currUser.generateKey();
+        mockShelterList = new HashMap<>();
+        mockShelterList.put(currShelter.getShelterName(), currShelter);
     }
 
     @Before
@@ -127,22 +109,6 @@ public class ReserveBedTest {
         mockDatabaseReference = Mockito.mock(DatabaseReference.class);
         mockFirebaseDatabase = Mockito.mock(FirebaseDatabase.class);
         when(mockFirebaseDatabase.getReference()).thenReturn(mockDatabaseReference);
-
-//        doAnswer(new Answer<Void>() {
-//            @Override
-//            public Void answer(InvocationOnMock invocation) throws Throwable {
-//                ValueEventListener valueEventListener = (ValueEventListener) invocation.getArguments()[0];
-//
-//                DataSnapshot mockedDataSnapshot = Mockito.mock(DataSnapshot.class);
-//                //when(mockedDataSnapshot.getValue(User.class)).thenReturn(testOrMockedUser)
-//
-//                valueEventListener.onDataChange(mockedDataSnapshot);
-//                //valueEventListener.onCancelled(...);
-//
-//                return null;
-//            }
-//        }).when(mockDatabaseReference).addListenerForSingleValueEvent(any(ValueEventListener.class));
-
 
         PowerMockito.mockStatic(FirebaseDatabase.class);
         when(FirebaseDatabase.getInstance()).thenReturn(mockFirebaseDatabase);
@@ -155,11 +121,8 @@ public class ReserveBedTest {
 
         when(mockModel.getCurrUser()).thenReturn((User)currUser);
         when(Model.getInstance().getCurrUser()).thenReturn((User)currUser);
-//        when(mockModel.setCurrUser(null, null))
-//                .then(when(mockModel.getCurrUser()).thenReturn(null));
-
-
-
+        when(Model.getShelterListPointer()).thenReturn((HashMap<String, Shelter>) mockShelterList);
+        when(Model.getInstance().verifyShelterParcel(currShelter)).thenReturn(currShelter);
     }
 
     @Test
@@ -172,7 +135,7 @@ public class ReserveBedTest {
 //        assertTrue(Model.getShelterListPointer().containsValue(currShelter));
         assertEquals(currShelter.getVacancies(), 5);
         assertEquals(currShelter.getSingleCapacity(), 5);
-        assertEquals(currShelter.getBeds().values().size(), 5);
+        assertEquals(currShelter.getBeds().values().size(), 2);
         assertEquals(currShelter.findValidBedType(userKey), bedKeyExpected);
     }
 
@@ -270,17 +233,17 @@ public class ReserveBedTest {
         reservedResults = currShelter.reserveBed(bedType, bedsToReserve);
         assertFalse(reservedResults.isEmpty());
         assertTrue(reservedResults.containsKey(bedKeyExpected));
-    }
+//    }
 
-    @Test
-    public void testVacanciesUpdate() {
+//    @Test
+//    public void testVacanciesUpdate() {
         assertEquals(currShelter.getVacancies(), 0);
         assertEquals(currShelter.getSingleCapacity(), 0);
-    }
+//    }
 //dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, true);
 //dbUtil.updateUserOccupancyAndStayReports(user);
-    @Test
-    public void testIsOccupiedUpdate() {
+//    @Test
+//    public void testIsOccupiedUpdate() {
         assertTrue(currUser.isOccupyingBed());
         HashMap<String, Bed> occupied = currShelter.getBeds().get("O");
         assertNotNull(occupied);
@@ -294,10 +257,10 @@ public class ReserveBedTest {
             assertEquals(b.getOccupantEmail(), userEmail);
             assertTrue(b.getIsOccupied());
         }
-    }
-
-    @Test
-    public void testStayReportsUpdate() {
+//    }
+//
+//    @Test
+//    public void testStayReportsUpdate() {
         userStayReports = currUser.getStayReports();
         assertFalse(userStayReports.isEmpty());
         assertEquals(userStayReports.size(), 1);

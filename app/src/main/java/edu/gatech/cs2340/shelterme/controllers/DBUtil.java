@@ -29,6 +29,7 @@ import edu.gatech.cs2340.shelterme.model.Account;
 import edu.gatech.cs2340.shelterme.model.Admin;
 import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.Employee;
+import edu.gatech.cs2340.shelterme.model.Message;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.StayReport;
@@ -46,6 +47,7 @@ public class DBUtil implements Runnable {
     private static volatile Map<String, Employee> employees = new HashMap<>();
     private static volatile Map<String, Account> accountList = new HashMap<>();// = Model.getAccountListPointer();
     private static volatile Map<String, Shelter> shelterList = new HashMap<>();// = Model.getShelterListPointer();
+    private static volatile Map<String, Message> messageList = new HashMap<>();
 
     // Write a message to the database
     private static volatile FirebaseDatabase database;// = FirebaseDatabase.getInstance();
