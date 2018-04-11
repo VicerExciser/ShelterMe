@@ -32,9 +32,9 @@ public class MessageBoard extends AppCompatActivity {
         messageListView = (ListView) findViewById(R.id._messageListView);
         showAddressedCheckBox = (CheckBox) findViewById(R.id._showAddressedCheckBox);
 
-        allMessageArrayAdapter = new ArrayAdapter<Message>(this, android.R.layout.simple_list_item_1,
+        allMessageArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
                 MessageBoardModel.messages);
-        unaddressedMessageArrayAdapter = new ArrayAdapter<Message>(this, android.R.layout.simple_list_item_1,
+        unaddressedMessageArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
                 MessageBoardModel.unaddressedMessages);
 
         messageListView.setAdapter(allMessageArrayAdapter);

@@ -1,12 +1,8 @@
 package edu.gatech.cs2340.shelterme.model;
 
-import edu.gatech.cs2340.shelterme.controllers.DBUtil;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
-
-import com.google.firebase.database.DatabaseException;
-import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.*;
 
@@ -210,19 +206,19 @@ public class Shelter implements Parcelable {
         Age minAge, maxAge;
         switch (mna) {
             case 0:
-                minAge = Age.MINAGE;
+                minAge = Age.MIN_AGE;
                 break;
             case 6:
                 minAge = Age.CHILDREN_BASE;
                 break;
             case 16:
-                minAge = Age.YOUNGADULTS_BASE;
+                minAge = Age.YOUNG_ADULTS_BASE;
                 break;
             case 26:
                 minAge = Age.ADULTS_BASE;
                 break;
             default:
-                minAge = Age.MINAGE;
+                minAge = Age.MIN_AGE;
                 break;
         }
         switch (mxa) {
@@ -233,16 +229,16 @@ public class Shelter implements Parcelable {
                 maxAge = Age.CHILDREN_CAP;
                 break;
             case 25:
-                maxAge = Age.YOUNGADULTS_CAP;
+                maxAge = Age.YOUNG_ADULTS_CAP;
                 break;
             case 65:
                 maxAge = Age.ADULTS_CAP;
                 break;
             case 200:
-                maxAge = Age.MAXAGE;
+                maxAge = Age.MAX_AGE;
                 break;
             default:
-                maxAge = Age.MAXAGE;
+                maxAge = Age.MAX_AGE;
                 break;
         }
         //this.setVacancies(singleBeds + familyBeds);
@@ -264,7 +260,7 @@ public class Shelter implements Parcelable {
 
     //Bed Handling
     // Ex. bedKey:   'FFF026_200_T'  <-- single bed, not men only, not women only, minAge = 26 (ADULT),
-    //                                   maxAge = 200 (MAXAGE), is veterans only
+    //                                   maxAge = 200 (MAX_AGE), is veterans only
     public void addNewBeds(int numberOfBeds, boolean isFamily, boolean menOnly, boolean womenOnly,
                            Age minAge, Age maxAge, boolean veteranOnly) {
         //create unique bed key that encodes all of the bed's restrictions into the key

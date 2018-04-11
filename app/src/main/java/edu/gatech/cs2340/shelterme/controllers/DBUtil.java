@@ -42,8 +42,8 @@ public class DBUtil implements Runnable {
 
     private static volatile DBUtil dbUtilInstance;// = new DBUtil();
 
-    private static volatile Map<String, User> users = new HashMap<String, User>();
-    private static volatile Map<String, Admin> admins = new HashMap<String, Admin>();
+    private static volatile Map<String, User> users = new HashMap<>();
+    private static volatile Map<String, Admin> admins = new HashMap<>();
     private static volatile Map<String, Employee> employees = new HashMap<>();
     private static volatile Map<String, Account> accountList = new HashMap<>();// = Model.getAccountListPointer();
     private static volatile Map<String, Shelter> shelterList = new HashMap<>();// = Model.getShelterListPointer();
@@ -453,7 +453,8 @@ public class DBUtil implements Runnable {
 
     public String getEmailAssociatedWithUsername(String username) {
         if (Model.isValidEmailAddress(username)) return username;
-        List<Account> accounts = new ArrayList<Account>(users.values());
+        List<Account> accounts = new ArrayList<>();
+        accounts.addAll(users.values());
         accounts.addAll(employees.values());
         accounts.addAll(admins.values());
         for (Account a : accounts) {
@@ -530,7 +531,7 @@ public class DBUtil implements Runnable {
         List<StayReport> reports = u.getStayReports();
         if (reports == null) {
             Log.e("Getting StayReports: ", "User.getStayReports == null");
-            reports = new Stack<StayReport>();
+            reports = new Stack<>();
         }
         try {
             usersRef.child(key).child("stayReports").setValue(reports);
