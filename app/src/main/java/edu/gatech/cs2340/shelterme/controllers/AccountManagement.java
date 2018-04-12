@@ -98,34 +98,34 @@ public class AccountManagement extends AppCompatActivity {
         Account[] dataArray = new Account[dataSet.size()];
         List<Account> dataList = new ArrayList<>(dataSet.values());
 //        if (mode == null || searchText == null) {
-//            dataSet = Model.getMessageListPointer();
+//            dataSet = Model.getAccountListPointer();
 //        } else if (mode.equals("Search")) {
 //            Log.e("'Search' filter", "Now showing only results containing " + searchText);
 //            Iterator<Message> iterator = dataList.iterator();
 //            while (iterator.hasNext()) {
-//                Message message = iterator.next();
-//                if (!message.getSenderEmail().contains(searchText)) {
+//                Account account = iterator.next();
+//                if (!account.getEmail().contains(searchText) || ... ) {
 //                    iterator.remove();
 //                }
 //            }
-//        } else if (mode.equals("Addressed") && searchText.equals("False")) {
-//            Log.e("'Addressed' filter", "Now showing only unaddressed messages");
+//        } else if (mode.equals("Locked") && searchText.equals("True")) {
+//            Log.e("'Locked' filter", "Now displaying locked accounts as well");
 //            Iterator<Message> iterator = dataList.iterator();
 //            while (iterator.hasNext()) {
 //                Message message = iterator.next();
-//                if (message.isAddressed()) {
+//                if (message.isAccountLocked()) {
 //                    iterator.remove();
 //                }
 //            }
 //        } else {
 //            dataSet = Model.getAccountListPointer();
 //        }
-//        Message[] dataArray = new Message[dataSet.size()];
-//        List<Message> dataList = new ArrayList<>(dataSet.values());
+//        Account[] dataArray = new Account[dataSet.size()];
+//        List<Account> dataList = new ArrayList<>(dataSet.values());
 //        Collections.sort(dataList, Collections.reverseOrder()); // display in descending order
-//        dataArray = (Message[])(dataList.toArray(dataArray));
+//        dataArray = (Account[])(dataList.toArray(dataArray));
 //        accountAdapter = new AccountAdapter(dataArray);
-//        messageRecyclerView.setAdapter(messageAdapter);
-//        Model.maintainMessages(messageRecyclerView, messageAdapter);
+//        accountRecyclerView.setAdapter(accountAdapter);
+//        Model.maintainAccounts(accountRecyclerView, accountAdapter);
     }
 }
