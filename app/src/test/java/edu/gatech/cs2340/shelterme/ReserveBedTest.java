@@ -1,6 +1,6 @@
 package edu.gatech.cs2340.shelterme;
 
-import edu.gatech.cs2340.shelterme.controllers.DBUtil;
+import edu.gatech.cs2340.shelterme.util.DBUtil;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.User;

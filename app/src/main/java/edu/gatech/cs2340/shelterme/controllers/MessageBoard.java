@@ -6,28 +6,18 @@
 package edu.gatech.cs2340.shelterme.controllers;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Message;
-import edu.gatech.cs2340.shelterme.model.MessageBoardModel;
 import edu.gatech.cs2340.shelterme.model.Model;
-
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import edu.gatech.cs2340.shelterme.util.MessageAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;

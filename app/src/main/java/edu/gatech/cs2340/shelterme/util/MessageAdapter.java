@@ -1,4 +1,4 @@
-package edu.gatech.cs2340.shelterme.controllers;
+package edu.gatech.cs2340.shelterme.util;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,7 +19,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         // each data item is a Message in this case:
 //         String message;
 //         String timeSent;
@@ -28,7 +28,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         public TextView messageTextView;
         public ViewHolder(View v) {
             super(v);
-            messageTextView = v.findViewById(R.id.message_row);
+            messageTextView = v.findViewById(R.id._row);
+        }
+
+        // TODO: Make message items in the RecycleView clickable for details & interactions
+        @Override
+        public void onClick(View v) {
+
         }
 
 //        private final View.OnClickListener mOnClickListener = new View.OnClickListener();
@@ -51,7 +57,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public MessageAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View row = inflater.inflate(R.layout.item_layout_message, parent, false);
+        View row = inflater.inflate(R.layout.recycler_item_layout, parent, false);
         return new ViewHolder(row);
     }
 

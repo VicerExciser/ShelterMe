@@ -13,7 +13,6 @@ import android.widget.Spinner;
 import android.text.TextWatcher;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 
@@ -24,6 +23,7 @@ import edu.gatech.cs2340.shelterme.model.Employee;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.User;
 import edu.gatech.cs2340.shelterme.model.Model;
+import edu.gatech.cs2340.shelterme.util.DBUtil;
 
 
 public class RegistrationPage extends AppCompatActivity {

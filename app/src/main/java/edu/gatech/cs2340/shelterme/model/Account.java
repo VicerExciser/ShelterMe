@@ -39,7 +39,9 @@ public abstract class Account {
         return pw == this.password;
     }
 
+    public boolean isAccountLocked() { return this.accountLocked; }
 
+    public void setAccountLocked(boolean locked) { this.accountLocked = locked; }
 
     @Override
     public boolean equals(Object other) {

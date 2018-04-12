@@ -21,7 +21,7 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.gatech.cs2340.shelterme.controllers.DBUtil;
+import edu.gatech.cs2340.shelterme.util.DBUtil;
 import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;

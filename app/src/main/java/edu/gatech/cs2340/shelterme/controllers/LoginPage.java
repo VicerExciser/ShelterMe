@@ -1,9 +1,6 @@
 package edu.gatech.cs2340.shelterme.controllers;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -20,6 +17,7 @@ import edu.gatech.cs2340.shelterme.model.Admin;
 import edu.gatech.cs2340.shelterme.model.Employee;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.User;
+import edu.gatech.cs2340.shelterme.util.DBUtil;
 
 //import com.google.firebase.auth.FirebaseAuth;
 

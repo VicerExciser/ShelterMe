@@ -7,10 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import edu.gatech.cs2340.shelterme.controllers.DBUtil;
-import edu.gatech.cs2340.shelterme.controllers.MessageAdapter;
+import edu.gatech.cs2340.shelterme.util.DBUtil;
+import edu.gatech.cs2340.shelterme.util.MessageAdapter;
 
 
 // SINGLETON -- Updated to be Thread-Safe for Synchronization

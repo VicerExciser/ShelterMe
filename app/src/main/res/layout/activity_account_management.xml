@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.gatech.cs2340.shelterme.controllers.AccountManagement">
+    android:layout_margin="16dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="edu.gatech.cs2340.shelterme.controllers.AccountManagement"
+    android:orientation="vertical" >
 
-    <android.support.v7.widget.RecyclerView
+    <SearchView
+        android:id="@+id/account_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-</android.support.design.widget.CoordinatorLayout>
+    <CheckBox
+        android:id="@+id/_showLockedCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/account_search"
+        android:text="Display locked accounts" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/_showLockedCheckBox" />
+
+
+</RelativeLayout>
