@@ -39,6 +39,7 @@ import static org.junit.Assert.*;
  *
  * @author Austin Condict
  */
+@SuppressWarnings("ALL")
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(JUnit4.class)
 @PrepareForTest({ FirebaseDatabase.class, Model.class, DBUtil.class })

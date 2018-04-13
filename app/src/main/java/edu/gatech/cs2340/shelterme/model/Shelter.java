@@ -133,7 +133,7 @@ public class Shelter implements Parcelable {
             exVets = false;
             ageFloor = 0;
             ageCeiling = 200;
-            parseCapacity(cp, fam, exMen, exWomen, ageFloor, ageCeiling, exVets);
+            parseCapacity(cp, true, false, false, ageFloor, ageCeiling, false);
             return;
         } else {
             fam = rs1.contains("families");
