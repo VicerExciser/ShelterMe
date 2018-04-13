@@ -14,7 +14,7 @@ import edu.gatech.cs2340.shelterme.model.Message;
  */
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
-    private Message[] dataSet;
+    private final Message[] dataSet;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -25,13 +25,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 //         String timeSent;
 //         String senderEmail;
 //         boolean isAddressed;
-        public TextView messageTextView;
-        public ViewHolder(View v) {
+        final TextView messageTextView;
+        ViewHolder(View v) {
             super(v);
             messageTextView = v.findViewById(R.id._row);
         }
 
-        // TODO: Make message items in the RecycleView clickable for details & interactions
+        // Make message items in the RecycleView clickable for details & interactions
         @Override
         public void onClick(View v) {
 

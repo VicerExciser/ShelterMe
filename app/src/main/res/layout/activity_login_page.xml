@@ -52,7 +52,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="21dp"
             android:tint="#000000"
-            app:srcCompat="@android:drawable/bottom_bar" />
+            app:srcCompat="@android:drawable/bottom_bar"
+            android:contentDescription="TODO" />
 
         <TextView
             android:id="@+id/textView4"
@@ -86,7 +87,8 @@
             android:layout_below="@+id/forgotten"
             android:layout_marginTop="16dp"
             android:tint="@android:color/white"
-            app:srcCompat="@android:drawable/bottom_bar" />
+            app:srcCompat="@android:drawable/bottom_bar"
+            android:contentDescription="TODO" />
 
         <TextView
             android:id="@+id/textView5"
@@ -132,7 +134,8 @@
             android:layout_alignLeft="@+id/log"
             android:layout_alignStart="@+id/log"
             android:layout_below="@+id/logo1"
-            app:srcCompat="@mipmap/cs_social_good" />
+            app:srcCompat="@mipmap/cs_social_good"
+            android:contentDescription="TODO" />
 
     </RelativeLayout>
 

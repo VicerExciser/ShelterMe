@@ -21,14 +21,14 @@ import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class BedTest {
-Bed bed;
+private Bed bed;
 @Rule
 public ActivityTestRule<MainActivity> myActivity =
         new ActivityTestRule<>(MainActivity.class);
-    public static final long TIMEOUT = 200L;
+    // --Commented out by Inspection (4/13/2018 6:17 PM):public static final long TIMEOUT = 200L;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         bed = new Bed();
 
     }

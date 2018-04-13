@@ -13,7 +13,7 @@ import edu.gatech.cs2340.shelterme.util.MessageAdapter;
 
 
 // SINGLETON -- Updated to be Thread-Safe for Synchronization
-public class Model {
+public final class Model {
     private static volatile Model modelInstance; // Volatile so multiple threads can access
     private static volatile DBUtil dbUtil;
     private static final String TAG = "Model";
@@ -74,13 +74,14 @@ public class Model {
         addToMessages(new Message());
     }
 
-    public void addToMessages(Message msg) {
+    private void addToMessages(Message msg) {
         dbUtil.addMessage(msg);
     }
 
     public Shelter verifyShelterParcel(Shelter shelter) {
-        if (shelters.containsValue(shelter))
+        if (shelters.containsValue(shelter)) {
             return shelters.get(shelter.getShelterName());
+        }
         return shelter;
     }
 
@@ -94,16 +95,18 @@ public class Model {
 
     public static Account getAccountByEmail(String email) {
         Account toRet = null;
-        if (email == null) return toRet;
+        if (email == null) {
+            return toRet;
+        }
 //        for (Account a : accounts) {
 //            if (a.getEmail().equals(email)) {
 //                toRet = a;
 //            }
 //        }
         toRet = accounts.get(email);
-        return toRet instanceof User ? (User)toRet
-                : (toRet instanceof Admin ? (Admin)toRet
-                : (toRet instanceof Employee ? (Employee)toRet : toRet));
+        return (toRet instanceof User) ? (User) toRet
+                : ((toRet instanceof Admin) ? (Admin) toRet
+                : ((toRet instanceof Employee) ? (Employee) toRet : toRet));
     }
 
 //    public static User
@@ -112,16 +115,18 @@ public class Model {
 //        return accounts.get(indx);
 //    }
 
-    public void removeAccountOfEmail(String email) {
-//        Account toRem = accounts.get(email);
-//        for (Account a : accounts) {
-//            if (a.getEmail().equals(email)) {
-//                toRem = a;
-//
-//            }
-//        }
-        accounts.remove(email);
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void removeAccountOfEmail(String email) {
+////        Account toRem = accounts.get(email);
+////        for (Account a : accounts) {
+////            if (a.getEmail().equals(email)) {
+////                toRem = a;
+////
+////            }
+////        }
+//        accounts.remove(email);
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
     public void addShelter(Shelter s) {
         shelters.put(s.getShelterName(), s);
@@ -129,12 +134,14 @@ public class Model {
         System.out.println(s.toString());
     }
 
-    public void removeShelter(String name) {
-        shelters.remove(name);
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void removeShelter(String name) {
+//        shelters.remove(name);
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
 
-    public void getShelterDetails(Shelter s) {
+    private void getShelterDetails(Shelter s) {
         Log.v(TAG, s.detail());
     }
 
@@ -153,7 +160,7 @@ public class Model {
         return shelters.get(name);
     }
 
-    public static boolean isValidEmailAddress(String email) {
+    public static boolean isValidEmailAddress(CharSequence email) {
         String ePattern = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]" +
                 "+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
@@ -161,7 +168,7 @@ public class Model {
         return m.find();
     }
 
-    public void displaySuccessMessage(String message, Context callerClass) {
+    public void displaySuccessMessage(CharSequence message, Context callerClass) {
         AlertDialog.Builder builder = new AlertDialog.Builder(callerClass);
         builder.setTitle("Success!").setMessage(message)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -191,11 +198,13 @@ public class Model {
 //        sleepForSecond();
     }
 
-    private void sleepForSecond() {
-        try {
-            java.util.concurrent.TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException ie) {
-            Log.e("StayReport success", "sleep() threw an InterruptedException");
-        }
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    private void sleepForSecond() {
+//        try {
+//            java.util.concurrent.TimeUnit.SECONDS.sleep(1);
+//        } catch (InterruptedException ie) {
+//            Log.e("StayReport success", "sleep() threw an InterruptedException");
+//        }
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 }

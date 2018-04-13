@@ -2,7 +2,6 @@ package edu.gatech.cs2340.shelterme.controllers;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -14,38 +13,32 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
+import java.util.AbstractMap;
 import java.util.HashMap;
-import java.util.List;
 
 import edu.gatech.cs2340.shelterme.R;
-import edu.gatech.cs2340.shelterme.model.Account;
-import edu.gatech.cs2340.shelterme.model.Age;
 import edu.gatech.cs2340.shelterme.model.GenderAccepted;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
-import edu.gatech.cs2340.shelterme.model.User;
 
 public class ViewSheltersPage extends AppCompatActivity {
 
     private ArrayAdapter<String> adapter;
-    private HashMap<String, Shelter> shelters;
+    private AbstractMap<String, Shelter> shelters;
 //    private Model model = Model.getInstance();
     private boolean showAll = true;
     private AgeRange selectedAgeRange = AgeRange.ANYONE;
     private GenderAccepted selectedGender = GenderAccepted.ANY;
     private ListView shelterList;
 
-    private CheckBox familyCheck, showAllCheck;
+    private CheckBox familyCheck;
+    private CheckBox showAllCheck;
 
-    int updateCounter = 0;
-    final int updatesForInit = 2;   // signifies initialization is complete (to be compared against updateCounter)
-    boolean saclAttached = false;   // signifies initialization is complete (showAllCheck listener attached)
-    boolean ignoreUpdate = false;   // to avoid unnecessary subroutine calls
+    private int updateCounter = 0;
+    private final int updatesForInit = 2;   // signifies initialization is complete (to be compared against updateCounter)
+    private boolean saclAttached = false;   // signifies initialization is complete (showAllCheck listener attached)
+    private boolean ignoreUpdate = false;   // to avoid unnecessary subroutine calls
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,8 +105,9 @@ public class ViewSheltersPage extends AppCompatActivity {
         showAllCheck.post(new Runnable() {
             @Override
             public void run() {
-                if (!showAllCheck.isChecked())
+                if (!showAllCheck.isChecked()) {
                     showAllCheck.setChecked(true);
+                }
                 showAllCheck.setOnCheckedChangeListener(showAllCheckListener);
                 saclAttached = true;
                 Log.e("ViewShelters runnable", "showAll should be checked");
@@ -121,7 +115,7 @@ public class ViewSheltersPage extends AppCompatActivity {
         });
     }
 
-    final AdapterView.OnItemSelectedListener ageItemSelect = new AdapterView.OnItemSelectedListener() {
+    private final AdapterView.OnItemSelectedListener ageItemSelect = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             ignoreUpdate = true;
@@ -153,7 +147,7 @@ public class ViewSheltersPage extends AppCompatActivity {
         public void onNothingSelected(AdapterView<?> parent) { }
     };
 
-    final AdapterView.OnItemSelectedListener genderItemSelect = new AdapterView.OnItemSelectedListener() {
+    private final AdapterView.OnItemSelectedListener genderItemSelect = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             ignoreUpdate = true;
@@ -179,7 +173,7 @@ public class ViewSheltersPage extends AppCompatActivity {
         public void onNothingSelected(AdapterView<?> parent) { }
     };
 
-    final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
+    private final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
             ViewSheltersPage.this.adapter.getFilter().filter(query);
@@ -196,7 +190,7 @@ public class ViewSheltersPage extends AppCompatActivity {
         }
     };
 
-    final CompoundButton.OnCheckedChangeListener famCheckListener = new CompoundButton.OnCheckedChangeListener() {
+    private final CompoundButton.OnCheckedChangeListener famCheckListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
@@ -210,10 +204,10 @@ public class ViewSheltersPage extends AppCompatActivity {
         }
     };
 
-    final CompoundButton.OnCheckedChangeListener showAllCheckListener = new CompoundButton.OnCheckedChangeListener() {
+    private final CompoundButton.OnCheckedChangeListener showAllCheckListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            showAll = updateCounter >= updatesForInit ? isChecked : showAll;
+            showAll = (updateCounter >= updatesForInit) ? isChecked : showAll;
             Log.e("showAllCheckListener", "showAll checked = "+showAll);
             if (isChecked && familyCheck.isChecked()) {
                 familyCheck.toggle();
@@ -224,7 +218,7 @@ public class ViewSheltersPage extends AppCompatActivity {
     };
 
     private boolean showToggle() {
-        if (showAllCheck.isChecked() && saclAttached && updateCounter >= updatesForInit) {
+        if (showAllCheck.isChecked() && saclAttached && (updateCounter >= updatesForInit)) {
             showAllCheck.toggle();
             return true;
         }
@@ -246,7 +240,7 @@ public class ViewSheltersPage extends AppCompatActivity {
                     for (String key : s.getBeds().keySet()) {
                         if (key.length() > 1) {
 //                        Log.e("ViewShelters", "key = " + key);
-                            if (familyChoiceMatchesKey(key, isChecked) && s.getVacancies() > 0) {
+                            if (familyChoiceMatchesKey(key, isChecked) && (s.getVacancies() > 0)) {
                                 if (genderChoiceMatchesKey(key) && ageRangeChoiceMatchesKey(key)) {
                                     shelters.put(s.getShelterName(), s);
 
@@ -272,25 +266,27 @@ public class ViewSheltersPage extends AppCompatActivity {
         });
     }
 
-    private boolean familyChoiceMatchesKey(String key, boolean famChecked) {
+    private boolean familyChoiceMatchesKey(CharSequence key, boolean famChecked) {
         boolean match = false;
-        if (famChecked && key.charAt(0) == 'T') {
+        if (famChecked && (key.charAt(0) == 'T')) {
             match = true;
         }
-        else if (famChecked == false && key.charAt(0) == 'F')//key.charAt(1) == 'F' &&  key.charAt(2) == 'F') // FFF000_200_F
+        else if ((!famChecked) && (key.charAt(0) == 'F'))//key.charAt(1) == 'F' &&  key.charAt(2) == 'F') // FFF000_200_F
+        {
             match = true;
+        }
         return match;
     }
 
-    private boolean genderChoiceMatchesKey(String key) {
+    private boolean genderChoiceMatchesKey(CharSequence key) {
 //        Log.e("ViewShelters", key);
         boolean match = false;
-        if ((selectedGender.equals(GenderAccepted.MEN) && key.charAt(1) == 'T')
-                ^ (selectedGender.equals(GenderAccepted.WOMEN) && key.charAt(2) == 'T')) {
+        if ((selectedGender.equals(GenderAccepted.MEN) && (key.charAt(1) == 'T'))
+                ^ (selectedGender.equals(GenderAccepted.WOMEN) && (key.charAt(2) == 'T'))) {
             match = true;
         }
         else if (selectedGender.equals(GenderAccepted.ANY)
-                /*||*/ && (key.charAt(1) == 'F' && key.charAt(2) == 'F')) {
+                /*||*/ && ((key.charAt(1) == 'F') && (key.charAt(2) == 'F'))) {
             match = true;
         }
         return match;
@@ -305,26 +301,27 @@ public class ViewSheltersPage extends AppCompatActivity {
 //        Log.e("ViewShelters", selectedAgeRange.toString());
         int max = Integer.valueOf(key.substring(7,10));// + "_";
         if ((selectedAgeRange.equals(AgeRange.ANYONE))) {
-            if (min == 0 && max == 200)
+            if ((min == 0) && (max == 200)) {
                 match = true;
+            }
         }
 //                ^
         else if ((selectedAgeRange.equals(AgeRange.FAMWITHYOUNG))
-                && min == 0 && max >= 5) {
+                && (min == 0) && (max >= 5)) {
             match = true;
         }
         else if (selectedAgeRange.equals(AgeRange.CHILDREN)
-                && (min <= 6
-                && max >= 15)){
+                && ((min <= 6)
+                && (max >= 15))){
             match = true;}
         else if (selectedAgeRange.equals(AgeRange.YOUNGADULTS)
-                && (min <= 16
-                && max >= 25)) {
+                && ((min <= 16)
+                && (max >= 25))) {
             match = true;
         }
         else if (selectedAgeRange.equals(AgeRange.ADULTS)
-                && (min <= 26
-                && max >= 65)) {
+                && ((min <= 26)
+                && (max >= 65))) {
             match = true;
         }
 

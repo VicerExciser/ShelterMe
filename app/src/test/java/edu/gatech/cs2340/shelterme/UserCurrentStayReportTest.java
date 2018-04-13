@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  */
 
 public class UserCurrentStayReportTest {
-    User user;
+    private User user;
 
     @Before
     public void setUp() {

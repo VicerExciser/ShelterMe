@@ -1,5 +1,7 @@
 package edu.gatech.cs2340.shelterme.model;
 
+import android.support.annotation.Nullable;
+
 /**
  * Created by austincondict on 2/20/18.
  */
@@ -9,6 +11,7 @@ public class Bed {
 
     private String id;
 //    private User occupant;
+    @Nullable
     private String occupantEmail;
     private boolean isOccupied;
     private boolean isFamily;       //designates if the bed is of "family type" or for a single person
@@ -18,13 +21,14 @@ public class Bed {
     private Age maxAge;             //designates maximum age that applies to an individual or the children of a family
     private boolean veteranOnly;    //designates if the bed must have at least one veteran occupying it
     private String savedBedKey;     //bed Key saved so it can be easily grouped with other beds of its type
-    public String associatedShelterName;    // stored for preservation of uniqueness when comparisons made
+    private final String associatedShelterName;    // stored for preservation of uniqueness when comparisons made
 
     public Bed(String id, boolean isFamily, boolean menOnly, boolean womenOnly, Age minAge, Age maxAge,
                boolean veteranOnly, String savedBedKey, String associatedShelterName) {
         this.id = id;
-        if (id != null && !id.contains("bed_"))
+        if ((id != null) && !id.contains("bed_")) {
             this.id = "bed_" + id;
+        }
         this.isOccupied = false;
         this.isFamily = isFamily;
         this.menOnly = menOnly;
@@ -59,8 +63,9 @@ public class Bed {
 
     private void modifyOccupant(String occupantEmail) {
         User occupant = (User) Model.getAccountByEmail(occupantEmail);
-        if (occupant != null)
+        if (occupant != null) {
             occupant.setIsOccupyingBed(true);
+        }
         this.isOccupied = true;
     }
 
@@ -83,58 +88,83 @@ public class Bed {
         return isOccupied;
     }
 
-    public boolean getIsFamily() {
-        return isFamily;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public boolean getIsFamily() {
+//        return isFamily;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public boolean isMenOnly() {
-        return menOnly;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public boolean isMenOnly() {
+//        return menOnly;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public boolean isWomenOnly() {
-        return womenOnly;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public boolean isWomenOnly() {
+//        return womenOnly;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public Age getMinAge() {
-        return minAge;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public Age getMinAge() {
+//        return minAge;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public Age getMaxAge() {
-        return maxAge;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public Age getMaxAge() {
+//        return maxAge;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public boolean isVeteranOnly() {
-        return veteranOnly;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public boolean isVeteranOnly() {
+//        return veteranOnly;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public void setIsMenOnly(boolean onlyMale) {
-        this.menOnly = onlyMale;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void setIsMenOnly(boolean onlyMale) {
+//        this.menOnly = onlyMale;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public void setIsWomenOnly(boolean onlyFemale) {
-        this.womenOnly = onlyFemale;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void setIsWomenOnly(boolean onlyFemale) {
+//        this.womenOnly = onlyFemale;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public void setIsVeteranOnly(boolean onlyVets) {
-        this.veteranOnly = onlyVets;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void setIsVeteranOnly(boolean onlyVets) {
+//        this.veteranOnly = onlyVets;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public void setIsFamily(boolean isFam) {
-        this.isFamily = isFam;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void setIsFamily(boolean isFam) {
+//        this.isFamily = isFam;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public void setMinAge(Age min) {
-        this.minAge = min;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void setMinAge(Age min) {
+//        this.minAge = min;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public void setMaxAge(Age max) {
-        this.maxAge = max;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void setMaxAge(Age max) {
+//        this.maxAge = max;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
     public void setId(String bedNumber) {
         String newId = bedNumber;
-        if (bedNumber != null && !bedNumber.contains("bed_"))
-                newId = "bed_" + bedNumber;
+        if ((bedNumber != null) && !bedNumber.contains("bed_")) {
+            newId = "bed_" + bedNumber;
+        }
         for (Shelter s : Model.getShelterListPointer().values()) {
             if (!s.getBeds().containsKey(newId)) {
                 this.id = newId;
@@ -146,13 +176,15 @@ public class Bed {
         return savedBedKey;
     }
 
-    public void setSavedBedKey(String savedBedKey) {
-        this.savedBedKey = savedBedKey;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void setSavedBedKey(String savedBedKey) {
+//        this.savedBedKey = savedBedKey;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
     @Override
     public boolean equals(Object other) {
-        if (other == null || !(other instanceof Bed)) {
+        if ((other == null) || !(other instanceof Bed)) {
             return false;
         }
         if (this == other) {
@@ -167,9 +199,9 @@ public class Bed {
     @Override
     public int hashCode() {
         int result = 17;
-        result = 31 * result + this.id.toLowerCase().hashCode();
-        result = 31 * result + this.associatedShelterName.toLowerCase().hashCode();
-        result = 31 * result + this.savedBedKey.toLowerCase().hashCode();
+        result = (31 * result) + this.id.toLowerCase().hashCode();
+        result = (31 * result) + this.associatedShelterName.toLowerCase().hashCode();
+        result = (31 * result) + this.savedBedKey.toLowerCase().hashCode();
         return result;
     }
 }

@@ -1,5 +1,4 @@
 package edu.gatech.cs2340.shelterme.model;
-import android.util.Log;
 import java.util.List;
 import java.util.Stack;
 
@@ -9,15 +8,15 @@ import java.util.Stack;
 
 public class User extends Account {
 
-    public boolean isFamily;
-    private int age;
-    private Sex sex;
-    public boolean isVeteran;
+    private final boolean isFamily;
+    private final int age;
+    private final Sex sex;
+    private final boolean isVeteran;
     public boolean isOccupyingBed;
     private List<StayReport> stayReports;
 
 
-    // TODO: Collect isVeteran information from registration/edit profile, pass into constructor (set to False for default until then)
+    // Collect isVeteran information from registration/edit profile, pass into constructor (set to False for default until then)
     public User(String name, String uname, String email, int pass, Sex sex, int age, boolean isFamily,
                 Question secQ, String secA) {
         super(name, uname, email, pass, secQ, secA);
@@ -73,33 +72,44 @@ public class User extends Account {
         return cur;
     }
 
+    @Override
     public String getName() {
         return super.getName();
     }
 
+    @Override
     public String getEmail() {
         return super.getEmail();
     }
 
+    @Override
     public String getUsername() {
         return super.getUsername();
     }
 
-    public boolean getIsFamily() {
-        return this.isFamily;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public boolean getIsFamily() {
+//        return this.isFamily;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public int getAge() {
-        return this.age;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public int getAge() {
+//        return this.age;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public Sex getSex() {
-        return this.sex;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public Sex getSex() {
+//        return this.sex;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public boolean getIsVeteran() {
-        return this.isVeteran;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public boolean getIsVeteran() {
+//        return this.isVeteran;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
     public boolean isOccupyingBed() {
         return this.isOccupyingBed;
@@ -115,17 +125,19 @@ public class User extends Account {
 
     public void clearStayReportHistory() {
         this.stayReports.clear();
-        if (stayReports == null)
+        if (stayReports == null) {
             this.stayReports = new Stack<>();
+        }
     }
 
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof User)
-            return (((User) other).age == this.age
-                    && ((User) other).sex == this.sex
+        if (other instanceof User) {
+            return ((((User) other).age == this.age)
+                    && (((User) other).sex == this.sex)
                     && super.equals(other));
+        }
         return (other instanceof Account) && super.equals(other);
     }
 
@@ -133,8 +145,8 @@ public class User extends Account {
     public int hashCode() {
         int result = 17;
         result += super.hashCode();
-        result = 31 * result + this.age;
-        result = 31 * result + this.sex.toString().toLowerCase().hashCode();
+        result = (31 * result) + this.age;
+        result = (31 * result) + this.sex.toString().toLowerCase().hashCode();
         result += 31 * (this.isOccupyingBed ? 1 : 0);
         result += 31 * (this.isVeteran ? 1 : 0);
         result += 31 * (this.isFamily ? 1 : 0);

@@ -25,7 +25,8 @@
             android:layout_alignRight="@+id/textView2"
             android:layout_alignTop="@+id/signup"
             android:tint="#000000"
-            app:srcCompat="@android:drawable/bottom_bar" />
+            app:srcCompat="@android:drawable/bottom_bar"
+            android:contentDescription="TODO" />
 
         <TextView
             android:id="@+id/textView2"
@@ -50,7 +51,8 @@
             android:layout_alignEnd="@+id/textView3"
             android:layout_alignRight="@+id/textView3"
             android:tint="#000000"
-            app:srcCompat="@android:drawable/bottom_bar" />
+            app:srcCompat="@android:drawable/bottom_bar"
+            android:contentDescription="TODO" />
 
         <TextView
             android:id="@+id/textView"
@@ -86,7 +88,8 @@
             android:layout_alignStart="@+id/proceed1"
             android:layout_marginBottom="20dp"
             android:tint="@android:color/background_dark"
-            app:srcCompat="@android:drawable/bottom_bar" />
+            app:srcCompat="@android:drawable/bottom_bar"
+            android:contentDescription="TODO" />
 
         <TextView
             android:id="@+id/proceed1"

@@ -18,19 +18,22 @@ public class Employee extends Account {
         super.setAccountType(Type.EMP);
     }
 
-    public Shelter getPlaceOfWork() {
-        return placeOfWork;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public Shelter getPlaceOfWork() {
+//        return placeOfWork;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public void setPlaceOfWork(Shelter placeOfWork) {
+    private void setPlaceOfWork(Shelter placeOfWork) {
         this.placeOfWork = placeOfWork;
     }
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof Employee)
+        if (other instanceof Employee) {
             return (((Employee) other).placeOfWork.equals(this.placeOfWork)
                     && super.equals(other));
+        }
         return (other instanceof Account) && super.equals(other);
     }
 

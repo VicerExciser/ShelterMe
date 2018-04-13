@@ -67,7 +67,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/title"
             android:layout_centerHorizontal="true"
-            app:srcCompat="@mipmap/cs_social_good" />
+            app:srcCompat="@mipmap/cs_social_good"
+            android:contentDescription="TODO" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

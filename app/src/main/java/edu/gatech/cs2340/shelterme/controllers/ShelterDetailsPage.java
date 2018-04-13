@@ -2,13 +2,9 @@ package edu.gatech.cs2340.shelterme.controllers;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import edu.gatech.cs2340.shelterme.R;
@@ -17,9 +13,8 @@ import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.User;
 
 public class ShelterDetailsPage extends AppCompatActivity {
-    final String CITY = "Atlanta";
-    int vacancyRaw;
-    String vacancyString;
+    private int vacancyRaw;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,16 +37,17 @@ public class ShelterDetailsPage extends AppCompatActivity {
         final Shelter shelterParcel = intent.getParcelableExtra("Shelter");
         final Shelter shelter = Model.getInstance().verifyShelterParcel(shelterParcel);
         vacancyRaw = shelter.getVacancies();
-        vacancyString = String.valueOf(vacancyRaw);
+        String vacancyString = String.valueOf(vacancyRaw);
 
-        // TODO: Add new Shelter fields to Parcel
+        // Add new Shelter fields to Parcel
         header.setText(shelter.getShelterName());
         String capText = "Capacity: \n\t\t\t\t"+shelter.getCapacityStr();
         capacity.setText(capText);
         String accptText = "Accepts: \n\t\t\t\t"+shelter.getRestrictions();
         restrictions.setText(accptText);
+        String CITY = "Atlanta";
         String streetCity[] = shelter.getAddress().split(CITY);
-        String addrText = "Address: \n\t\t\t\t"+streetCity[0]+"\n\t\t\t\t"+CITY+streetCity[1];
+        String addrText = "Address: \n\t\t\t\t"+streetCity[0]+"\n\t\t\t\t"+ CITY +streetCity[1];
         address.setText(addrText);
         String phoneText = "Phone: \n\t\t\t\t"+shelter.getPhone();
         phone.setText(phoneText);
@@ -70,7 +66,7 @@ public class ShelterDetailsPage extends AppCompatActivity {
                 if (Model.getInstance().getCurrUser() != null) {
                     User user = (User)(Model.getInstance().getCurrUser());
                     if (!(user.isOccupyingBed())) {
-                        if (vacancyRaw > 0 && shelter.hasOpenBed(user.generateKey())) {
+                        if ((vacancyRaw > 0) && shelter.hasOpenBed(user.generateKey())) {
                             Intent request = new Intent(ShelterDetailsPage.this, RequestStayReport.class);
                             request.putExtra("Shelter", shelter);
                             startActivity(request);

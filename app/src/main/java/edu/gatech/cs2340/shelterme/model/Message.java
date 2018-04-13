@@ -31,33 +31,41 @@ public class Message implements Comparable<Message> {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void setMessage(String message) {
+//        this.message = message;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
     public String getTimeSent() {
         return timeSent;
     }
 
-    public void setSenderEmail(String senderEmail) {
-        this.senderEmail = senderEmail;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void setSenderEmail(String senderEmail) {
+//        this.senderEmail = senderEmail;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
     public String getSenderEmail() {
         return senderEmail;
     }
 
-    public void setTimeSent(String timeSent) {
-        this.timeSent = timeSent;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void setTimeSent(String timeSent) {
+//        this.timeSent = timeSent;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
     public boolean isAddressed() {
         return isAddressed;
     }
 
-    public void setAddressed(boolean addressed) {
-        isAddressed = addressed;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void setAddressed(boolean addressed) {
+//        isAddressed = addressed;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
     public void address() {
         isAddressed = true;
@@ -77,18 +85,15 @@ public class Message implements Comparable<Message> {
 
     @Override
     public boolean equals(Object other) {
-        if (other == null || !(other instanceof Message)) return false;
-        return (other == this) || (((Message) other).getTimeSent().equals(this.getTimeSent())
-                && ((Message) other).getSenderEmail().equalsIgnoreCase(this.getSenderEmail())
-                && ((Message) other).getMessage().equalsIgnoreCase(this.getMessage()));
+        return (other != null) && other instanceof Message && ((other == this) || (((Message) other).getTimeSent().equals(this.getTimeSent()) && ((Message) other).getSenderEmail().equalsIgnoreCase(this.getSenderEmail()) && ((Message) other).getMessage().equalsIgnoreCase(this.getMessage())));
     }
 
     @Override
     public int hashCode() {
         int result = 17;
-        result = result * 31 + this.getSenderEmail().toLowerCase().hashCode();
-        result = result * 31 + this.getMessage().toLowerCase().hashCode();
-        result = result * 31 + this.getTimeSent().toLowerCase().hashCode();
+        result = (result * 31) + this.getSenderEmail().toLowerCase().hashCode();
+        result = (result * 31) + this.getMessage().toLowerCase().hashCode();
+        result = (result * 31) + this.getTimeSent().toLowerCase().hashCode();
         return result;
     }
 }

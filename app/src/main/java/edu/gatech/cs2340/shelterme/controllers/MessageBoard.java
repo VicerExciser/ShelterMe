@@ -19,6 +19,7 @@ import edu.gatech.cs2340.shelterme.model.Message;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.util.MessageAdapter;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,13 +28,8 @@ import java.util.List;
 
 public class MessageBoard extends AppCompatActivity {
 
-    private CheckBox showAddressedCheckBox;
     private RecyclerView messageRecyclerView;
-    private SearchView messageSearchView;
-//    private DatabaseReference messageRef;
-    private LinearLayoutManager messageLayoutManager;
-    private MessageAdapter messageAdapter;
-    private HashMap<String, Message> dataSet;
+    private AbstractMap<String, Message> dataSet;
 
 
     @Override
@@ -53,7 +49,7 @@ public class MessageBoard extends AppCompatActivity {
         messageRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        messageLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager messageLayoutManager = new LinearLayoutManager(this);
         messageLayoutManager.setReverseLayout(true);
         messageLayoutManager.setStackFromEnd(true);
         messageRecyclerView.setLayoutManager(messageLayoutManager);
@@ -65,7 +61,7 @@ public class MessageBoard extends AppCompatActivity {
 
 //--------------------------------------------------------------------------------------------------
 
-        showAddressedCheckBox = (CheckBox) findViewById(R.id._showAddressedCheckBox);
+        CheckBox showAddressedCheckBox = (CheckBox) findViewById(R.id._showAddressedCheckBox);
         showAddressedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -81,7 +77,7 @@ public class MessageBoard extends AppCompatActivity {
             }
         });
 
-        messageSearchView = findViewById(R.id.message_search);
+        SearchView messageSearchView = findViewById(R.id.message_search);
         messageSearchView.setQueryHint("Search by Sender's Email");
 //        messageSearchView.setIconifiedByDefault(false);
         messageSearchView.setSelected(false);
@@ -114,9 +110,9 @@ public class MessageBoard extends AppCompatActivity {
     private void updateFilter(String mode, String searchText) {
         Message[] dataArray = new Message[dataSet.size()];
         List<Message> dataList = new ArrayList<>(dataSet.values());
-        if (mode == null || searchText == null) {
+        if ((mode == null) || (searchText == null)) {
             dataSet = Model.getMessageListPointer();
-        } else if (mode.equals("Search")) {
+        } else if ("Search".equals(mode)) {
             Log.e("'Search' filter", "Now showing only results containing " + searchText);
             Iterator<Message> iterator = dataList.iterator();
             while (iterator.hasNext()) {
@@ -125,7 +121,7 @@ public class MessageBoard extends AppCompatActivity {
                     iterator.remove();
                 }
             }
-        } else if (mode.equals("Addressed") && searchText.equals("False")) {
+        } else if ("Addressed".equals(mode) && "False".equals(searchText)) {
             Log.e("'Addressed' filter", "Now showing only unaddressed messages");
             Iterator<Message> iterator = dataList.iterator();
             while (iterator.hasNext()) {
@@ -141,7 +137,7 @@ public class MessageBoard extends AppCompatActivity {
 //        List<Message> dataList = new ArrayList<>(dataSet.values());
         Collections.sort(dataList, Collections.reverseOrder()); // display in descending order
         dataArray = (Message[])(dataList.toArray(dataArray));
-        messageAdapter = new MessageAdapter(dataArray);
+        MessageAdapter messageAdapter = new MessageAdapter(dataArray);
         messageRecyclerView.setAdapter(messageAdapter);
         Model.maintainMessages(messageRecyclerView, messageAdapter);
     }

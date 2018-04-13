@@ -25,8 +25,8 @@ import edu.gatech.cs2340.shelterme.util.DBUtil;
 
 public class MainActivity extends AppCompatActivity {
 
-    DBUtil dbUtil; // = DBUtil.getInstance();
-    Model model; // = Model.getInstance();
+    private DBUtil dbUtil; // = DBUtil.getInstance();
+    private Model model; // = Model.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,63 +101,65 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Reading in our CSV data for shelters
-    private void loadShelters() {
-        try {
-            InputStream is = getResources().openRawResource(R.raw.homeless_shelter_database);
-            BufferedReader br = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                // KitKat = Android 4.4 API
-                br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-            }
-            br.readLine();
-            String line;// = null;
-            while ((line = br.readLine()) != null) {
-                String[] tokens = line.split(";");
-
-                int length = tokens.length;
-                for (int i = 0; i < length; i++) {
-                    if (tokens[i].isEmpty() || tokens[i].equals(" ")) {
-                        tokens[i] = "N/A";
-                    } else {
-                        tokens[i] = tokens[i].replace('"',' ');
-                        tokens[i] = tokens[i].trim();
-                    }
-//                    if (tokens[i].charAt(0)=='"' && tokens[i].charAt(tokens[i].length())=='"') {
-//                     tokens[i] = tokens[i].substring(1, tokens[i].length());
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    // Reading in our CSV data for shelters
+//    private void loadShelters() {
+//        try {
+//            InputStream is = getResources().openRawResource(R.raw.homeless_shelter_database);
+//            BufferedReader br = null;
+//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+//                // KitKat = Android 4.4 API
+//                br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+//            }
+//            br.readLine();
+//            String line;// = null;
+//            while ((line = br.readLine()) != null) {
+//                String[] tokens = line.split(";");
+//
+//                int length = tokens.length;
+//                for (int i = 0; i < length; i++) {
+//                    if (tokens[i].isEmpty() || " ".equals(tokens[i])) {
+//                        tokens[i] = "N/A";
+//                    } else {
+//                        tokens[i] = tokens[i].replace('"',' ');
+//                        tokens[i] = tokens[i].trim();
 //                    }
-                }
-//                Shelter shelter;
-// Format: key, name, capacity, restricts, long, lat, addr, notes, phone
-                if (length == 9) {
-//                    int key = Integer.valueOf(tokens[0]);
-                    String key = tokens[0];
-                    String name = tokens[1];
-                    String capacity = tokens[2];
-                    String restricts = tokens[3];
-                    double longitude = Double.parseDouble(tokens[4]);
-                    double latitude = Double.parseDouble(tokens[5]);
-                    String addr = tokens[6];
-                    String notes = tokens[7];
-                    String phone = tokens[8];
-                    Shelter newShelter = new Shelter(key, name, capacity, restricts, longitude, latitude,
-                            addr, notes, phone);
-                    model.addShelter(newShelter);
-                    dbUtil.addShelter(newShelter);
-                }
-            }
-            br.close();
-
-        } catch (FileNotFoundException fnf) {
-
-        } catch (IOException ioe)
-
-        {
-
-        } catch (Exception e) {
-            Log.e("LoadShelters", e.getMessage());
-            Log.e("Error loading shelters", e.toString());
-            e.printStackTrace();
-        }
-    }
+////                    if (tokens[i].charAt(0)=='"' && tokens[i].charAt(tokens[i].length())=='"') {
+////                     tokens[i] = tokens[i].substring(1, tokens[i].length());
+////                    }
+//                }
+////                Shelter shelter;
+//// Format: key, name, capacity, restricts, long, lat, addr, notes, phone
+//                if (length == 9) {
+////                    int key = Integer.valueOf(tokens[0]);
+//                    String key = tokens[0];
+//                    String name = tokens[1];
+//                    String capacity = tokens[2];
+//                    String restricts = tokens[3];
+//                    double longitude = Double.parseDouble(tokens[4]);
+//                    double latitude = Double.parseDouble(tokens[5]);
+//                    String addr = tokens[6];
+//                    String notes = tokens[7];
+//                    String phone = tokens[8];
+//                    Shelter newShelter = new Shelter(key, name, capacity, restricts, longitude, latitude,
+//                            addr, notes, phone);
+//                    model.addShelter(newShelter);
+//                    dbUtil.addShelter(newShelter);
+//                }
+//            }
+//            br.close();
+//
+//        } catch (FileNotFoundException fnf) {
+//
+//        } catch (IOException ioe)
+//
+//        {
+//
+//        } catch (Exception e) {
+//            Log.e("LoadShelters", e.getMessage());
+//            Log.e("Error loading shelters", e.toString());
+//            e.printStackTrace();
+//        }
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 }

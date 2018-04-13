@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -32,15 +33,13 @@ import edu.gatech.cs2340.shelterme.util.DBUtil;
 
 public class RequestStayReport extends AppCompatActivity {
 
-    DBUtil dbUtil = DBUtil.getInstance();
-    Model model = Model.getInstance();
+    private final DBUtil dbUtil = DBUtil.getInstance();
+    private final Model model = Model.getInstance();
     private static final int MAX_BEDS_ALLOWED = 5;
     private Shelter shelterParcel;
-    private boolean isSingle, isFam, agreed;//, acknowledged;
+    private boolean agreed;//, acknowledged;
     private String selectedBedType;
     private Integer selctedNumber;
-    private ArrayList<Integer> singleNums;
-    private ArrayList<Integer> famNums;
     private Spinner numBedsSpin;
     private ArrayAdapter<Integer> singleAdapter;
     private ArrayAdapter<Integer> famAdapter;
@@ -57,8 +56,8 @@ public class RequestStayReport extends AppCompatActivity {
         TextView header = findViewById(R.id.header);
         header.setText(shelter.getShelterName());
 
-        isFam = false;
-        isSingle = false;
+        boolean isFam = false;
+        boolean isSingle = false;
         final ArrayList<String> types = new ArrayList<>(1);
         if (shelter.getSingleCapacity() > 0) {
             types.add("Single");
@@ -73,7 +72,7 @@ public class RequestStayReport extends AppCompatActivity {
         }
 
         Spinner bedTypeSpin = findViewById(R.id.bedType);
-        ArrayAdapter<String> btsAdapter = new ArrayAdapter<>(this,
+        SpinnerAdapter btsAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, types.toArray(new String[types.size()]));
         bedTypeSpin.setAdapter(btsAdapter);
         bedTypeSpin.setSelection(0);
@@ -90,10 +89,10 @@ public class RequestStayReport extends AppCompatActivity {
         });
 
 
-        singleNums = new ArrayList<>(1);
+        ArrayList<Integer> singleNums = new ArrayList<>(1);
         if (isSingle) {
             int sc = shelter.getSingleCapacity();
-            int max = sc < MAX_BEDS_ALLOWED ? sc : MAX_BEDS_ALLOWED;
+            int max = (sc < MAX_BEDS_ALLOWED) ? sc : MAX_BEDS_ALLOWED;
             for (int i = 1; i <= max; i++) {
                 singleNums.add(i);
             }
@@ -101,10 +100,10 @@ public class RequestStayReport extends AppCompatActivity {
         singleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,
                 singleNums.toArray(new Integer[singleNums.size()]));
 
-        famNums = new ArrayList<>(1);
+        ArrayList<Integer> famNums = new ArrayList<>(1);
         if (isFam) {
             int fc = shelter.getFamilyCapacity();
-            int max = fc < MAX_BEDS_ALLOWED ? fc : MAX_BEDS_ALLOWED;
+            int max = (fc < MAX_BEDS_ALLOWED) ? fc : MAX_BEDS_ALLOWED;
             for (int i = 1; i <= max; i++) {
                 famNums.add(i);
             }
@@ -209,10 +208,10 @@ public class RequestStayReport extends AppCompatActivity {
     }
 
     private void updateNumBeds() {
-        if (selectedBedType.equals("Single")) {
+        if ("Single".equals(selectedBedType)) {
             numBedsSpin.setAdapter(singleAdapter);
         }
-        else if (selectedBedType.equals("Family")) {
+        else if ("Family".equals(selectedBedType)) {
             numBedsSpin.setAdapter(famAdapter);
         }
     }

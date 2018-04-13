@@ -25,8 +25,7 @@ public class LoginPage extends AppCompatActivity {
 
     private EditText mUsernameView;
     private EditText mPasswordView;
-    private FirebaseAuth auth;
-    Model model = Model.getInstance();
+    private final Model model = Model.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,7 @@ public class LoginPage extends AppCompatActivity {
         mUsernameView=(EditText) findViewById(R.id.editText);
         mPasswordView=(EditText) findViewById(R.id.editText2);
 
-        auth = FirebaseAuth.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             // User is logged in
             startActivity(new Intent(LoginPage.this, HomePage.class));
@@ -48,6 +47,7 @@ public class LoginPage extends AppCompatActivity {
         ImageButton forgotPass = findViewById(R.id.forget);
 
         logo.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View view) {
                 if(attemptLogin()){
                     Account acct = model.getCurrUser();
@@ -59,8 +59,9 @@ public class LoginPage extends AppCompatActivity {
                     } else if (acct instanceof Employee) {
                         myIntent1 = new Intent(view.getContext(), EmployeeHomePage.class);
                     }
-                    if (myIntent1 != null)
+                    if (myIntent1 != null) {
                         startActivityForResult(myIntent1, 0);
+                    }
                 }}
         });
 
@@ -88,9 +89,9 @@ public class LoginPage extends AppCompatActivity {
         String email = DBUtil.getInstance().getEmailAssociatedWithUsername(username);
         Account attempting = Model.getAccountByEmail(email);
 
-        if (Model.getAccountListPointer().isEmpty())
+        if (Model.getAccountListPointer().isEmpty()) {
             Log.e("attemptLogin", "Account list is empty!");
-        else {
+        } else {
             int count = 0;
             for (Account acct : Model.getAccountListPointer().values()) {
                 Log.e("Account " + count, acct.getUsername());
@@ -98,16 +99,16 @@ public class LoginPage extends AppCompatActivity {
             }
         }
 
-        if (username.equals("lady") && password == "password".hashCode()) {
+        if ("lady".equals(username) && (password == "password".hashCode())) {
             model.setCurrUser("lady@shelterme.com");
             return true;
         }
-        if (password == 0 || TextUtils.isEmpty(username)) {
+        if ((password == 0) || TextUtils.isEmpty(username)) {
             model.displayErrorMessage("This field is required", this);
             return false;
 //        } else if (model.getAccountByIndex(0).validatePassword(password)
 //                || model.getAccountByIndex(0).getUsername().equals(username)) {
-        } else if (attempting != null
+        } else if ((attempting != null)
                 && username.equals(attempting.getUsername())
                 && email.equals(attempting.getEmail())
                 && attempting.validatePassword(password)) {

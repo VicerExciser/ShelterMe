@@ -14,6 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -35,16 +36,16 @@ import edu.gatech.cs2340.shelterme.model.User;
 import static android.content.ContentValues.TAG;
 
 // Properly configured implementation of Runnable interface so that not all work done on main thread
-public class DBUtil implements Runnable {
+public final class DBUtil implements Runnable {
 
     private static volatile DBUtil dbUtilInstance;// = new DBUtil();
 
-    private static volatile Map<String, User> users = new HashMap<>();
-    private static volatile Map<String, Admin> admins = new HashMap<>();
-    private static volatile Map<String, Employee> employees = new HashMap<>();
-    private static volatile Map<String, Account> accountList = new HashMap<>();// = Model.getAccountListPointer();
-    private static volatile Map<String, Shelter> shelterList = new HashMap<>();// = Model.getShelterListPointer();
-    private static volatile Map<String, Message> messageList = new HashMap<>();
+    private static final Map<String, User> users = new HashMap<>();
+    private static final Map<String, Admin> admins = new HashMap<>();
+    private static final Map<String, Employee> employees = new HashMap<>();
+    private static final Map<String, Account> accountList = new HashMap<>();// = Model.getAccountListPointer();
+    private static final Map<String, Shelter> shelterList = new HashMap<>();// = Model.getShelterListPointer();
+    private static final Map<String, Message> messageList = new HashMap<>();
 
     // Write a message to the database
     private static volatile FirebaseDatabase database;// = FirebaseDatabase.getInstance();
@@ -237,7 +238,7 @@ public class DBUtil implements Runnable {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && user != null) {
+                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) && (user != null)) {
                     synchronized (accountList) {
                     accountList.remove(user.getEmail(), user);
                     }
@@ -278,7 +279,7 @@ public class DBUtil implements Runnable {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Admin admin = dataSnapshot.getValue(Admin.class);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && admin != null) {
+                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) && (admin != null)) {
                     synchronized (accountList) {
                     accountList.remove(admin.getEmail(), admin);
                     }
@@ -319,7 +320,7 @@ public class DBUtil implements Runnable {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Employee emp = dataSnapshot.getValue(Employee.class);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && emp != null) {
+                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) && (emp != null)) {
                     synchronized (accountList) {
                     accountList.remove(emp.getEmail(), emp);
                     }
@@ -362,7 +363,7 @@ public class DBUtil implements Runnable {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Shelter shelter = dataSnapshot.getValue(Shelter.class);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && shelter != null) {
+                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) && (shelter != null)) {
                     synchronized (shelterList) {
                     shelterList.remove(shelter.getShelterName(), shelter);
                     }
@@ -395,9 +396,11 @@ public class DBUtil implements Runnable {
         return (HashMap<String, Message>) messageList;
     }
 
-    public static DatabaseReference getRef() {
-        return database.getReference();
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public static DatabaseReference getRef() {
+//        return database.getReference();
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
 
 //-------------------------------------------------------------------------------------------------
@@ -419,7 +422,7 @@ public class DBUtil implements Runnable {
 
     }
 
-    public void updateShelterVacanciesAndBeds(Shelter s, HashMap<String, Collection<Bed>> reserved,
+    public void updateShelterVacanciesAndBeds(Shelter s, AbstractMap<String, Collection<Bed>> reserved,
                                               boolean reserving) {
         String key = String.format("%s_%s", s.getShelterKey(), s.getShelterName());
         DatabaseReference ref = sheltersRef.child(key);
@@ -428,7 +431,8 @@ public class DBUtil implements Runnable {
 
         try {
             for (String bedKey : reserved.keySet()) {
-                String jsonPath, occPath;
+                String jsonPath;
+                String occPath;
                 for (Bed bed : reserved.get(bedKey)) {
                     jsonPath = String.format("%s/%s", bedKey, bed.getId());
                     occPath = String.format("O/%s", bed.getId());
@@ -457,18 +461,22 @@ public class DBUtil implements Runnable {
         }
     }
 
-    public void updateShelterInfo(Shelter s) {
-        String key = s.getShelterKey() + "_" + s.getShelterName();
-        sheltersRef.child(key).setValue(s);
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void updateShelterInfo(Shelter s) {
+//        String key = s.getShelterKey() + "_" + s.getShelterName();
+//        sheltersRef.child(key).setValue(s);
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 //-------------------------------------------------------------------------------------------------
 
     // Primary key = email (String up to '@' symbol)
     public void addAccount(Account newAccount) {
-        String branch = newAccount instanceof User ? "users"
-                : (newAccount instanceof Employee ? "employees"
-                : (newAccount instanceof Admin ? "admins" : ""));
-        if (branch.isEmpty()) return;
+        String branch = (newAccount instanceof User) ? "users"
+                : ((newAccount instanceof Employee) ? "employees"
+                : ((newAccount instanceof Admin) ? "admins" : ""));
+        if (branch.isEmpty()) {
+            return;
+        }
         String key = newAccount.getEmail().substring(0, newAccount.getEmail().indexOf('@'));
         rootRef.child(branch).child(key).setValue(newAccount,
                 new DatabaseReference.CompletionListener() {
@@ -482,7 +490,7 @@ public class DBUtil implements Runnable {
                     }
                 });
     //        newAccount.setAccountID(newAcctRef);
-        if (branch.equals("users")) {
+        if ("users".equals(branch)) {
             usersRef.child(key).child("stayReports").setValue(((User) newAccount).getStayReports());
         }
 
@@ -522,14 +530,17 @@ public class DBUtil implements Runnable {
 
 
     public String getEmailAssociatedWithUsername(String username) {
-        if (Model.isValidEmailAddress(username)) return username;
-        List<Account> accounts = new ArrayList<>();
+        if (Model.isValidEmailAddress(username)) {
+            return username;
+        }
+        Collection<Account> accounts = new ArrayList<>();
         accounts.addAll(users.values());
         accounts.addAll(employees.values());
         accounts.addAll(admins.values());
         for (Account a : accounts) {
-            if (a.getUsername().equals(username))
+            if (a.getUsername().equals(username)) {
                 return a.getEmail();
+            }
         }
         return null;
     }
@@ -549,10 +560,12 @@ public class DBUtil implements Runnable {
         }
     }
 
-    public void updateUserInfo(User u) {
-        String key = u.getEmail().substring(0, u.getEmail().indexOf('@'));
-        usersRef.child(key).setValue(u);
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public void updateUserInfo(User u) {
+//        String key = u.getEmail().substring(0, u.getEmail().indexOf('@'));
+//        usersRef.child(key).setValue(u);
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 //-------------------------------------------------------------------------------------------------
     /*
     map of Messages:

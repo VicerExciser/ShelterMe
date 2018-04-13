@@ -14,7 +14,7 @@ import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.util.DBUtil;
 
 public class EditProfile extends AppCompatActivity {
-    DBUtil dbUtil = DBUtil.getInstance();
+    // --Commented out by Inspection (4/13/2018 6:17 PM):DBUtil dbUtil = DBUtil.getInstance();
 
     // USE THIS: dbUtil.updateUserInfo(user);
 

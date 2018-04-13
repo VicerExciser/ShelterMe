@@ -20,6 +20,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 // .keySet() returns a Set<String>
 // .values() returns a Collection<Bed>
@@ -46,15 +47,12 @@ public class ReserveBedTest {
     /* Necessary fields for testing outcomes of reserveBed */
     private Map<String, Collection<Bed>> reservedResults;
     private static Map<String, Shelter> mockShelterList;
-    private Collection<Bed> resultValues;
     private static Shelter currShelter;
-    private static User nullUser;
     private static User currUser;
-    private List<StayReport> userStayReports;
     private static String userKey;
-    private static String bedKeyExpected = "FTF026_200_F";
-    private static String bedType = "Single";
-    private static int bedsToReserve = 5;
+    private static final String bedKeyExpected = "FTF026_200_F";
+    private static final String bedType = "Single";
+    private static final int bedsToReserve = 5;
 
     @Mock
     private static Model mockModel;
@@ -69,26 +67,26 @@ public class ReserveBedTest {
     private static FirebaseDatabase mockFirebaseDatabase;
 
     /* Necessary attributes for instantiating a Shelter */
-    private static String shelterKey = "s_20_Sample Shelter";
-    private static String shelterName = "Sample Shelter";
-    private static String capacityStr = "5";
-    private static String restrictions = "Men";
-    private static double longitude = 1.1;
-    private static double latitude = 1.1;
-    private static String address = "420 Loud St Atlanta, GA 30315";
-    private static String notes = "This is only a test";
-    private static String phone = "(666) 666-4321";
+    private static final String shelterKey = "s_20_Sample Shelter";
+    private static final String shelterName = "Sample Shelter";
+    private static final String capacityStr = "5";
+    private static final String restrictions = "Men";
+    private static final double longitude = 1.1;
+    private static final double latitude = 1.1;
+    private static final String address = "420 Loud St Atlanta, GA 30315";
+    private static final String notes = "This is only a test";
+    private static final String phone = "(666) 666-4321";
 
     /* Necessary attributes for instantiating a User */
-    private static String userFullName = "Austin Condict";
-    private static String username = "acondict";
-    private static String userEmail = "acondict11@gmail.com";
-    private static int userPassword = "password".hashCode();
-    private static Account.Sex userSex = Account.Sex.MALE;
-    private static int userAge = 27;
-    private static boolean userIsFamily = false;
-    private static Account.Question secQuest = Account.Question.CITY;
-    private static String secAns = "Atlanta";
+    private static final String userFullName = "Austin Condict";
+    private static final String username = "acondict";
+    private static final String userEmail = "acondict11@gmail.com";
+    private static final int userPassword = "password".hashCode();
+    private static final Account.Sex userSex = Account.Sex.MALE;
+    private static final int userAge = 27;
+    private static final boolean userIsFamily = false;
+    private static final Account.Question secQuest = Account.Question.CITY;
+    private static final String secAns = "Atlanta";
 
 
     @BeforeClass
@@ -185,7 +183,7 @@ public class ReserveBedTest {
     @Test
     public void testInvalidUserData() {
         int failCount = 0;
-        nullUser = null;
+        User nullUser = null;
         mockModel.setCurrUser(null, nullUser);
         when(Model.getInstance().getCurrUser()).thenReturn(nullUser);
         assertNull(mockModel.getCurrUser());
@@ -224,8 +222,9 @@ public class ReserveBedTest {
 
     @Test
     public void testReserveBedCall() {
-        if (mockModel.getCurrUser() == null)
+        if (mockModel.getCurrUser() == null) {
             mockModel.setCurrUser(userEmail, currUser);
+        }
         reservedResults = currShelter.reserveBed(bedType, bedsToReserve);
 
         // Test that reservation returned valid beds
@@ -240,12 +239,12 @@ public class ReserveBedTest {
         assertTrue(currUser.isOccupyingBed());
 
         // Test that shelter's list of occupied beds was correctly populated
-        HashMap<String, Bed> occupied = currShelter.getBeds().get("O");
+        AbstractMap<String, Bed> occupied = currShelter.getBeds().get("O");
         assertNotNull(occupied);
         assertFalse(occupied.isEmpty());
 
         // Test that reserved beds are marked as occupied & thus unavailable for another reservation
-        resultValues = reservedResults.get(bedKeyExpected);
+        Collection<Bed> resultValues = reservedResults.get(bedKeyExpected);
         for (Bed b : occupied.values()) {
             assertEquals(b.getOccupantEmail(), userEmail);
             assertTrue(b.getIsOccupied());
@@ -256,7 +255,7 @@ public class ReserveBedTest {
         }
 
         // Test that a new stay report is generated for the user & is marked as an active stay
-        userStayReports = currUser.getStayReports();
+        List<StayReport> userStayReports = currUser.getStayReports();
         assertFalse(userStayReports.isEmpty());
         assertEquals(userStayReports.size(), 1);
         StayReport currStay = currUser.getCurrentStayReport();

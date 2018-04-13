@@ -16,7 +16,7 @@ public enum Age {
     ADULTS_CAP("065_"),        // Adult:         26-65  yrs
     MAX_AGE("200_");            // Ancient:       61-200 yrs
 
-    private String ageKeyVal;
+    private final String ageKeyVal;
 
     Age(String ageKeyVal) {
         this.ageKeyVal = ageKeyVal;

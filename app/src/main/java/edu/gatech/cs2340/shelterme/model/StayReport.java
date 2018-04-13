@@ -16,7 +16,7 @@ public class StayReport {
     private boolean active;
     private int numReserved;
     private String shelterName;
-    private List<String> reservedBeds;
+    private final List<String> reservedBeds;
     private String checkInDate;
     private String checkOutDate;
     private String accountEmail;
@@ -25,7 +25,7 @@ public class StayReport {
         this(new Shelter(), new User(), new ArrayList<Bed>());
     }
 
-    public StayReport(Shelter shelter, User account, ArrayList<Bed> bedList) {
+    public StayReport(Shelter shelter, User account, Iterable<Bed> bedList) {
         this.setActive(true);
         this.setShelterName(shelter.getShelterName());
         account.setIsOccupyingBed(true);
@@ -69,13 +69,13 @@ public class StayReport {
 
     public String getCheckInDate() { return this.checkInDate; }
 
-    public String getCheckOutDate() { return this.checkOutDate; }
+    // --Commented out by Inspection (4/13/2018 6:17 PM):public String getCheckOutDate() { return this.checkOutDate; }
 
     public String getAccountEmail() {
         return accountEmail;
     }
 
-    public void setAccountEmail(String accountEmail) {
+    private void setAccountEmail(String accountEmail) {
         this.accountEmail = accountEmail;
     }
 
@@ -83,23 +83,23 @@ public class StayReport {
         return shelterName;
     }
 
-    public void setShelterName(String shelterName) {
+    private void setShelterName(String shelterName) {
         this.shelterName = shelterName;
     }
 
-    public void setCheckInDate(String checkInDate) {
+    private void setCheckInDate(String checkInDate) {
         this.checkInDate = checkInDate;
     }
 
-    public void setCheckOutDate(String checkOutDate) {
+    private void setCheckOutDate(String checkOutDate) {
         this.checkOutDate = checkOutDate;
     }
 
-    public void setActive(boolean active) {
+    private void setActive(boolean active) {
         this.active = active;
     }
 
-    public void setNumReserved(int numReserved) {
+    private void setNumReserved(int numReserved) {
         this.numReserved = numReserved;
     }
 
@@ -116,9 +116,9 @@ public class StayReport {
     @Override
     public int hashCode() {
         int result = 17;
-        result = 31 * result + this.checkInDate.toLowerCase().hashCode();
-        result = 31 * result + this.shelterName.toLowerCase().hashCode();
-        result = 31 * result + this.accountEmail.toLowerCase().hashCode();
+        result = (31 * result) + this.checkInDate.toLowerCase().hashCode();
+        result = (31 * result) + this.shelterName.toLowerCase().hashCode();
+        result = (31 * result) + this.accountEmail.toLowerCase().hashCode();
         return result;
     }
 }

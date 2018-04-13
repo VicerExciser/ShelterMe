@@ -20,8 +20,8 @@ import edu.gatech.cs2340.shelterme.util.DBUtil;
 
 public class HomePage extends AppCompatActivity {
 
-    Model model = Model.getInstance();
-    DBUtil dbUtil = DBUtil.getInstance();
+    private final Model model = Model.getInstance();
+    private final DBUtil dbUtil = DBUtil.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +30,14 @@ public class HomePage extends AppCompatActivity {
 
         Button map = findViewById(R.id.mapButton);
         map.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View view) {
                 startActivity(new Intent(HomePage.this, MapsActivity.class));
             }
         });
         Button logout = findViewById(R.id.logoutButton);
         logout.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View view) {
                 android.content.Intent myIntent1 = new android.content.Intent(view.getContext(), MainActivity.class);
                 Model.getInstance().setCurrUser(null);
@@ -55,7 +57,7 @@ public class HomePage extends AppCompatActivity {
         if (curUser == null) {
             checkOut.setVisibility(View.GONE);
             Log.e("HomePage", "curUser == null");
-        } else if (!curUser.isOccupyingBed() || curUser.getCurrentStayReport() == null) {
+        } else if (!curUser.isOccupyingBed() || (curUser.getCurrentStayReport() == null)) {
             checkOut.setVisibility(View.GONE);
             Log.e("HomePage", "curUser is not occupying a bed or has no active stay report");
         } else {
@@ -87,7 +89,9 @@ public class HomePage extends AppCompatActivity {
                     }
                     model.displaySuccessMessage("Hope you enjoyed your stay at " + shelterName
                             + "!", HomePage.this);
-                    if (!curUser.isOccupyingBed) checkOut.setVisibility(View.GONE);
+                    if (!curUser.isOccupyingBed) {
+                        checkOut.setVisibility(View.GONE);
+                    }
                 }
             });
         }

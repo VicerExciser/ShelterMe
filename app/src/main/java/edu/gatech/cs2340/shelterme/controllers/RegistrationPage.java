@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.text.TextWatcher;
 import android.widget.TextView;
 
+import java.util.AbstractCollection;
 import java.util.Calendar;
 import java.util.HashSet;
 
@@ -68,7 +69,7 @@ public class RegistrationPage extends AppCompatActivity {
 //        workplaceField = findViewById(R.id.workplace);
         shelterSpinner = findViewById(R.id.shelterSpinner);
         powPrompt = findViewById(R.id.textView11);
-        HashSet<String> shelterNames = new HashSet<>(Model.getShelterListPointer().keySet());
+        AbstractCollection<String> shelterNames = new HashSet<>(Model.getShelterListPointer().keySet());
 //        for (Shelter s : Model.getShelterListPointer()) {
 //            shelterNames.add(s.getShelterName());
 //        }
@@ -156,38 +157,41 @@ public class RegistrationPage extends AppCompatActivity {
 //        });
 //    }
 
-    private AdapterView.OnItemSelectedListener typeWatcher = new AdapterView.OnItemSelectedListener() {
-    // TODO: Will need to add some sort of authentication input for verifying Admin accounts
+    private final AdapterView.OnItemSelectedListener typeWatcher = new AdapterView.OnItemSelectedListener() {
+    // Will need to add some sort of authentication input for verifying Admin accounts
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             // If account type User is selected, display DOB & Sex input fields
             // If account type Employee is selected, display Workplace input field
             // Else, hide those EditText fields
-            if (position == 0) { // User
-                dateOfBirthField.setVisibility(View.VISIBLE);
-                selectSexSpinner.setVisibility(View.VISIBLE);
-                sexPrompt.setVisibility(View.VISIBLE);
-                dobPrompt.setVisibility(View.VISIBLE);
+            switch (position) {
+                case 0:  // User
+                    dateOfBirthField.setVisibility(View.VISIBLE);
+                    selectSexSpinner.setVisibility(View.VISIBLE);
+                    sexPrompt.setVisibility(View.VISIBLE);
+                    dobPrompt.setVisibility(View.VISIBLE);
 //                workplaceField.setVisibility(View.GONE);
-                shelterSpinner.setVisibility(View.GONE);
-                powPrompt.setVisibility(View.GONE);
-            } else if (position == 1) { // Shelter Employee
+                    shelterSpinner.setVisibility(View.GONE);
+                    powPrompt.setVisibility(View.GONE);
+                    break;
+                case 1:  // Shelter Employee
 //                workplaceField.setVisibility(View.VISIBLE);
-                shelterSpinner.setVisibility(View.VISIBLE);
-                powPrompt.setVisibility(View.VISIBLE);
-                dateOfBirthField.setVisibility(View.GONE);
-                selectSexSpinner.setVisibility(View.GONE);
-                sexPrompt.setVisibility(View.GONE);
-                dobPrompt.setVisibility(View.GONE);
-            }
-            else if (position == 2) { //Admin
+                    shelterSpinner.setVisibility(View.VISIBLE);
+                    powPrompt.setVisibility(View.VISIBLE);
+                    dateOfBirthField.setVisibility(View.GONE);
+                    selectSexSpinner.setVisibility(View.GONE);
+                    sexPrompt.setVisibility(View.GONE);
+                    dobPrompt.setVisibility(View.GONE);
+                    break;
+                case 2:  //Admin
 //                workplaceField.setVisibility(View.GONE);
-                shelterSpinner.setVisibility(View.GONE);
-                powPrompt.setVisibility(View.GONE);
-                dateOfBirthField.setVisibility(View.GONE);
-                selectSexSpinner.setVisibility(View.GONE);
-                sexPrompt.setVisibility(View.GONE);
-                dobPrompt.setVisibility(View.GONE);
+                    shelterSpinner.setVisibility(View.GONE);
+                    powPrompt.setVisibility(View.GONE);
+                    dateOfBirthField.setVisibility(View.GONE);
+                    selectSexSpinner.setVisibility(View.GONE);
+                    sexPrompt.setVisibility(View.GONE);
+                    dobPrompt.setVisibility(View.GONE);
+                    break;
             }
         }
 
@@ -195,7 +199,7 @@ public class RegistrationPage extends AppCompatActivity {
         public void onNothingSelected(AdapterView<?> parent) {}
     };
 
-    private TextWatcher dobEntryWatcher = new TextWatcher() {
+    private final TextWatcher dobEntryWatcher = new TextWatcher() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             /*
@@ -240,7 +244,7 @@ public class RegistrationPage extends AppCompatActivity {
         }
     };
 
-    private TextWatcher nameFormatWatcher = new TextWatcher() {
+    private final TextWatcher nameFormatWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -255,7 +259,7 @@ public class RegistrationPage extends AppCompatActivity {
                     if (!Character.isUpperCase(text.charAt(0))) {
                         CharSequence fixLetter = String.valueOf(Character.toUpperCase(text.charAt(0)));
                         text.replace(0, 1, (CharSequence) fixLetter);
-                    } else if (delim != -1 && text.toString().length() > delim + 1) {
+                    } else if ((delim != -1) && (text.toString().length() > (delim + 1))) {
                         char lName = text.charAt(delim + 1);
                         if (!Character.isUpperCase(lName)) {
                             CharSequence fixLetter = String.valueOf(Character.toUpperCase(lName));
@@ -263,11 +267,12 @@ public class RegistrationPage extends AppCompatActivity {
                         }
                     }
                 }
-            } catch (Exception e) { return; }
+            } catch (Exception e) {
+            }
         }
     };
 
-    private TextWatcher passwordFormatWatcher = new TextWatcher() {
+    private final TextWatcher passwordFormatWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -275,7 +280,7 @@ public class RegistrationPage extends AppCompatActivity {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (s.toString().length() < 4) {
                 dateOfBirthField.setError("Password must be at least 4 characters");
-                // TODO: Obviously, we can set stricter password format constraints
+                // Obviously, we can set stricter password format constraints
             } else {
                 dateOfBirthField.setError(null);
             }
@@ -292,7 +297,7 @@ public class RegistrationPage extends AppCompatActivity {
             String name = fullNameField.getText().toString().trim();
             allFieldsComplete &= (!name.isEmpty() && !name.equals(fullNameField.getHint().toString()));
             int delim = name.indexOf(' ');
-            if (!allFieldsComplete || delim < 0) {
+            if (!allFieldsComplete || (delim < 0)) {
                 model.displayErrorMessage("First and last name are required", this);
                 return;
             }
@@ -304,7 +309,7 @@ public class RegistrationPage extends AppCompatActivity {
 
             // Validate email:
             String email = emailField.getText().toString().trim();
-            // TODO: if (email does not already exist in database)
+            // if (email does not already exist in database)
             allFieldsComplete &= (!email.isEmpty() && !email.equals(emailField.getHint().toString()));
             if (!allFieldsComplete) {
                 model.displayErrorMessage("Email address is required", this);
@@ -316,7 +321,7 @@ public class RegistrationPage extends AppCompatActivity {
 
             // Register username:
             String username = userNameField.getText().toString().trim();
-            // TODO: if (username does not already exist in database)
+            // if (username does not already exist in database)
             if (username.isEmpty() || username.equals(userNameField.getHint().toString())
                     || username.equals(email)) {
                 // Set username as an alias to email to avoid having to distinguish
@@ -337,8 +342,8 @@ public class RegistrationPage extends AppCompatActivity {
             // Validate password & confirmation:
             int password = passwordField.getText().toString().trim().hashCode();
             int confirmPass = passwordConfirmField.getText().toString().trim().hashCode();
-            if (password == 0 || passwordField.getText().length() < 4
-                    || password == passwordField.getHint().toString().hashCode()) {
+            if ((password == 0) || (passwordField.getText().length() < 4)
+                    || (password == passwordField.getHint().toString().hashCode())) {
                 model.displayErrorMessage("Valid password is required", this);
                 return;
             } else if (confirmPass != password) {
@@ -367,10 +372,12 @@ public class RegistrationPage extends AppCompatActivity {
                     int enteredMonth = Integer.parseInt(dob.substring(0, delim));
                     int monthDiff = currentMonth - enteredMonth;
                     age = currentYear - enteredYear;
-                    if (monthDiff < 0)
+                    if (monthDiff < 0) {
                         age -= 1;
-                    if (age == 0)
+                    }
+                    if (age == 0) {
                         return;
+                    }
                 } else {
                     model.displayErrorMessage("Month and year of birth are required", this);
                     return;
@@ -429,7 +436,7 @@ public class RegistrationPage extends AppCompatActivity {
         switch (at) {
             case USER:
                 newAccount = new User(nm, un, em, pw, sx, age, false, sq, qa);
-                ////// TODO: CHANGE FAMILY FALSE !!!!!!!!!!
+                ////// CHANGE FAMILY FALSE !!!!!!!!!!
 //                DatabaseReference newUserRef = dbRootRef.child("users").push();
 //                newUserRef.setValue(newAccount);
 //                newAccount.setAccountID(newUserRef);
@@ -447,7 +454,7 @@ public class RegistrationPage extends AppCompatActivity {
 //                newAccount.setAccountID(newAdminRef);
                 break;
         }
-        // TODO: Save new account in DB
+        // Save new account in DB
 
         if (newAccount != null) {
             model.addToAccounts(newAccount);
@@ -457,7 +464,6 @@ public class RegistrationPage extends AppCompatActivity {
             model.displaySuccessMessage("Account successfully created!", this);
         } else {
             model.displayErrorMessage("An error occurred while registering your account", this);
-            return;
         }
 
 

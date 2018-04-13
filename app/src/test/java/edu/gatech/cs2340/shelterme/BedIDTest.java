@@ -40,7 +40,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest({FirebaseDatabase.class, Model.class, DBUtil.class, FirebaseApp.class})
 public class BedIDTest {
     private static Bed bed;
-    private static Shelter testShelter;
     private static Map<String, Shelter> testShelterList;
     private static Model testModel;
     private static DBUtil testDBUtil;
@@ -54,7 +53,7 @@ public class BedIDTest {
         testReference = Mockito.mock(DatabaseReference.class);
         testFirebase = Mockito.mock(FirebaseDatabase.class);
         bed = new Bed();
-        testShelter = new Shelter();
+        Shelter testShelter = new Shelter();
         testShelterList = new HashMap<>();
         testShelterList.put(testShelter.getShelterName(), testShelter);
     }

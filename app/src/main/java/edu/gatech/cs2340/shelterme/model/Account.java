@@ -1,27 +1,22 @@
 package edu.gatech.cs2340.shelterme.model;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-
 
 public abstract class Account {
-    String name;
-    String username;        // login name (in recognition of current popular trends, this can be the email address)
-    int password;       // hashed user password
-    boolean accountLocked;  // account state (locked or unlocked)
-    String email;           // contact info (email address)
-    Question secQuest;
-    String secAns;
+    private final String name;
+    private final String username;        // login name (in recognition of current popular trends, this can be the email address)
+    private final int password;       // hashed user password
+    private boolean accountLocked;  // account state (locked or unlocked)
+    private final String email;           // contact info (email address)
     private Type accountType;
 
-    public Account(String name, String username, String email, int password,
-                   Question secQuest, String secAns) {
+    Account(String name, String username, String email, int password,
+            Question secQuest, String secAns) {
         this.name = name;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.secQuest = secQuest;
-        this.secAns = secAns;
+        Question secQuest1 = secQuest;
+        String secAns1 = secAns;
         accountLocked = false;
     }
 
@@ -41,7 +36,7 @@ public abstract class Account {
 
     public boolean isAccountLocked() { return this.accountLocked; }
 
-    public void setAccountLocked(boolean locked) { this.accountLocked = locked; }
+    // --Commented out by Inspection (4/13/2018 6:17 PM):public void setAccountLocked(boolean locked) { this.accountLocked = locked; }
 
     @Override
     public boolean equals(Object other) {
@@ -50,25 +45,27 @@ public abstract class Account {
                 && ((Account) other).email.equalsIgnoreCase(this.email)
                 && ((Account) other).name.equalsIgnoreCase(this.name)
                 && ((Account) other).username.equalsIgnoreCase(this.username)
-                && ((Account) other).password == this.password);
+                && (((Account) other).password == this.password));
     }
 
     @Override
     public int hashCode() {
         int result = 17;
-        result = 31 * result + this.username.toLowerCase().hashCode();
-        result = 31 * result + this.email.toLowerCase().hashCode();
-        result = 31 * result + this.name.toLowerCase().hashCode();
-        result = 31 * result + this.password;
-        result = 31 * result + this.accountType.toString().toLowerCase().hashCode();
+        result = (31 * result) + this.username.toLowerCase().hashCode();
+        result = (31 * result) + this.email.toLowerCase().hashCode();
+        result = (31 * result) + this.name.toLowerCase().hashCode();
+        result = (31 * result) + this.password;
+        result = (31 * result) + this.accountType.toString().toLowerCase().hashCode();
         return result;
     }
 
-    public Type getAccountType() {
-        return accountType;
-    }
+// --Commented out by Inspection START (4/13/2018 6:17 PM):
+//    public Type getAccountType() {
+//        return accountType;
+//    }
+// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public void setAccountType(Type accountType) {
+    void setAccountType(Type accountType) {
         this.accountType = accountType;
     }
 
