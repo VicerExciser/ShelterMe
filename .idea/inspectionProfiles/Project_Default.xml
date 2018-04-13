@@ -1,0 +1,20 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="FeatureEnvy" enabled="false" level="WARNING" enabled_by_default="false">
+      <scope name="Tests" level="WARNING" enabled="false" />
+      <scope name="Tests" level="WARNING" enabled="false" />
+      <scope name="Tests" level="WARNING" enabled="false" />
+      <scope name="Tests" level="WARNING" enabled="false" />
+      <scope name="Tests" level="WARNING" enabled="false" />
+      <scope name="Tests" level="WARNING" enabled="false" />
+      <scope name="Tests" level="WARNING" enabled="false" />
+      <scope name="Tests" level="WARNING" enabled="false" />
+      <scope name="Tests" level="WARNING" enabled="false" />
+      <scope name="Tests" level="WARNING" enabled="false" />
+      <scope name="Tests" level="WARNING" enabled="false" />
+      <scope name="Tests" level="WARNING" enabled="false" />
+      <scope name="Tests" level="WARNING" enabled="false" />
+    </inspection_tool>
+  </profile>
+</component>
