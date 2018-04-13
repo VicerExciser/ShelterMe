@@ -46,7 +46,7 @@ public class ReserveBedTest {
     /* Necessary fields for testing outcomes of reserveBed */
     private Map<String, Collection<Bed>> reservedResults;
     private static Map<String, Shelter> mockShelterList;
-    private Collection<Bed> resultVals;
+    private Collection<Bed> resultValues;
     private static Shelter currShelter;
     private static User nullUser;
     private static User currUser;
@@ -128,11 +128,9 @@ public class ReserveBedTest {
     @Test
     public void verifySetup() {
         assertEquals(mockModel.getCurrUser(), currUser);
-//        assertTrue(Model.getAccountListPointer().containsValue(currUser));
         assertNull(currUser.getCurrentStayReport());
         assertFalse(currUser.isOccupyingBed());
 
-//        assertTrue(Model.getShelterListPointer().containsValue(currShelter));
         assertEquals(currShelter.getVacancies(), 5);
         assertEquals(currShelter.getSingleCapacity(), 5);
         assertEquals(currShelter.getBeds().values().size(), 2);
@@ -198,8 +196,6 @@ public class ReserveBedTest {
             currShelter.reserveBed("Single", 5);
         } catch (IllegalArgumentException iae) {
             failCount++;
-//            currUser = new User(userFullName, username, userEmail, userPassword, userSex, userAge,
-//                    userIsFamily, secQuest, secAns);
             mockModel.setCurrUser(userEmail, currUser);
             when(Model.getInstance().getCurrUser()).thenReturn((User)currUser);
         }
@@ -231,36 +227,35 @@ public class ReserveBedTest {
         if (mockModel.getCurrUser() == null)
             mockModel.setCurrUser(userEmail, currUser);
         reservedResults = currShelter.reserveBed(bedType, bedsToReserve);
+
+        // Test that reservation returned valid beds
         assertFalse(reservedResults.isEmpty());
         assertTrue(reservedResults.containsKey(bedKeyExpected));
-//    }
 
-//    @Test
-//    public void testVacanciesUpdate() {
+        // Test that the shelter's vacancies have decremented according to # of beds reserved
         assertEquals(currShelter.getVacancies(), 0);
         assertEquals(currShelter.getSingleCapacity(), 0);
-//    }
-//dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, true);
-//dbUtil.updateUserOccupancyAndStayReports(user);
-//    @Test
-//    public void testIsOccupiedUpdate() {
+
+        // Test that user is now indicated to be occupying a bed
         assertTrue(currUser.isOccupyingBed());
+
+        // Test that shelter's list of occupied beds was correctly populated
         HashMap<String, Bed> occupied = currShelter.getBeds().get("O");
         assertNotNull(occupied);
         assertFalse(occupied.isEmpty());
-        resultVals = reservedResults.get(bedKeyExpected);
+
+        // Test that reserved beds are marked as occupied & thus unavailable for another reservation
+        resultValues = reservedResults.get(bedKeyExpected);
         for (Bed b : occupied.values()) {
             assertEquals(b.getOccupantEmail(), userEmail);
             assertTrue(b.getIsOccupied());
         }
-        for (Bed b : resultVals) {
+        for (Bed b : resultValues) {
             assertEquals(b.getOccupantEmail(), userEmail);
             assertTrue(b.getIsOccupied());
         }
-//    }
-//
-//    @Test
-//    public void testStayReportsUpdate() {
+
+        // Test that a new stay report is generated for the user & is marked as an active stay
         userStayReports = currUser.getStayReports();
         assertFalse(userStayReports.isEmpty());
         assertEquals(userStayReports.size(), 1);
@@ -270,16 +265,4 @@ public class ReserveBedTest {
         assertEquals(currStay.getShelterName(), shelterName);
         assertEquals(currStay.getAccountEmail(), userEmail);
     }
-
-
-//    @AfterClass
-//    public static void cleanup() {
-//        assertEquals(mockModel.getCurrUser(), currUser);
-//        mockModel.setCurrUser(previousUser.getEmail(), previousUser);
-//        assertEquals(mockModel.getCurrUser(), previousUser);
-////        model.removeAccountOfEmail(userEmail);
-////        model.removeShelter(shelterName);
-////        assertFalse(Model.getAccountListPointer().containsValue(currUser));
-////        assertFalse(Model.getShelterListPointer().containsValue(currShelter));
-//    }
 }

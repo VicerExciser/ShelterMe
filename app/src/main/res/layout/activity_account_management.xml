@@ -23,7 +23,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/account_search"
-        android:text="Display locked accounts" />
+        android:text="@string/display_locked_accounts" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_account"

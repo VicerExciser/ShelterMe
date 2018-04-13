@@ -45,7 +45,7 @@ public class LoginPage extends AppCompatActivity {
 
         ImageButton logo = findViewById(R.id.log);
         ImageButton cancel = findViewById(R.id.actualcancel);
-        ImageButton forgotpass = findViewById(R.id.forget);
+        ImageButton forgotPass = findViewById(R.id.forget);
 
         logo.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -73,7 +73,7 @@ public class LoginPage extends AppCompatActivity {
             }
         });
 
-        forgotpass.setOnClickListener(new View.OnClickListener() {
+        forgotPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent myIntent3 = new Intent(view.getContext(),
