@@ -33,6 +33,7 @@ public class User extends Account {
 
 
     public User() {
+        //noinspection MagicNumber
         this("user steve", "user", "user@gmail.com", "pass".hashCode(), Sex.MALE, 25, false,
                 Question.PET, "Spot");
     }

@@ -37,28 +37,29 @@ import static android.content.ContentValues.TAG;
 // Properly configured implementation of Runnable interface so that not all work done on main thread
 public class DBUtil implements Runnable {
 
-    private static volatile DBUtil dbUtilInstance;// = new DBUtil();
+    private static volatile DBUtil dbUtilInstance;
 
     private static volatile Map<String, User> users = new HashMap<>();
     private static volatile Map<String, Admin> admins = new HashMap<>();
     private static volatile Map<String, Employee> employees = new HashMap<>();
-    private static volatile Map<String, Account> accountList = new HashMap<>();// = Model.getAccountListPointer();
-    private static volatile Map<String, Shelter> shelterList = new HashMap<>();// = Model.getShelterListPointer();
+    private static volatile Map<String, Account> accountList = new HashMap<>();
+    private static volatile Map<String, Shelter> shelterList = new HashMap<>();
     private static volatile Map<String, Message> messageList = new HashMap<>();
 
     // Write a message to the database
-    private static volatile FirebaseDatabase database;// = FirebaseDatabase.getInstance();
-    private static volatile DatabaseReference rootRef;// = database.getReference(/*"message"*/);
-    private static volatile DatabaseReference usersRef;// = rootRef.child("users");
-    private static volatile DatabaseReference employeesRef;// = rootRef.child("employees");
-    private static volatile DatabaseReference adminsRef;// = rootRef.child("admins");
-    private static volatile DatabaseReference sheltersRef;// = rootRef.child("shelters");
-    private static volatile DatabaseReference messageRef;// = rootRef.child("messages");
+    private static volatile FirebaseDatabase database;
+    private static volatile DatabaseReference rootRef;
+    private static volatile DatabaseReference usersRef;
+    private static volatile DatabaseReference employeesRef;
+    private static volatile DatabaseReference adminsRef;
+    private static volatile DatabaseReference sheltersRef;
+    private static volatile DatabaseReference messageRef;
 
     private DBUtil() {
         database = FirebaseDatabase.getInstance();
         // TURN BACK ON ONCE ALL USAGE OF TEST DATA IS FINISHED
-//        database.setPersistenceEnabled(true);    // Enables persistent data caching if user goes offline or app restarts
+//        database.setPersistenceEnabled(true);    // Enables persistent data caching
+//                                                 // if user goes offline or app restarts
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         rootRef = database.getReference();
 //        rootRef.keepSynced(true);
@@ -75,10 +76,10 @@ public class DBUtil implements Runnable {
         return dbUtilInstance;
     }
 
-    /*  A note on ensuring Firebase read/writes are thread-safe:
-        Enclose variables that can be accessed by more than one thread in a synchronized block.
-        This approach will prevent one thread from reading the variable while another is writing to it.
-     */
+/*  A note on ensuring Firebase read/writes are thread-safe:
+    Enclose variables that can be accessed by more than one thread in a synchronized block.
+    This approach will prevent one thread from reading the variable while another is writing to it.
+ */
 
     @Override
     public void run() {
@@ -620,7 +621,11 @@ public class DBUtil implements Runnable {
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Message message = dataSnapshot.getValue(Message.class);
                 synchronized (messageList) {
-                    messageList.remove(message);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        messageList.remove(message.getTimeSent(), message);
+                    } else {
+                        messageList.remove(message.getTimeSent());
+                    }
                 }
                 messagesRecyclerView.setAdapter(adapter);
             }

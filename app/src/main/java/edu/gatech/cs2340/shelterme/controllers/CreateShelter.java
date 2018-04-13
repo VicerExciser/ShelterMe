@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import edu.gatech.cs2340.shelterme.R;
+import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
 public class CreateShelter extends AppCompatActivity {
@@ -49,10 +50,10 @@ public class CreateShelter extends AppCompatActivity {
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Shelter newShelter;
-                newShelter = new Shelter(null, realShelterName, realShelterCapacity,
-                        realShelterRestriction, 0, 0, realShelterAddress,
-                        null, realShelterPhone);
+                Model.getInstance().addShelter(new Shelter(null, realShelterName,
+                        realShelterCapacity, realShelterRestriction, 0, 0,
+                        realShelterAddress, null, realShelterPhone));
+
             }
         });
 
