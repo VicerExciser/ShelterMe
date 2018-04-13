@@ -290,22 +290,19 @@ public class RegistrationPage extends AppCompatActivity {
             boolean allFieldsComplete = true;
             // Process name:
             String name = fullNameField.getText().toString().trim();
-            allFieldsComplete &= (!name.isEmpty() && !name.equals(fullNameField.getHint().toString()));
-            int delim = name.indexOf(' ');
-            if (!allFieldsComplete || delim < 0) {
+            allFieldsComplete = !name.isEmpty() && !name.equals(fullNameField.getHint().toString());
+            int delimiter = name.indexOf(' ');
+            if (!allFieldsComplete || delimiter < 0) {
                 model.displayErrorMessage("First and last name are required", this);
                 return;
             }
 
-
-            name = Character.toUpperCase(name.charAt(0)) + name.substring(1, delim + 1)
-                    + Character.toUpperCase(name.charAt(delim + 1)) + name.substring(delim + 2);
-
+            name = Character.toUpperCase(name.charAt(0)) + name.substring(1, delimiter + 1)
+                    + Character.toUpperCase(name.charAt(delimiter + 1)) + name.substring(delimiter + 2);
 
             // Validate email:
             String email = emailField.getText().toString().trim();
-            // TODO: if (email does not already exist in database)
-            allFieldsComplete &= (!email.isEmpty() && !email.equals(emailField.getHint().toString()));
+            allFieldsComplete = !email.isEmpty() && !email.equals(emailField.getHint().toString());
             if (!allFieldsComplete) {
                 model.displayErrorMessage("Email address is required", this);
                 return;
@@ -316,7 +313,6 @@ public class RegistrationPage extends AppCompatActivity {
 
             // Register username:
             String username = userNameField.getText().toString().trim();
-            // TODO: if (username does not already exist in database)
             if (username.isEmpty() || username.equals(userNameField.getHint().toString())
                     || username.equals(email)) {
                 // Set username as an alias to email to avoid having to distinguish
@@ -326,10 +322,12 @@ public class RegistrationPage extends AppCompatActivity {
 
             for (Account a : Model.getAccountListPointer().values()) {
                 if (a.getEmail().equals(email)) {
-                    model.displayErrorMessage("Account already exists for this email", this);
+                    model.displayErrorMessage("Account already exists for this email",
+                            this);
                     return;
                 } else if (a.getUsername().equals(username)) {
-                    model.displayErrorMessage("Account already exists for this username", this);
+                    model.displayErrorMessage("Account already exists for this username",
+                            this);
                     return;
                 }
             }
@@ -362,9 +360,9 @@ public class RegistrationPage extends AppCompatActivity {
             if (type == Account.Type.USER) {
                 dob = dateOfBirthField.getText().toString();
                 if (!dob.isEmpty() && !dob.equals(dateOfBirthField.getHint().toString())) {
-                    delim = dob.indexOf('/');
-                    int enteredYear = Integer.parseInt(dob.substring(delim + 1));
-                    int enteredMonth = Integer.parseInt(dob.substring(0, delim));
+                    delimiter = dob.indexOf('/');
+                    int enteredYear = Integer.parseInt(dob.substring(delimiter + 1));
+                    int enteredMonth = Integer.parseInt(dob.substring(0, delimiter));
                     int monthDiff = currentMonth - enteredMonth;
                     age = currentYear - enteredYear;
                     if (monthDiff < 0)
