@@ -22,6 +22,10 @@ public enum Age {
         this.ageKeyVal = ageKeyVal;
     }
 
+    /**
+     * A getter for ageKeyValue
+     * @return the key associated with age
+     */
     public String getAgeKeyVal() {
         return ageKeyVal;
     }
