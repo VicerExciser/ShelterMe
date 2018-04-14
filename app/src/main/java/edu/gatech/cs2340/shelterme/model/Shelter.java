@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import edu.gatech.cs2340.shelterme.util.BedManager;
+import edu.gatech.cs2340.shelterme.util.ShelterBuilder;
+
 public class Shelter implements Parcelable {
     // Had to change shelterKey to String in the form: "s_1" for the sake of serialization
     // (throws DatabaseException otherwise)
@@ -35,6 +38,9 @@ public class Shelter implements Parcelable {
     private Map<String, Map<String, Bed>> beds;
     private Bed lastBedAdded;
     private int vacancies;
+
+    private ShelterBuilder shelterBuilder;
+//    private BedManager bedManager;
 
 //    @interface IgnoreExtraProperties {}
 //    @JsonIgnore
@@ -65,13 +71,16 @@ public class Shelter implements Parcelable {
         this.phone = num;
         setFamilyCapacity(0);
         setSingleCapacity(0);
+        shelterBuilder = new ShelterBuilder();
+//        bedManager = new BedManager(this);
         this.beds = new HashMap<>();
         //noinspection MismatchedQueryAndUpdateOfCollection
         Map<String, Bed> occupiedBeds = new HashMap<>();
         // Occupied beds is used and maintained purely by Firebase
         this.beds.put("O", occupiedBeds);
+        this.lastBedAdded = null;
         if (restrictions != null) {
-            processRestrictions(this.restrictions);
+            shelterBuilder.processRestrictions(this.restrictions, this);
         } else {
             Log.v("Shelter", "restrictions for " + name + " were not found\n"
                     + this.toString());
@@ -606,6 +615,11 @@ exVets = false;
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
     // ^ can also do user.getCurrentStayReport().getReservedBeds();
 
+    public boolean hasOpenBed(String userKey) {
+        // Ex key: 'FM25F'  <-- not family acct, male, 25 yrs old, not veteran
+        BedManager bedManager = new BedManager(this.shelterName);
+        return bedManager.findValidBedType(userKey) != null;
+    }
 
     public String getShelterName() {
         return this.shelterName;
@@ -762,5 +776,13 @@ exVets = false;
 
     public void setSingleCapacity(int singleCapacity) {
         this.singleCapacity = singleCapacity;
+    }
+
+    public Bed getLastBedAdded() {
+        return lastBedAdded;
+    }
+
+    public void setLastBedAdded(Bed lastBedAdded) {
+        this.lastBedAdded = lastBedAdded;
     }
 }

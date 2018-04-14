@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.model.Bed;
@@ -137,38 +136,51 @@ public class ReservationManager {
         Map<String, Collection<Bed>> reserved = new HashMap<>();
         Collection<String> bedKeys = new HashSet<>();
 
-        Collection<Bed> occupied = curShelter.getBeds().get("O").values();
+        Map<String, Map<String, Bed>> shelterBeds = curShelter.getBeds();
+        Map<String, Bed> nonVacantBeds = shelterBeds.get("O");
+        Collection<Bed> occupied = nonVacantBeds.values();
 
         for (String id : bedIds) {
             for (Bed b : occupied) {
-                if (b.getId().equals(id)) {
+                String curId = b.getId();
+                String curKey = b.getSavedBedKey();
+                if (curId.equals(id)) {
                     beds.add(b);
-                    bedKeys.add(b.getSavedBedKey());
-                    curShelter.getBeds().get(b.getSavedBedKey()).put(id, b);
-                    b.removeOccupant(user.getEmail());
+                    bedKeys.add(curKey);
+                    Map<String, Bed> rightfulPlace = shelterBeds.get(curKey);
+                    rightfulPlace.put(id, b);
+                    String userEmail = user.getEmail();
+                    b.removeOccupant(userEmail);
                 }
             }
         }
         occupied.removeAll(beds);
         for (String key : bedKeys) {
-            if (bedKeys.size() > 1) {
+            int numBedKeys = bedKeys.size();
+            if (numBedKeys > 1) {
                 Collection<Bed> beds1 = new ArrayList<>();
                 for (Bed b : beds) {
-                    if (b.getSavedBedKey().equals(key)) {
+                    String savedKey = b.getSavedBedKey();
+                    if (savedKey.equals(key)) {
                         beds1.add(b);
                     }
                 }
+                int incrementVacancy = beds1.size();
                 if (key.charAt(0) == 'T') {
-                    curShelter.setFamilyCapacity(curShelter.getFamilyCapacity() + beds1.size());
+                    int famCap = curShelter.getFamilyCapacity();
+                    curShelter.setFamilyCapacity(famCap + incrementVacancy);
                 } else if (key.charAt(0) == 'F') {
-                    curShelter.setSingleCapacity(curShelter.getSingleCapacity() + beds1.size());
+                    int singCap = curShelter.getSingleCapacity();
+                    curShelter.setSingleCapacity(singCap + incrementVacancy);
                 }
                 reserved.put(key, beds1);
             } else {
                 if (key.charAt(0) == 'T') {
-                    curShelter.setFamilyCapacity(curShelter.getFamilyCapacity() + beds.size());
+                    int famCap = curShelter.getFamilyCapacity();
+                    curShelter.setFamilyCapacity(famCap + numBedKeys);
                 } else if (key.charAt(0) == 'F') {
-                    curShelter.setSingleCapacity(curShelter.getSingleCapacity() + beds.size());
+                    int singCap = curShelter.getSingleCapacity();
+                    curShelter.setSingleCapacity(singCap + numBedKeys);
                 }
                 reserved.put(key, beds);
             }
@@ -176,7 +188,9 @@ public class ReservationManager {
 
         curStay.checkOut();
         user.clearOccupiedBed();
-        int newVac = curShelter.getVacancies() + beds.size();
+        int curVacancies = curShelter.getVacancies();
+        int incrementVacancy = beds.size();
+        int newVac = curVacancies + incrementVacancy;
         curShelter.setVacancies(newVac);
 
         return reserved;

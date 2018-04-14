@@ -13,7 +13,7 @@ public class ShelterBuilder {
 //        if (rs != null && !rs.isEmpty())
 //            rs = "Anyone";
 //        this.newShelter = shelter;
-        bedManager = new BedManager(newShelter);
+        bedManager = new BedManager(newShelter.getShelterName());
 //        String cp = shelter.capacityStr;
         String cp = newShelter.getCapacityStr();
         boolean fam;
@@ -59,7 +59,7 @@ exVets = false;
                 ageFloor = Age.CHILDREN_BASE.toInt();
                 ageCeiling = Age.CHILDREN_CAP.toInt();
             }
-            if (/*fam ||*/ exWomen || exMen) {
+            if (exWomen || exMen) {
                 ageCeiling = Age.MAX_AGE.toInt();
                 fam = true;
                 if (cp.split(" ").length < 2) {
