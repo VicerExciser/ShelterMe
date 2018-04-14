@@ -50,7 +50,9 @@ public class LoginPage extends AppCompatActivity {
         logo.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if(attemptLogin()){
-                    Account acct = model.getCurrUser();
+                    String username = mUsernameView.getText().toString().trim();
+                    String email = DBUtil.getInstance().getEmailAssociatedWithUsername(username);
+                    Account acct = model.getCurrUser(email);
                     Intent myIntent1 = null;
                     if (acct instanceof User) {
                            myIntent1 = new Intent(view.getContext(), HomePage.class);
@@ -59,9 +61,10 @@ public class LoginPage extends AppCompatActivity {
                     } else if (acct instanceof Employee) {
                         myIntent1 = new Intent(view.getContext(), EmployeeHomePage.class);
                     }
-                    if (myIntent1 != null)
+                    if (myIntent1 != null) {
+                        myIntent1.putExtra("userEmail", email);
                         startActivityForResult(myIntent1, 0);
-                }}
+                }}}
         });
 
         cancel.setOnClickListener(new View.OnClickListener() {

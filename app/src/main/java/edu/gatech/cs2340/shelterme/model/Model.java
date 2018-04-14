@@ -84,7 +84,7 @@ public class Model {
         return shelter;
     }
 
-    public Account getCurrUser() {return currUser;}
+    public Account getCurrUser(String email) {return getAccountByEmail(email);}
     public void setCurrUser(String email, User usr) { this.currUser = usr;}
     public void setCurrUser(String email) {currUser = getAccountByEmail(email);}
 

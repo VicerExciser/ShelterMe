@@ -27,11 +27,15 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+        Bundle bundle = getIntent().getExtras();
+        final String email = bundle.getString("userEmail");
 
         Button map = findViewById(R.id.mapButton);
         map.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                startActivity(new Intent(HomePage.this, MapsActivity.class));
+                Intent intent = new Intent(HomePage.this, MapsActivity.class);
+                intent.putExtra("userEmail", email);
+                startActivity(intent);
             }
         });
         Button logout = findViewById(R.id.logoutButton);
@@ -46,11 +50,12 @@ public class HomePage extends AppCompatActivity {
         viewShelters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomePage.this, ViewSheltersPage.class));
+                Intent intent = new Intent(HomePage.this, ViewSheltersPage.class);
+                intent.putExtra("userEmail", email);
+                startActivity(intent);
             }
         });
-
-        final User curUser = ((User)(model.getCurrUser()));
+        final User curUser = ((User)(model.getCurrUser(email)));
         final Button checkOut = findViewById(R.id.checkOut);
         if (curUser == null) {
             checkOut.setVisibility(View.GONE);

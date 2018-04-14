@@ -333,8 +333,11 @@ public class ViewSheltersPage extends AppCompatActivity {
 
     private void displayDetailView(int position) {
         Shelter selected = shelters.get(adapter.getItem(position));
+        Bundle bundle = getIntent().getExtras();
+        String email = bundle.getString("userEmail");
         Intent intent = new Intent(ViewSheltersPage.this, ShelterDetailsPage.class);
         intent.putExtra("Shelter", selected);
+        intent.putExtra("userEmail", email);
         startActivity(intent);
     }
 
