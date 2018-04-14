@@ -7,11 +7,8 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,6 +28,7 @@ import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.User;
+import edu.gatech.cs2340.shelterme.util.DBUtil;
 
 public class RequestStayReport extends AppCompatActivity {
 

@@ -26,7 +26,7 @@ public class User extends Account {
         this.sex = sex;
         this.isVeteran = false;
         this.setIsOccupyingBed(false);
-        this.stayReports = new Stack<StayReport>();
+        this.stayReports = new Stack<>();
 //        Log.e("USER_KEY", this.generateKey());
         super.setAccountType(Type.USER);
     }
@@ -116,7 +116,7 @@ public class User extends Account {
     public void clearStayReportHistory() {
         this.stayReports.clear();
         if (stayReports == null)
-            this.stayReports = new Stack<StayReport>();
+            this.stayReports = new Stack<>();
     }
 
 

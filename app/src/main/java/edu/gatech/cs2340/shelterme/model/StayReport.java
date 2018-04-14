@@ -25,7 +25,7 @@ public class StayReport {
         this(new Shelter(), new User(), new ArrayList<Bed>());
     }
 
-    public StayReport(Shelter shelter, User account, ArrayList<Bed> bedlist) {
+    public StayReport(Shelter shelter, User account, ArrayList<Bed> bedList) {
         this.setActive(true);
         this.setShelterName(shelter.getShelterName());
         account.setIsOccupyingBed(true);
@@ -35,7 +35,7 @@ public class StayReport {
         this.setCheckInDate(new Date(startDate).toString());
         this.setCheckOutDate(null);
         this.reservedBeds = new Stack<>();
-        for (Bed b : bedlist) {
+        for (Bed b : bedList) {
             reservedBeds.add(b.getId());
         }
         this.setNumReserved(reservedBeds.size());
@@ -63,9 +63,9 @@ public class StayReport {
 
 
     // EXAMPLE: If needing to compare check-in/check-out timestamps for stay reports, use
-    //          -  Date time1 = new Date(stayreport1.getCheckInDate());
-    //          -  if (time1.compareTo(new Date(stayreport2.getCheckInDate())) <= 0)
-    //                 stayreport1 should be listed before stayreport2
+    //          -  Date time1 = new Date(stayReport1.getCheckInDate());
+    //          -  if (time1.compareTo(new Date(stayReport2.getCheckInDate())) <= 0)
+    //                 stayReport1 should be listed before stayReport2
 
     public String getCheckInDate() { return this.checkInDate; }
 

@@ -37,7 +37,7 @@ public class Bed {
     }
 
     public Bed() {
-        this("bed_1001", false, false, false, Age.MINAGE, Age.MAXAGE,
+        this("bed_1001", false, false, false, Age.MIN_AGE, Age.MAX_AGE,
                 false, "FFF000_200_F", "Hope Atlanta");
     }
 

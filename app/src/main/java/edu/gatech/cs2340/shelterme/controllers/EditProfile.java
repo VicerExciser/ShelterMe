@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import edu.gatech.cs2340.shelterme.R;
+import edu.gatech.cs2340.shelterme.util.DBUtil;
 
 public class EditProfile extends AppCompatActivity {
     DBUtil dbUtil = DBUtil.getInstance();

@@ -12,17 +12,16 @@ import android.view.MenuItem;
 import android.widget.ImageButton;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Shelter;
+import edu.gatech.cs2340.shelterme.util.DBUtil;
 
 public class MainActivity extends AppCompatActivity {
 

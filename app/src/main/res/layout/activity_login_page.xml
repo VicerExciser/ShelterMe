@@ -110,7 +110,8 @@
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="42sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_alignLeft="@+id/forget" />
 
         <TextView
             android:id="@+id/forgotten"

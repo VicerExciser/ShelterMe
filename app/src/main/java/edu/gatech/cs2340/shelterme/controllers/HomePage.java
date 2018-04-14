@@ -16,6 +16,7 @@ import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.StayReport;
 import edu.gatech.cs2340.shelterme.model.User;
+import edu.gatech.cs2340.shelterme.util.DBUtil;
 
 public class HomePage extends AppCompatActivity {
 

@@ -3,10 +3,13 @@ package edu.gatech.cs2340.shelterme.model;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import java.util.HashMap;
-import edu.gatech.cs2340.shelterme.controllers.DBUtil;
+
+import edu.gatech.cs2340.shelterme.util.DBUtil;
+import edu.gatech.cs2340.shelterme.util.MessageAdapter;
 
 
 // SINGLETON -- Updated to be Thread-Safe for Synchronization
@@ -17,6 +20,7 @@ public class Model {
 
     private static HashMap<String, Account> accounts;
     private static HashMap<String, Shelter> shelters;
+    private static HashMap<String, Message> messages;
     private Account currUser;
 
     private Model() {
@@ -29,19 +33,21 @@ public class Model {
         while (shelters == null) {
             shelters = DBUtil.getShelterListPointer();
         }
+        while (messages == null) {
+            messages = DBUtil.getMessageListPointer();
+        }
     }
 
     public static Model getInstance() {
-//        if (modelInstance == null) {
-//            synchronized (Model.class) {
+        if (modelInstance == null) {
+            synchronized (Model.class) {
                 if (modelInstance == null) {
                     modelInstance = new Model();
-//                }
-//            }
+                }
+            }
         }
         return modelInstance;
     }
-
 
 
     // Map: <Email, Account>
@@ -52,6 +58,24 @@ public class Model {
     // Map: <ShelterName, Shelter>
     public static HashMap<String, Shelter> getShelterListPointer() {
         return shelters;
+    }
+
+    public static HashMap<String, Message> getMessageListPointer() { return messages; }
+
+    public static void initMessages() {
+        dbUtil.initMessages();
+    }
+
+    public static void maintainMessages(RecyclerView messagesRecyclerView, MessageAdapter adapter) {
+        dbUtil.maintainMessages(messagesRecyclerView, adapter);
+    }
+
+    public void testMessage() {
+        addToMessages(new Message());
+    }
+
+    public void addToMessages(Message msg) {
+        dbUtil.addMessage(msg);
     }
 
     public Shelter verifyShelterParcel(Shelter shelter) {

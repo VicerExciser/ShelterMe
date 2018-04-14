@@ -301,7 +301,7 @@ public class ViewSheltersPage extends AppCompatActivity {
         boolean match = false;
         int min = Integer.valueOf(key.substring(3,6));// + "_";//here lies the bug of the century; rest in peace, substring(3,5)
 //        Log.e("ViewShelters", String.valueOf(min));
-//        Log.e("ViewShelters", Age.MINAGE.getAgeKeyVal());
+//        Log.e("ViewShelters", Age.MIN_AGE.getAgeKeyVal());
 //        Log.e("ViewShelters", selectedAgeRange.toString());
         int max = Integer.valueOf(key.substring(7,10));// + "_";
         if ((selectedAgeRange.equals(AgeRange.ANYONE))) {
