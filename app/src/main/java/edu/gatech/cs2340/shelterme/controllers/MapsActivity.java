@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.gatech.cs2340.shelterme.R;
+import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.GenderAccepted;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
@@ -31,8 +32,10 @@ import edu.gatech.cs2340.shelterme.model.Shelter;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    // --Commented out by Inspection (4/13/2018 6:17 PM):private final Model model = Model.getInstance();
-    // --Commented out by Inspection (4/13/2018 6:17 PM):private ArrayAdapter<String> adapter;
+    // --Commented out by Inspection (4/13/2018 6:17 PM):
+    // private final Model model = Model.getInstance();
+    // --Commented out by Inspection (4/13/2018 6:17 PM):
+    // private ArrayAdapter<String> adapter;
     private AbstractMap<String, Shelter> shelters;
     //private Model model = Model.getInstance();
     private boolean showAll = true;
@@ -44,7 +47,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean ready = false;
 
     private int updateCounter = 0;
-    private final int updatesForInit = 2;   // signifies initialization is complete (to be compared against updateCounter)
+    private final int updatesForInit = 2;   // signifies initialization is complete (to be compared
+    // against updateCounter)
     private boolean ignoreUpdate = false;   // to avoid unnecessary subroutine calls
 
 //    private enum GenderAccepted {
@@ -58,6 +62,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //    }
 
 
+    @SuppressWarnings("ChainedMethodCall")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,17 +73,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        final Spinner genderSpinMap = (Spinner) findViewById(R.id.genderSpinMaps);
-        final CheckBox familyCheck = (CheckBox) findViewById(R.id.familyCheckMap);
-        final CheckBox showAllCheck = (CheckBox) findViewById(R.id.showAllMap);
+        final Spinner genderSpinMap = findViewById(R.id.genderSpinMaps);
+        final CheckBox familyCheck = findViewById(R.id.familyCheckMap);
+        final CheckBox showAllCheck = findViewById(R.id.showAllMap);
 
         shelters = new HashMap<>(Model.getShelterListPointer());
 
-        CompoundButton.OnCheckedChangeListener checkListen = new CompoundButton.OnCheckedChangeListener() {
+        CompoundButton.OnCheckedChangeListener checkListen
+                = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 showAll = (updateCounter >= updatesForInit) ? isChecked : showAll;
-                updated = true;
+//                updated = true;
                 Log.e("OnCheckedChangeListener", "showAll checked = "+showAll);
                 if (updateCounter != 0) {
                     updateSearch(familyCheck.isChecked());
@@ -97,7 +103,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
         showAllCheck.setOnCheckedChangeListener(checkListen);
 
-        ArrayAdapter<String> adapterGen = new ArrayAdapter(this,android.R.layout.simple_spinner_item, GenderAccepted.values());
+        //noinspection unchecked,unchecked
+        ArrayAdapter<String> adapterGen = new ArrayAdapter(this,
+                android.R.layout.simple_spinner_item, GenderAccepted.values());
         adapterGen.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinMap.setAdapter(adapterGen);
 
@@ -112,7 +120,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         ignoreUpdate = false;
                     }
                 }
-                updated = true;
+//                updated = true;
                 if (updateCounter != 0) {
                     updateSearch(isChecked);
                 } else {
@@ -140,7 +148,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         selectedGender = GenderAccepted.WOMEN;
                         break;
                 }
-                updated = true;
+//                updated = true;
                 if (updateCounter != 0) {
                     updateSearch(familyCheck.isChecked());
                 } else {
@@ -153,28 +161,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    @SuppressWarnings("MagicNumber") // temp values used here until CurrentLocation implemented
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng loc = new LatLng(33.7490, -84.3880);
+        double tempLatitude = 33.7490;
+        double tempLongitude = -84.3880;
+        LatLng loc = new LatLng(tempLatitude, tempLongitude);
         List<Marker> markers = populateMap();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(11));
+        int tempZoom = 11;
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(tempZoom));
         ready = true;
     }
 
+    @SuppressWarnings("ChainedMethodCall")
     private List<Marker> populateMap(){
         mMap.clear();
         List<Marker> markers = new ArrayList<>();
         for(Shelter s: shelters.values()) {
                 if (s != null) {
                     LatLng loc = new LatLng(s.getLatitude(), s.getLongitude());
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(loc).title(s.getShelterName()).snippet(s.getPhone()));
+                    @SuppressWarnings("ChainedMethodCall") Marker marker
+                            = mMap.addMarker(new MarkerOptions().position(loc)
+                            .title(s.getShelterName()).snippet(s.getPhone()));
                     markers.add(marker);
                 }
         }
 
-        updated = ignoreUpdate = false;
+//        updated =
+        ignoreUpdate = false;
         return markers;
     }
 
@@ -183,13 +199,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (!ignoreUpdate) {
             shelters.clear();
             updateCounter++;
+            HashMap<String, Shelter> shelterHashMap = Model.getShelterListPointer();
             if (showAll) {
-                for (Shelter s : Model.getShelterListPointer().values()) {
+                for (Shelter s : shelterHashMap.values()) {
                     shelters.put(s.getShelterName(), s);
                 }
             } else {
-                for (Shelter s : Model.getShelterListPointer().values()) {
-                    for (String key : s.getBeds().keySet()) {
+                for (Shelter s : shelterHashMap.values()) {
+                    HashMap<String, HashMap<String, Bed>> bedHashmap = s.getBeds();
+                    for (String key : bedHashmap.keySet()) {
                         if (key.length() > 1) {
                             if (familyChoiceMatchesKey(key, isChecked) && (s.getVacancies() > 0)) {
                                 if (genderChoiceMatchesKey(key)) {

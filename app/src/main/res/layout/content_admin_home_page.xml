@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,7 +23,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#CEF6EC"
-            android:text="Log Out" />
+            android:text="Log Out"
+            tools:targetApi="lollipop"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/title"
@@ -38,7 +41,9 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:targetApi="jelly_bean"
+            tools:ignore="HardcodedText" />
 
         <ImageView
             android:id="@+id/imageView3"
@@ -47,7 +52,8 @@
             android:layout_below="@+id/title"
             android:layout_centerHorizontal="true"
             app:srcCompat="@mipmap/cs_social_good"
-            android:contentDescription="TODO" />
+            android:contentDescription="TODO"
+            tools:ignore="ContentDescription,HardcodedText" />
 
         <Button
             android:id="@+id/manageAccount"
@@ -60,7 +66,9 @@
             android:layout_alignStart="@+id/viewRequest"
             android:layout_marginBottom="10dp"
             android:backgroundTint="#FBEFF2"
-            android:text="Manage User Accounts" />
+            android:text="Manage User Accounts"
+            tools:targetApi="lollipop"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/viewRequest"
@@ -73,7 +81,9 @@
             android:layout_alignStart="@+id/addShelter"
             android:layout_marginBottom="10dp"
             android:backgroundTint="#F8E0E6"
-            android:text="View Pending Requests" />
+            android:text="View Pending Requests"
+            tools:targetApi="lollipop"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/addShelter"
@@ -84,7 +94,9 @@
             android:layout_marginBottom="10dp"
             android:background="@android:drawable/bottom_bar"
             android:backgroundTint="#F6CED8"
-            android:text="Add New Shelter" />
+            android:text="Add New Shelter"
+            tools:targetApi="lollipop"
+            tools:ignore="HardcodedText" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

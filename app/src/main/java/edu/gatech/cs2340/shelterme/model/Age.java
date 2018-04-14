@@ -1,9 +1,5 @@
 package edu.gatech.cs2340.shelterme.model;
 
-/**
- * Created by Russell on 3/6/2018.
- */
-
 // Had to change the key values to use '_' because '/' is not allowed in a HashMap key
 public enum Age {
     MIN_AGE("000_"),
@@ -26,7 +22,8 @@ public enum Age {
         return ageKeyVal;
     }
 
-//    public void setAgeKeyVal(String ageKeyVal) {
-//        this.ageKeyVal = ageKeyVal;
-//    }
+    public int toInt() {
+        int cutoff = this.ageKeyVal.indexOf('_');
+        return Integer.valueOf(this.ageKeyVal.substring(0, cutoff));
+    }
 }

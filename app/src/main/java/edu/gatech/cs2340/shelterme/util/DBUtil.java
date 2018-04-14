@@ -14,8 +14,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,7 +26,6 @@ import edu.gatech.cs2340.shelterme.model.Admin;
 import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.Employee;
 import edu.gatech.cs2340.shelterme.model.Message;
-import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.StayReport;
 import edu.gatech.cs2340.shelterme.model.User;
@@ -36,6 +33,10 @@ import edu.gatech.cs2340.shelterme.model.User;
 import static android.content.ContentValues.TAG;
 
 // Properly configured implementation of Runnable interface so that not all work done on main thread
+@SuppressWarnings({"SynchronizeOnNonFinalField", "AssignmentToStaticFieldFromInstanceMethod",
+        "FieldMayBeFinal", "CanBeFinal", "MismatchedQueryAndUpdateOfCollection", "ChainedMethodCall"})
+// Declared volatile rather than final for sync.
+//@Singleton
 public final class DBUtil implements Runnable {
 
     private static volatile DBUtil dbUtilInstance;
@@ -47,8 +48,6 @@ public final class DBUtil implements Runnable {
     private static volatile Map<String, Shelter> shelterList = new HashMap<>();
     private static volatile Map<String, Message> messageList = new HashMap<>();
 
-    // Write a message to the database
-    private static volatile FirebaseDatabase database;
     private static volatile DatabaseReference rootRef;
     private static volatile DatabaseReference usersRef;
     private static volatile DatabaseReference employeesRef;
@@ -57,7 +56,7 @@ public final class DBUtil implements Runnable {
     private static volatile DatabaseReference messageRef;
 
     private DBUtil() {
-        database = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
         // TURN BACK ON ONCE ALL USAGE OF TEST DATA IS FINISHED
 //        database.setPersistenceEnabled(true);    // Enables persistent data caching
 //                                                 // if user goes offline or app restarts
@@ -239,9 +238,13 @@ public final class DBUtil implements Runnable {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) && (user != null)) {
+                if ((user != null)) {
                     synchronized (accountList) {
-                    accountList.remove(user.getEmail(), user);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            accountList.remove(user.getEmail(), user);
+                        } else {
+                            accountList.remove(user.getEmail());
+                        }
                     }
                 }
             }
@@ -280,9 +283,13 @@ public final class DBUtil implements Runnable {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Admin admin = dataSnapshot.getValue(Admin.class);
-                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) && (admin != null)) {
+                if ((admin != null)) {
                     synchronized (accountList) {
-                    accountList.remove(admin.getEmail(), admin);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            accountList.remove(admin.getEmail(), admin);
+                        } else {
+                            accountList.remove(admin.getEmail());
+                        }
                     }
                 }
             }
@@ -321,9 +328,13 @@ public final class DBUtil implements Runnable {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Employee emp = dataSnapshot.getValue(Employee.class);
-                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) && (emp != null)) {
+                if ((emp != null)) {
                     synchronized (accountList) {
-                    accountList.remove(emp.getEmail(), emp);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            accountList.remove(emp.getEmail(), emp);
+                        } else {
+                            accountList.remove(emp.getEmail());
+                        }
                     }
                 }
             }
@@ -364,9 +375,13 @@ public final class DBUtil implements Runnable {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Shelter shelter = dataSnapshot.getValue(Shelter.class);
-                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) && (shelter != null)) {
+                if ((shelter != null)) {
                     synchronized (shelterList) {
-                    shelterList.remove(shelter.getShelterName(), shelter);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            shelterList.remove(shelter.getShelterName(), shelter);
+                        } else {
+                            shelterList.remove(shelter.getShelterName());
+                        }
                     }
                 }
             }
@@ -411,9 +426,11 @@ public final class DBUtil implements Runnable {
         sheltersRef.child(key).setValue(newShelter,
                 new DatabaseReference.CompletionListener() {
                     @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    public void onComplete(DatabaseError databaseError,
+                                           DatabaseReference databaseReference) {
                         if (databaseError != null) {
-                            Log.v("DBUtil", "Data could not be saved " + databaseError.getMessage());
+                            Log.v("DBUtil", "Data could not be saved "
+                                    + databaseError.getMessage());
                         } else {
                             Log.v("DBUtil", "Data saved successfully.");
                         }
@@ -423,7 +440,7 @@ public final class DBUtil implements Runnable {
 
     }
 
-    public void updateShelterVacanciesAndBeds(Shelter s, AbstractMap<String, Collection<Bed>> reserved,
+    public void updateShelterVacanciesAndBeds(Shelter s, Map<String, Collection<Bed>> reserved,
                                               boolean reserving) {
         String key = String.format("%s_%s", s.getShelterKey(), s.getShelterName());
         DatabaseReference ref = sheltersRef.child(key);
@@ -439,9 +456,11 @@ public final class DBUtil implements Runnable {
                     occPath = String.format("O/%s", bed.getId());
                     Log.e("jsonPath = ", jsonPath);
                     if (reserving) {
-                        bedsRef.child(jsonPath).removeValue(new DatabaseReference.CompletionListener() {
+                        bedsRef.child(jsonPath).removeValue(
+                                new DatabaseReference.CompletionListener() {
                             @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            public void onComplete(DatabaseError databaseError,
+                                                   DatabaseReference databaseReference) {
 //                                  Log.e("removeValue Complete?", databaseError.getMessage());
                             }
                         });
@@ -454,8 +473,8 @@ public final class DBUtil implements Runnable {
             }
 
             ref.child("vacancies").setValue(s.getVacancies());
-            ref.child("familyCapacity").setValue(s.familyCapacity);
-            ref.child("singleCapacity").setValue(s.singleCapacity);
+            ref.child("familyCapacity").setValue(s.getFamilyCapacity());
+            ref.child("singleCapacity").setValue(s.getSingleCapacity());
         } catch (Exception e) {
             Log.e("UpdateShelters: ", e.getMessage());
 //            updateShelterInfo(s);
@@ -472,9 +491,10 @@ public final class DBUtil implements Runnable {
 
     // Primary key = email (String up to '@' symbol)
     public void addAccount(Account newAccount) {
-        String branch = (newAccount instanceof User) ? "users"
-                : ((newAccount instanceof Employee) ? "employees"
-                : ((newAccount instanceof Admin) ? "admins" : ""));
+        Account.Type type = newAccount.getAccountType();
+        String branch = (type == Account.Type.USER) ? "users"
+                : ((type == Account.Type.ADMIN) ? "employees"
+                : ((type == Account.Type.EMP) ? "admins" : ""));
         if (branch.isEmpty()) {
             return;
         }
@@ -482,9 +502,11 @@ public final class DBUtil implements Runnable {
         rootRef.child(branch).child(key).setValue(newAccount,
                 new DatabaseReference.CompletionListener() {
                     @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    public void onComplete(DatabaseError databaseError,
+                                           DatabaseReference databaseReference) {
                         if (databaseError != null) {
-                            Log.v("DBUtil", "Data could not be saved " + databaseError.getMessage());
+                            Log.v("DBUtil", "Data could not be saved "
+                                    + databaseError.getMessage());
                         } else {
                             Log.v("DBUtil", "Data saved successfully.");
                         }
@@ -492,6 +514,7 @@ public final class DBUtil implements Runnable {
                 });
     //        newAccount.setAccountID(newAcctRef);
         if ("users".equals(branch)) {
+            //noinspection ConstantConditions
             usersRef.child(key).child("stayReports").setValue(((User) newAccount).getStayReports());
         }
 
@@ -530,6 +553,7 @@ public final class DBUtil implements Runnable {
     // }
 
 
+    /*
     public String getEmailAssociatedWithUsername(String username) {
         if (Model.isValidEmailAddress(username)) {
             return username;
@@ -545,6 +569,7 @@ public final class DBUtil implements Runnable {
         }
         return null;
     }
+    */
 
     public void updateUserOccupancyAndStayReports(User u) {
         String key = u.getEmail().substring(0, u.getEmail().indexOf('@'));
@@ -605,8 +630,8 @@ public final class DBUtil implements Runnable {
         });
     }
 
-    public void maintainMessages(final RecyclerView messagesRecyclerView, /*FirebaseRecyclerAdapter<Message,
-            MessageBoard.MessageViewHolder> adapter*/ final MessageAdapter adapter) {
+    public void maintainMessages(final RecyclerView messagesRecyclerView,
+                                 final MessageAdapter adapter) {
         Query messageQuery = messageRef.orderByKey();
         messageQuery.addChildEventListener(new ChildEventListener() {
             @Override
@@ -614,7 +639,9 @@ public final class DBUtil implements Runnable {
                 Message message = dataSnapshot.getValue(Message.class);
                 //Now add to message map
                 synchronized (messageList) {
-                    messageList.put(message.getTimeSent(), message);
+                    if (message != null) {
+                        messageList.put(message.getTimeSent(), message);
+                    }
                 }
                 //Now Add messageList into Adapter/RecyclerView
                 messagesRecyclerView.setAdapter(adapter);
@@ -625,7 +652,9 @@ public final class DBUtil implements Runnable {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Message message = dataSnapshot.getValue(Message.class);
                 synchronized (messageList) {
-                    messageList.put(message.getTimeSent(), message);
+                    if (message != null) {
+                        messageList.put(message.getTimeSent(), message);
+                    }
                 }
                 messagesRecyclerView.setAdapter(adapter);
             }
@@ -635,8 +664,11 @@ public final class DBUtil implements Runnable {
                 Message message = dataSnapshot.getValue(Message.class);
                 synchronized (messageList) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        messageList.remove(message.getTimeSent(), message);
+                        if (message != null) {
+                            messageList.remove(message.getTimeSent(), message);
+                        }
                     } else {
+                        assert message != null;
                         messageList.remove(message.getTimeSent());
                     }
                 }
@@ -660,9 +692,11 @@ public final class DBUtil implements Runnable {
         String key = String.valueOf(new Date(newMessage.getTimeSent()).getTime());
         messageRef.child(key).setValue(newMessage, new DatabaseReference.CompletionListener() {
             @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+            public void onComplete(DatabaseError databaseError,
+                                   DatabaseReference databaseReference) {
                 if (databaseError != null) {
-                    Log.v("DBUtil", "Data could not be saved " + databaseError.getMessage());
+                    Log.v("DBUtil", "Data could not be saved "
+                            + databaseError.getMessage());
                 } else {
                     Log.v("DBUtil", "Data saved successfully.");
                 }

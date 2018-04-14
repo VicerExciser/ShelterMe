@@ -4,28 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 //import android.widget.Button;
 import android.widget.ImageButton;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.R;
-import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.util.DBUtil;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DBUtil dbUtil; // = DBUtil.getInstance();
     private Model model; // = Model.getInstance();
 
     @Override
@@ -67,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        dbUtil = DBUtil.getInstance();
+        DBUtil dbUtil = DBUtil.getInstance();
         model = Model.getInstance();
         Thread backgroundThread = new Thread(dbUtil);
         backgroundThread.start();   // Init & run thread for maintaining database
@@ -82,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        //noinspection ChainedMethodCall
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -141,7 +132,8 @@ public class MainActivity extends AppCompatActivity {
 //                    String addr = tokens[6];
 //                    String notes = tokens[7];
 //                    String phone = tokens[8];
-//                    Shelter newShelter = new Shelter(key, name, capacity, restricts, longitude, latitude,
+//                    Shelter newShelter = new Shelter(key, name, capacity, restricts, longitude,
+// latitude,
 //                            addr, notes, phone);
 //                    model.addShelter(newShelter);
 //                    dbUtil.addShelter(newShelter);

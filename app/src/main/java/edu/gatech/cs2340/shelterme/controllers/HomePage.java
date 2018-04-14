@@ -39,8 +39,9 @@ public class HomePage extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                android.content.Intent myIntent1 = new android.content.Intent(view.getContext(), MainActivity.class);
-                Model.getInstance().setCurrUser(null);
+                android.content.Intent myIntent1 = new android.content.Intent(view.getContext(),
+                        MainActivity.class);
+                model.setCurrUser(null);
                 startActivityForResult(myIntent1, 0);
             }
         });
@@ -59,13 +60,15 @@ public class HomePage extends AppCompatActivity {
             Log.e("HomePage", "curUser == null");
         } else if (!curUser.isOccupyingBed() || (curUser.getCurrentStayReport() == null)) {
             checkOut.setVisibility(View.GONE);
-            Log.e("HomePage", "curUser is not occupying a bed or has no active stay report");
+            Log.e("HomePage", "curUser is not occupying a bed or has " +
+                    "no active stay report");
         } else {
             checkOut.setVisibility(View.VISIBLE);
             final StayReport curStay = curUser.getCurrentStayReport();
             final String shelterName = curStay.getShelterName();
             if (shelterName == null) {
-                model.displayErrorMessage("No current shelter found.", HomePage.this);
+                model.displayErrorMessage("No current shelter found.",
+                        HomePage.this);
                 checkOut.setVisibility(View.GONE);
                 return;
             }
@@ -76,7 +79,8 @@ public class HomePage extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     try {
-                        HashMap<String, Collection<Bed>> reserved = shelter.undoReservation(curStay);
+                        HashMap<String, Collection<Bed>> reserved
+                                = shelter.undoReservation(curStay);
 //
                         dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, false);
                         dbUtil.updateUserOccupancyAndStayReports(curUser);
@@ -87,7 +91,8 @@ public class HomePage extends AppCompatActivity {
                         model.displayErrorMessage(e.getMessage(), HomePage.this);
                         return;
                     }
-                    model.displaySuccessMessage("Hope you enjoyed your stay at " + shelterName
+                    model.displaySuccessMessage("Hope you enjoyed your stay at "
+                            + shelterName
                             + "!", HomePage.this);
                     if (!curUser.isOccupyingBed) {
                         checkOut.setVisibility(View.GONE);

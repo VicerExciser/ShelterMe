@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -26,7 +27,8 @@
             android:inputType="textPassword"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
-            android:textSize="20dp" />
+            android:textSize="20sp"
+            tools:ignore="HardcodedText" />
 
         <EditText
             android:id="@+id/editText"
@@ -42,7 +44,8 @@
             android:inputType="textPersonName"
             android:textColor="#000000"
             android:textColorHint="@android:color/black"
-            android:textSize="20dp" />
+            android:textSize="20sp"
+            tools:ignore="HardcodedText" />
 
         <ImageButton
             android:id="@+id/log"
@@ -53,7 +56,8 @@
             android:layout_marginTop="21dp"
             android:tint="#000000"
             app:srcCompat="@android:drawable/bottom_bar"
-            android:contentDescription="TODO" />
+            android:contentDescription="TODO"
+            tools:ignore="ContentDescription,HardcodedText" />
 
         <TextView
             android:id="@+id/textView4"
@@ -64,7 +68,8 @@
             android:layout_marginTop="20dp"
             android:text="Login"
             android:textColor="#FFFFFF"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            tools:ignore="HardcodedText" />
 
         <ImageButton
             android:id="@+id/forget"
@@ -76,7 +81,8 @@
             android:contentDescription="Cancel"
             android:labelFor="@+id/Cancel"
             android:tint="#FFFFFF"
-            app:srcCompat="@android:drawable/bottom_bar" />
+            app:srcCompat="@android:drawable/bottom_bar"
+            tools:ignore="HardcodedText" />
 
         <ImageButton
             android:id="@+id/actualcancel"
@@ -88,7 +94,8 @@
             android:layout_marginTop="16dp"
             android:tint="@android:color/white"
             app:srcCompat="@android:drawable/bottom_bar"
-            android:contentDescription="TODO" />
+            android:contentDescription="TODO"
+            tools:ignore="ContentDescription,HardcodedText" />
 
         <TextView
             android:id="@+id/textView5"
@@ -98,7 +105,8 @@
             android:layout_centerHorizontal="true"
             android:text="Cancel"
             android:textColor="#000000"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/logo1"
@@ -113,7 +121,9 @@
             android:textColor="#000000"
             android:textSize="42sp"
             android:textStyle="bold"
-            android:layout_alignLeft="@+id/forget" />
+            android:layout_alignLeft="@+id/forget"
+            tools:targetApi="jelly_bean"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/forgotten"
@@ -125,7 +135,8 @@
             android:text="I forgot my password."
             android:textAlignment="center"
             android:textColor="#000000"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            tools:ignore="HardcodedText" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -135,7 +146,8 @@
             android:layout_alignStart="@+id/log"
             android:layout_below="@+id/logo1"
             app:srcCompat="@mipmap/cs_social_good"
-            android:contentDescription="TODO" />
+            android:contentDescription="TODO"
+            tools:ignore="ContentDescription,HardcodedText" />
 
     </RelativeLayout>
 

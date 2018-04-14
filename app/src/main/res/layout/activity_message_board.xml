@@ -23,7 +23,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/message_search"
-        android:text="Show only unaddressed messages" />
+        android:text="Show only unaddressed messages"
+        tools:ignore="HardcodedText" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_message"

@@ -18,7 +18,6 @@ public class StayReport {
     private String shelterName;
     private final List<String> reservedBeds;
     private String checkInDate;
-    private String checkOutDate;
     private String accountEmail;
 
     public StayReport() {
@@ -69,7 +68,8 @@ public class StayReport {
 
     public String getCheckInDate() { return this.checkInDate; }
 
-    // --Commented out by Inspection (4/13/2018 6:17 PM):public String getCheckOutDate() { return this.checkOutDate; }
+    // --Commented out by Inspection (4/13/2018 6:17 PM):
+    // public String getCheckOutDate() { return this.checkOutDate; }
 
     public String getAccountEmail() {
         return accountEmail;
@@ -92,7 +92,7 @@ public class StayReport {
     }
 
     private void setCheckOutDate(String checkOutDate) {
-        this.checkOutDate = checkOutDate;
+        String checkOutDate1 = checkOutDate;
     }
 
     private void setActive(boolean active) {

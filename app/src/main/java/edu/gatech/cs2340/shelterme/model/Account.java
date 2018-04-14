@@ -3,11 +3,14 @@ package edu.gatech.cs2340.shelterme.model;
 
 public abstract class Account {
     private final String name;
-    private final String username;        // login name (in recognition of current popular trends, this can be the email address)
-    private final int password;       // hashed user password
-    private boolean accountLocked;  // account state (locked or unlocked)
-    private final String email;           // contact info (email address)
+    private final String username;          // login name (in recognition of current popular trends,
+                                            // this can be the email address)
+    private final int password;             // hashed user password
+    private final boolean accountLocked;          // account state (locked or unlocked)
+    private final String email;             // contact info (email address)
     private Type accountType;
+    private Question secQuest;
+    private String secAns;
 
     Account(String name, String username, String email, int password,
             Question secQuest, String secAns) {
@@ -15,12 +18,12 @@ public abstract class Account {
         this.username = username;
         this.password = password;
         this.email = email;
-        Question secQuest1 = secQuest;
-        String secAns1 = secAns;
+        this.secQuest = secQuest;
+        this.secAns = secAns;
         accountLocked = false;
     }
 
-    public String getName() {
+    String getName() {
         return this.name;
     }
 
@@ -36,7 +39,8 @@ public abstract class Account {
 
     public boolean isAccountLocked() { return this.accountLocked; }
 
-    // --Commented out by Inspection (4/13/2018 6:17 PM):public void setAccountLocked(boolean locked) { this.accountLocked = locked; }
+    // --Commented out by Inspection (4/13/2018 6:17 PM):
+    // public void setAccountLocked(boolean locked) { this.accountLocked = locked; }
 
     @Override
     public boolean equals(Object other) {
@@ -48,6 +52,7 @@ public abstract class Account {
                 && (((Account) other).password == this.password));
     }
 
+    @SuppressWarnings("ChainedMethodCall")
     @Override
     public int hashCode() {
         int result = 17;
@@ -67,6 +72,23 @@ public abstract class Account {
 
     void setAccountType(Type accountType) {
         this.accountType = accountType;
+    }
+    public Type getAccountType() { return this.accountType; }
+
+    public Question getSecQuest() {
+        return secQuest;
+    }
+
+    public void setSecQuest(Question secQuest) {
+        this.secQuest = secQuest;
+    }
+
+    public String getSecAns() {
+        return secAns;
+    }
+
+    public void setSecAns(String secAns) {
+        this.secAns = secAns;
     }
 
 

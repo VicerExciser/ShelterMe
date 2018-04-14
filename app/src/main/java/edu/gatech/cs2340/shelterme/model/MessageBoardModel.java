@@ -3,6 +3,9 @@ package edu.gatech.cs2340.shelterme.model;
 import java.util.LinkedList;
 import java.util.List;
 
+// Functionality that calls this class has not yet been implemented
+
+@SuppressWarnings("ALL")
 class MessageBoardModel {
     private static final List<Message> messages = new LinkedList<>();
     private static final List<Message> unaddressedMessages = new LinkedList<>();
@@ -27,8 +30,8 @@ class MessageBoardModel {
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
 // --Commented out by Inspection START (4/13/2018 6:17 PM):
-//    public static void sendNewReportUserRequest(User reportedUser, String message, Employee sender) {
-//        ReportUserRequest reportUserRequest = new ReportUserRequest(reportedUser, message, sender);
+//public static void sendNewReportUserRequest(User reportedUser, String message, Employee sender) {
+//       ReportUserRequest reportUserRequest = new ReportUserRequest(reportedUser, message, sender);
 //        addMessageToMessageBoard(reportUserRequest);
 //    }
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)

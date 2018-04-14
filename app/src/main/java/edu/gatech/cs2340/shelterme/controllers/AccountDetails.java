@@ -1,5 +1,6 @@
 /*
- * From AccountManagement, this activity can be prompted for displaying a specific User account's information.
+ * From AccountManagement, this activity can be prompted for displaying a specific User account's
+ * information.
  * Can also be used for resolving password reset requests, etc.
  */
 package edu.gatech.cs2340.shelterme.controllers;
@@ -19,13 +20,14 @@ public class AccountDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_details);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //noinspection ChainedMethodCall,ChainedMethodCall
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }

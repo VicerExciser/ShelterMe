@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import java.util.AbstractCollection;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import edu.gatech.cs2340.shelterme.R;
@@ -69,11 +70,13 @@ public class RegistrationPage extends AppCompatActivity {
 //        workplaceField = findViewById(R.id.workplace);
         shelterSpinner = findViewById(R.id.shelterSpinner);
         powPrompt = findViewById(R.id.textView11);
-        AbstractCollection<String> shelterNames = new HashSet<>(Model.getShelterListPointer().keySet());
+        AbstractCollection<String> shelterNames
+                = new HashSet<>(Model.getShelterListPointer().keySet());
 //        for (Shelter s : Model.getShelterListPointer()) {
 //            shelterNames.add(s.getShelterName());
 //        }
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
             shelterNames.toArray(new String[shelterNames.size()]));
         adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         shelterSpinner.setAdapter(adapter3);
@@ -89,21 +92,24 @@ public class RegistrationPage extends AppCompatActivity {
         dateOfBirthField.addTextChangedListener(dobEntryWatcher);
 
         securityQuestionSpinner = findViewById(R.id.securityQuestionSpinner);
-        ArrayAdapter<Account.Question> adapter0 = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,
+        ArrayAdapter<Account.Question> adapter0 = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
                 Account.Question.values());
         adapter0.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         securityQuestionSpinner.setAdapter(adapter0);
         securityQuestionSpinner.setSelection(0);
 
         selectSexSpinner = findViewById(R.id.sexSpinner);
-        ArrayAdapter<Account.Sex> adapter1 = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,
+        ArrayAdapter<Account.Sex> adapter1 = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
                 Account.Sex.values());
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         selectSexSpinner.setAdapter(adapter1);
         selectSexSpinner.setSelection(0);
 
         accountTypeSpinner = findViewById(R.id.userTypeSpinner);
-        ArrayAdapter<Account.Type> adapter2 = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,
+        ArrayAdapter<Account.Type> adapter2 = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
                 Account.Type.values());
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accountTypeSpinner.setAdapter(adapter2);
@@ -157,7 +163,8 @@ public class RegistrationPage extends AppCompatActivity {
 //        });
 //    }
 
-    private final AdapterView.OnItemSelectedListener typeWatcher = new AdapterView.OnItemSelectedListener() {
+    private final AdapterView.OnItemSelectedListener typeWatcher
+            = new AdapterView.OnItemSelectedListener() {
     // Will need to add some sort of authentication input for verifying Admin accounts
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -257,8 +264,9 @@ public class RegistrationPage extends AppCompatActivity {
                 if (text.length() > 0) {
                     int delim = text.toString().indexOf(' ');
                     if (!Character.isUpperCase(text.charAt(0))) {
-                        CharSequence fixLetter = String.valueOf(Character.toUpperCase(text.charAt(0)));
-                        text.replace(0, 1, (CharSequence) fixLetter);
+                        CharSequence fixLetter = String.valueOf(
+                                Character.toUpperCase(text.charAt(0)));
+                        text.replace(0, 1, fixLetter);
                     } else if ((delim != -1) && (text.toString().length() > (delim + 1))) {
                         char lName = text.charAt(delim + 1);
                         if (!Character.isUpperCase(lName)) {
@@ -267,7 +275,7 @@ public class RegistrationPage extends AppCompatActivity {
                         }
                     }
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
     };
@@ -292,21 +300,24 @@ public class RegistrationPage extends AppCompatActivity {
 
     private void validateInputs() {
         try {
-            boolean allFieldsComplete = true;
+            boolean allFieldsComplete;
             // Process name:
-            String name = fullNameField.getText().toString().trim();
+            String name = fullNameField.getText().toString();
+            name = name.trim();
             allFieldsComplete = !name.isEmpty() && !name.equals(fullNameField.getHint().toString());
             int delimiter = name.indexOf(' ');
-            if (!allFieldsComplete || delimiter < 0) {
+            if (!allFieldsComplete || (delimiter < 0)) {
                 model.displayErrorMessage("First and last name are required", this);
                 return;
             }
 
             name = Character.toUpperCase(name.charAt(0)) + name.substring(1, delimiter + 1)
-                    + Character.toUpperCase(name.charAt(delimiter + 1)) + name.substring(delimiter + 2);
+                    + Character.toUpperCase(name.charAt(delimiter + 1))
+                    + name.substring(delimiter + 2);
 
             // Validate email:
-            String email = emailField.getText().toString().trim();
+            String email = emailField.getText().toString();
+            email = email.trim();
             allFieldsComplete = !email.isEmpty() && !email.equals(emailField.getHint().toString());
             if (!allFieldsComplete) {
                 model.displayErrorMessage("Email address is required", this);
@@ -317,20 +328,23 @@ public class RegistrationPage extends AppCompatActivity {
             }
 
             // Register username:
-            String username = userNameField.getText().toString().trim();
+            String username = userNameField.getText().toString();
+            username = username.trim();
             if (username.isEmpty() || username.equals(userNameField.getHint().toString())
                     || username.equals(email)) {
                 // Set username as an alias to email to avoid having to distinguish
                 // between valid username or email for login validity checks
                 username = email;
             }
-
-            for (Account a : Model.getAccountListPointer().values()) {
-                if (a.getEmail().equals(email)) {
+            HashMap<String, Account> accountHashMap = Model.getAccountListPointer();
+            for (Account a : accountHashMap.values()) {
+                String aEmail = a.getEmail();
+                String aUsername = a.getUsername();
+                if (aEmail.equals(email)) {
                     model.displayErrorMessage("Account already exists for this email",
                             this);
                     return;
-                } else if (a.getUsername().equals(username)) {
+                } else if (aUsername.equals(username)) {
                     model.displayErrorMessage("Account already exists for this username",
                             this);
                     return;
@@ -338,10 +352,17 @@ public class RegistrationPage extends AppCompatActivity {
             }
 
             // Validate password & confirmation:
-            int password = passwordField.getText().toString().trim().hashCode();
-            int confirmPass = passwordConfirmField.getText().toString().trim().hashCode();
-            if ((password == 0) || (passwordField.getText().length() < 4)
-                    || (password == passwordField.getHint().toString().hashCode())) {
+            String passString = passwordField.getText().toString();
+            passString = passString.trim();
+            int password = passString.hashCode();
+            String confirmPassString = passwordConfirmField.getText().toString();
+            confirmPassString = confirmPassString.trim();
+            int confirmPass = confirmPassString.hashCode();
+            int passLength = passString.length();
+            String passHint = passwordField.getHint().toString();
+            int hintHash = passHint.hashCode();
+            if ((password == 0) || (passLength < 4)
+                    || (password == hintHash)) {
                 model.displayErrorMessage("Valid password is required", this);
                 return;
             } else if (confirmPass != password) {
@@ -355,15 +376,19 @@ public class RegistrationPage extends AppCompatActivity {
 
             // Process DOB and Sex if regular User:
             String dob;
-            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-            int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+            @SuppressWarnings("ChainedMethodCall") int currentYear
+                    = Calendar.getInstance().get(Calendar.YEAR);
+            @SuppressWarnings("ChainedMethodCall") int currentMonth
+                    = Calendar.getInstance().get(Calendar.MONTH);
             int age = 0;
             Account.Sex sex = Account.Sex.MALE;
             String selectedWorkplace; //enteredWorkplace;
             Shelter workplace = null;
 
             if (type == Account.Type.USER) {
+                //noinspection ChainedMethodCall
                 dob = dateOfBirthField.getText().toString();
+                //noinspection ChainedMethodCall
                 if (!dob.isEmpty() && !dob.equals(dateOfBirthField.getHint().toString())) {
                     delimiter = dob.indexOf('/');
                     int enteredYear = Integer.parseInt(dob.substring(delimiter + 1));
@@ -377,7 +402,8 @@ public class RegistrationPage extends AppCompatActivity {
                         return;
                     }
                 } else {
-                    model.displayErrorMessage("Month and year of birth are required", this);
+                    model.displayErrorMessage("Month and year of birth are required",
+                            this);
                     return;
                 }
 
@@ -399,18 +425,24 @@ public class RegistrationPage extends AppCompatActivity {
 
 
             // Process security question & response:
-            Account.Question secQuest = (Account.Question) securityQuestionSpinner.getSelectedItem();
-            String secAns = securityAnswerField.getText().toString();
-            allFieldsComplete &= (!secAns.isEmpty()
+            Account.Question secQuest
+                    = (Account.Question) securityQuestionSpinner.getSelectedItem();
+            @SuppressWarnings("ChainedMethodCall") String secAns
+                    = securityAnswerField.getText().toString();
+            //noinspection ChainedMethodCall
+            allFieldsComplete = (!secAns.isEmpty()
                     && !secAns.equals(securityAnswerField.getHint().toString()));
             if (!allFieldsComplete) {
-                model.displayErrorMessage("A response is required for your security question", this);
+                model.displayErrorMessage("A response is required for your security question",
+                        this);
                 return;
             }
 
-
+// False suggestion that allFieldsComplete
+            //noinspection ConstantConditions
             if (allFieldsComplete) {
-                createAccount(name, username, email, password, sex, age, type, secQuest, secAns, workplace);
+                createAccount(name, username, email, password, sex, age, type, secQuest,
+                        secAns, workplace);
 
                 startActivity(new Intent(RegistrationPage.this, LoginPage.class));
             }
@@ -419,17 +451,8 @@ public class RegistrationPage extends AppCompatActivity {
         }
     }
 
-//    private boolean isValidEmailAddress(String email) {
-//        String ePattern = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]" +
-//                "+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
-//        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
-//        java.util.regex.Matcher m = p.matcher(email);
-//        return m.find();
-//    }
-
-
-    private void createAccount(String nm, String un, String em, int pw, Account.Sex sx,
-                               int age, Account.Type at, Account.Question sq, String qa, Shelter wp) {
+    private void createAccount(String nm, String un, String em, int pw, Account.Sex sx, int age,
+                               Account.Type at, Account.Question sq, String qa, Shelter wp) {
         Account newAccount = null;
         switch (at) {
             case USER:
@@ -452,19 +475,17 @@ public class RegistrationPage extends AppCompatActivity {
 //                newAccount.setAccountID(newAdminRef);
                 break;
         }
-        // Save new account in DB
 
+// False suggestion that newAccount will never be null
+        //noinspection ConstantConditions
         if (newAccount != null) {
             model.addToAccounts(newAccount);
-//            dbRootRef.child("users").child(em).setValue(newAccount);
-//            userRef.setValue(newAccount);
             dbUtil.addAccount(newAccount);
             model.displaySuccessMessage("Account successfully created!", this);
         } else {
-            model.displayErrorMessage("An error occurred while registering your account", this);
+            model.displayErrorMessage("An error occurred while registering your account",
+                    this);
         }
-
-
 
     }
 

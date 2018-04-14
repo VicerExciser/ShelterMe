@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
@@ -14,7 +14,8 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:text="                               Edit Shelter"
-        tools:text="                               Edit Shelter" />
+        tools:text="                               Edit Shelter"
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/editText8"
@@ -24,7 +25,8 @@
         android:hint="Change Name"
         android:inputType="textPersonName"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="76dp" />
+        tools:layout_editor_absoluteY="76dp"
+        tools:ignore="HardcodedText,MissingConstraints" />
 
     <EditText
         android:id="@+id/editText9"
@@ -34,7 +36,8 @@
         android:hint="Change Address"
         android:inputType="textPersonName"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="183dp" />
+        tools:layout_editor_absoluteY="183dp"
+        tools:ignore="HardcodedText,MissingConstraints" />
 
     <EditText
         android:id="@+id/editText10"
@@ -44,7 +47,8 @@
         android:hint="Change Restrictions"
         android:inputType="textPersonName"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="288dp" />
+        tools:layout_editor_absoluteY="288dp"
+        tools:ignore="HardcodedText,MissingConstraints" />
 
     <EditText
         android:id="@+id/editText11"
@@ -54,7 +58,8 @@
         android:hint="Change Phone Number"
         android:inputType="textPersonName"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="392dp" />
+        tools:layout_editor_absoluteY="392dp"
+        tools:ignore="HardcodedText,MissingConstraints" />
 
     <Button
         android:id="@+id/button3"
@@ -62,5 +67,6 @@
         android:layout_height="wrap_content"
         android:text="Submit Changes"
         tools:layout_editor_absoluteX="224dp"
-        tools:layout_editor_absoluteY="503dp" />
+        tools:layout_editor_absoluteY="503dp"
+        tools:ignore="HardcodedText,MissingConstraints" />
 </android.support.constraint.ConstraintLayout>

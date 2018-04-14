@@ -7,20 +7,23 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.util.DBUtil;
 import edu.gatech.cs2340.shelterme.util.MessageAdapter;
 
 
 // SINGLETON -- Updated to be Thread-Safe for Synchronization
+@SuppressWarnings("AssignmentToStaticFieldFromInstanceMethod")
+//@Singleton
 public final class Model {
     private static volatile Model modelInstance; // Volatile so multiple threads can access
     private static volatile DBUtil dbUtil;
     private static final String TAG = "Model";
 
-    private static HashMap<String, Account> accounts;
-    private static HashMap<String, Shelter> shelters;
-    private static HashMap<String, Message> messages;
+    private static Map<String, Account> accounts;
+    private static Map<String, Shelter> shelters;
+    private static Map<String, Message> messages;
     private Account currUser;
 
     private Model() {
@@ -51,16 +54,16 @@ public final class Model {
 
 
     // Map: <Email, Account>
-    public static HashMap<String, Account> getAccountListPointer() {
+    public static Map<String, Account> getAccountListPointer() {
         return accounts;
     }
 
     // Map: <ShelterName, Shelter>
-    public static HashMap<String, Shelter> getShelterListPointer() {
+    public static Map<String, Shelter> getShelterListPointer() {
         return shelters;
     }
 
-    public static HashMap<String, Message> getMessageListPointer() { return messages; }
+    public static Map<String, Message> getMessageListPointer() { return messages; }
 
     public static void initMessages() {
         dbUtil.initMessages();
@@ -94,19 +97,25 @@ public final class Model {
     }
 
     public static Account getAccountByEmail(String email) {
-        Account toRet = null;
         if (email == null) {
-            return toRet;
+            return null;
         }
-//        for (Account a : accounts) {
-//            if (a.getEmail().equals(email)) {
-//                toRet = a;
-//            }
-//        }
-        toRet = accounts.get(email);
-        return (toRet instanceof User) ? (User) toRet
-                : ((toRet instanceof Admin) ? (Admin) toRet
-                : ((toRet instanceof Employee) ? (Employee) toRet : toRet));
+        Account toRet = accounts.get(email);
+        Account.Type type = toRet.getAccountType();
+        return (type == Account.Type.USER) ? (User) toRet
+                : ((type == Account.Type.ADMIN) ? (Admin) toRet
+                : ((type == Account.Type.EMP) ? (Employee) toRet : toRet));
+    }
+
+    public static String getEmailAssociatedWithUsername(String username) {
+        if (username != null) {
+            for (Account a : accounts.values()) {
+                if (username.equalsIgnoreCase(a.getUsername())) {
+                    return a.getEmail();
+                }
+            }
+        }
+        return null;
     }
 
 //    public static User
@@ -131,7 +140,6 @@ public final class Model {
     public void addShelter(Shelter s) {
         shelters.put(s.getShelterName(), s);
 //        dbUtil.addShelter(s);
-        System.out.println(s.toString());
     }
 
 // --Commented out by Inspection START (4/13/2018 6:17 PM):
@@ -152,11 +160,6 @@ public final class Model {
     }
 
     public static Shelter findShelterByName(String name) {
-//        for (Shelter s : shelters.values()) {
-//            if (s.getShelterName().equals(name))
-//                return s;
-//        }
-//        return null;
         return shelters.get(name);
     }
 
@@ -168,6 +171,7 @@ public final class Model {
         return m.find();
     }
 
+    @SuppressWarnings("ChainedMethodCall")
     public void displaySuccessMessage(CharSequence message, Context callerClass) {
         AlertDialog.Builder builder = new AlertDialog.Builder(callerClass);
         builder.setTitle("Success!").setMessage(message)
@@ -179,9 +183,9 @@ public final class Model {
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
-//        sleepForSecond();
     }
 
+    @SuppressWarnings("ChainedMethodCall")
     public void displayErrorMessage(String error, Context callerClass) {
         AlertDialog.Builder builder = new AlertDialog.Builder(callerClass);
         Log.e("error", "displayErrorMessage: " + error);
@@ -195,16 +199,5 @@ public final class Model {
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
-//        sleepForSecond();
     }
-
-// --Commented out by Inspection START (4/13/2018 6:17 PM):
-//    private void sleepForSecond() {
-//        try {
-//            java.util.concurrent.TimeUnit.SECONDS.sleep(1);
-//        } catch (InterruptedException ie) {
-//            Log.e("StayReport success", "sleep() threw an InterruptedException");
-//        }
-//    }
-// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 }

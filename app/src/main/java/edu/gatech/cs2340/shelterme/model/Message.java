@@ -5,18 +5,15 @@ import android.support.annotation.NonNull;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * Created by austincondict on 2/21/18.
- */
-
 public class Message implements Comparable<Message> {
-    private String message;
-    private String timeSent;
-    private String senderEmail;
+    private final String message;
+    private final String timeSent;
+    private final String senderEmail;
     private boolean isAddressed;
 
     public Message(String message, Account sender) {
         this.message = message;
+        //noinspection ChainedMethodCall
         this.timeSent = Calendar.getInstance().getTime().toString();
         this.senderEmail = sender.getEmail();
         this.isAddressed = false;
@@ -76,6 +73,7 @@ public class Message implements Comparable<Message> {
         return senderEmail + "\n" + timeSent;
     }
 
+    @SuppressWarnings("ChainedMethodCall")
     @Override
     public int compareTo(@NonNull Message other) {
         long thisTime = new Date(this.getTimeSent()).getTime();
@@ -83,11 +81,16 @@ public class Message implements Comparable<Message> {
         return (int)(otherTime - thisTime);
     }
 
+    @SuppressWarnings("ChainedMethodCall")
     @Override
     public boolean equals(Object other) {
-        return (other != null) && other instanceof Message && ((other == this) || (((Message) other).getTimeSent().equals(this.getTimeSent()) && ((Message) other).getSenderEmail().equalsIgnoreCase(this.getSenderEmail()) && ((Message) other).getMessage().equalsIgnoreCase(this.getMessage())));
+        return (other != null) && (other instanceof Message) && ((other == this)
+                || (((Message) other).getTimeSent().equals(this.getTimeSent())
+                && ((Message) other).getSenderEmail().equalsIgnoreCase(this.getSenderEmail())
+                && ((Message) other).getMessage().equalsIgnoreCase(this.getMessage())));
     }
 
+    @SuppressWarnings("ChainedMethodCall")
     @Override
     public int hashCode() {
         int result = 17;

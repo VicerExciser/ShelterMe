@@ -2,9 +2,8 @@ package edu.gatech.cs2340.shelterme.model;
 
 import android.support.annotation.Nullable;
 
-/**
- * Created by austincondict on 2/20/18.
- */
+import java.util.Collection;
+import java.util.HashMap;
 
 public class Bed {
     // Had to change Bed id to a String in the form: "bed_1" for the sake of serialization
@@ -14,28 +13,25 @@ public class Bed {
     @Nullable
     private String occupantEmail;
     private boolean isOccupied;
-    private boolean isFamily;       //designates if the bed is of "family type" or for a single person
-    private boolean menOnly;        //designates if there is a gender restriction against women
-    private boolean womenOnly;      //designates if there is a gender restriction against men
-    private Age minAge;             //designates minimum age that applies to an individual or the children of a family
-    private Age maxAge;             //designates maximum age that applies to an individual or the children of a family
-    private boolean veteranOnly;    //designates if the bed must have at least one veteran occupying it
-    private String savedBedKey;     //bed Key saved so it can be easily grouped with other beds of its type
-    private final String associatedShelterName;    // stored for preservation of uniqueness when comparisons made
+    private final String savedBedKey;
+    //bed Key saved so it can be easily grouped with other beds of its type
+    private final String associatedShelterName;
+    // stored for preservation of uniqueness when comparisons made
 
-    public Bed(String id, boolean isFamily, boolean menOnly, boolean womenOnly, Age minAge, Age maxAge,
+    public Bed(String id, boolean isFamily, boolean menOnly, boolean womenOnly, Age minAge,
+               Age maxAge,
                boolean veteranOnly, String savedBedKey, String associatedShelterName) {
         this.id = id;
         if ((id != null) && !id.contains("bed_")) {
             this.id = "bed_" + id;
         }
         this.isOccupied = false;
-        this.isFamily = isFamily;
-        this.menOnly = menOnly;
-        this.womenOnly = womenOnly;
-        this.minAge = minAge;
-        this.maxAge = maxAge;
-        this.veteranOnly = veteranOnly;
+        boolean isFamily1 = isFamily;
+        boolean menOnly1 = menOnly;
+        boolean womenOnly1 = womenOnly;
+        Age minAge1 = minAge;
+        Age maxAge1 = maxAge;
+        boolean veteranOnly1 = veteranOnly;
         this.savedBedKey = savedBedKey;
         this.associatedShelterName = associatedShelterName;
     }
@@ -45,16 +41,13 @@ public class Bed {
                 false, "FFF000_200_F", "Hope Atlanta");
     }
 
-//    public User currentOccupant() {
-//        return ((User)Model.getAccountByEmail(this.occupantEmail));
-//    }
-
+    @Nullable
     public String getOccupantEmail() {
         return this.occupantEmail;
     }
 
 
-    public void setOccupantEmail(String email) {
+    public void setOccupantEmail(@Nullable String email) {
         this.occupantEmail = email;
         if (!this.isOccupied) {
             modifyOccupant(email);
@@ -165,8 +158,10 @@ public class Bed {
         if ((bedNumber != null) && !bedNumber.contains("bed_")) {
             newId = "bed_" + bedNumber;
         }
-        for (Shelter s : Model.getShelterListPointer().values()) {
-            if (!s.getBeds().containsKey(newId)) {
+        HashMap<String, Shelter> shelterHashMap = Model.getShelterListPointer();
+        for (Shelter s : shelterHashMap.values()) {
+            HashMap<String, HashMap<String, Bed>> bedHashMap = s.getBeds();
+            if (!bedHashMap.containsKey(newId)) {
                 this.id = newId;
             }
         }
@@ -196,6 +191,7 @@ public class Bed {
                 && this.id.equals(b.id);
     }
 
+    @SuppressWarnings("ChainedMethodCall")
     @Override
     public int hashCode() {
         int result = 17;

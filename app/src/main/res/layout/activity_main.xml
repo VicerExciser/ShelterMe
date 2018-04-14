@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -26,7 +27,8 @@
             android:layout_alignTop="@+id/signup"
             android:tint="#000000"
             app:srcCompat="@android:drawable/bottom_bar"
-            android:contentDescription="TODO" />
+            android:contentDescription="TODO"
+            tools:ignore="ContentDescription,HardcodedText" />
 
         <TextView
             android:id="@+id/textView2"
@@ -41,7 +43,8 @@
             android:text="Login"
             android:textColor="#FFFFFF"
             android:textSize="25sp"
-            tools:fontFamily="sans-serif" />
+            tools:fontFamily="sans-serif"
+            tools:ignore="HardcodedText" />
 
         <ImageButton
             android:id="@+id/signup"
@@ -52,7 +55,8 @@
             android:layout_alignRight="@+id/textView3"
             android:tint="#000000"
             app:srcCompat="@android:drawable/bottom_bar"
-            android:contentDescription="TODO" />
+            android:contentDescription="TODO"
+            tools:ignore="ContentDescription,HardcodedText" />
 
         <TextView
             android:id="@+id/textView"
@@ -63,7 +67,8 @@
             android:text="Enjoy your stay!"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/shelter"
@@ -75,7 +80,8 @@
             android:text="ShelterMe"
             android:textColor="#FFFFFF"
             android:textSize="70sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
         <ImageButton
             android:id="@+id/proceed"
@@ -89,7 +95,8 @@
             android:layout_marginBottom="20dp"
             android:tint="@android:color/background_dark"
             app:srcCompat="@android:drawable/bottom_bar"
-            android:contentDescription="TODO" />
+            android:contentDescription="TODO"
+            tools:ignore="ContentDescription,HardcodedText" />
 
         <TextView
             android:id="@+id/proceed1"
@@ -99,7 +106,8 @@
             android:layout_centerHorizontal="true"
             android:text="Click here to proceed without logging in"
             android:textColor="?attr/colorPrimary"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textView3"
@@ -113,7 +121,8 @@
             android:layout_toStartOf="@+id/login"
             android:text="Sign up"
             android:textColor="#FFFFFF"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            tools:ignore="HardcodedText" />
 
     </RelativeLayout>
 

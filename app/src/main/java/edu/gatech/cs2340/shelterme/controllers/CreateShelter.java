@@ -20,11 +20,11 @@ public class CreateShelter extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_shelter);
-        EditText shelterName = (EditText) findViewById(R.id.inputName);
-        EditText shelterAddress = (EditText) findViewById(R.id.inputAddress);
-        EditText shelterPhone = (EditText) findViewById(R.id.inputPhone);
-        EditText shelterRestrictions = (EditText) findViewById(R.id.inputRestriction);
-        EditText shelterCapacity = (EditText) findViewById(R.id.inputCapacity);
+        EditText shelterName = findViewById(R.id.inputName);
+        EditText shelterAddress = findViewById(R.id.inputAddress);
+        EditText shelterPhone = findViewById(R.id.inputPhone);
+        EditText shelterRestrictions = findViewById(R.id.inputRestriction);
+        EditText shelterCapacity = findViewById(R.id.inputCapacity);
 
 
 
@@ -40,7 +40,8 @@ public class CreateShelter extends AppCompatActivity {
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Model.getInstance().addShelter(new Shelter(null, realShelterName,
+                Model model = Model.getInstance();
+                model.addShelter(new Shelter(null, realShelterName,
                         realShelterCapacity, realShelterRestriction, 0, 0,
                         realShelterAddress, null, realShelterPhone));
 

@@ -2,10 +2,6 @@ package edu.gatech.cs2340.shelterme.model;
 import java.util.List;
 import java.util.Stack;
 
-/**
- * Created by austincondict on 2/12/18.
- */
-
 public class User extends Account {
 
     private final boolean isFamily;
@@ -16,8 +12,10 @@ public class User extends Account {
     private List<StayReport> stayReports;
 
 
-    // Collect isVeteran information from registration/edit profile, pass into constructor (set to False for default until then)
-    public User(String name, String uname, String email, int pass, Sex sex, int age, boolean isFamily,
+    // Collect isVeteran information from registration/edit profile, pass into constructor
+    // (set to False for default until then)
+    public User(String name, String uname, String email, int pass, Sex sex, int age,
+                boolean isFamily,
                 Question secQ, String secA) {
         super(name, uname, email, pass, secQ, secA);
         this.isFamily = isFamily;
@@ -26,19 +24,20 @@ public class User extends Account {
         this.isVeteran = false;
         this.setIsOccupyingBed(false);
         this.stayReports = new Stack<>();
-//        Log.e("USER_KEY", this.generateKey());
         super.setAccountType(Type.USER);
     }
 
 
     public User() {
         //noinspection MagicNumber
-        this("user steve", "user", "user@gmail.com", "pass".hashCode(), Sex.MALE, 25, false,
+        this("user steve", "user", "user@gmail.com", "pass".hashCode(),
+                Sex.MALE, 25, false,
                 Question.PET, "Spot");
     }
 
 
-    public String generateKey() {   // Ex. key:  'FM25F'  <-- not family account, male, 25 yrs old, not a veteran
+    public String generateKey() {
+        // Ex. key:  'FM25F'  <-- not family account, male, 25 yrs old, not a veteran
         String userKey = "";
         userKey += this.isFamily ? 'T' : 'F';
         userKey += this.sex.toString();
@@ -52,8 +51,7 @@ public class User extends Account {
     }
 
     public void addStayReport(StayReport stay) {
-//        ((Stack<StayReport>)this.stayReports).push(stay);
-        ((List<StayReport>) this.stayReports).add(stay);
+        this.stayReports.add(stay);
     }
 
     public StayReport getCurrentStayReport () {
@@ -73,20 +71,20 @@ public class User extends Account {
         return cur;
     }
 
-    @Override
-    public String getName() {
-        return super.getName();
-    }
-
-    @Override
-    public String getEmail() {
-        return super.getEmail();
-    }
-
-    @Override
-    public String getUsername() {
-        return super.getUsername();
-    }
+//    @Override
+//    public String getName() {
+//        return super.getName();
+//    }
+//
+//    @Override
+//    public String getEmail() {
+//        return super.getEmail();
+//    }
+//
+//    @Override
+//    public String getUsername() {
+//        return super.getUsername();
+//    }
 
 // --Commented out by Inspection START (4/13/2018 6:17 PM):
 //    public boolean getIsFamily() {
@@ -116,7 +114,7 @@ public class User extends Account {
         return this.isOccupyingBed;
     }
 
-    public void setIsOccupyingBed(boolean tf) {
+    public final void setIsOccupyingBed(boolean tf) {
         this.isOccupyingBed = tf;
     }
 

@@ -19,8 +19,4 @@ public class Admin extends Account {
         return (other instanceof Admin) && super.equals(other);
     }
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 }

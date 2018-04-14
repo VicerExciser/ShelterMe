@@ -18,6 +18,7 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 
 import edu.gatech.cs2340.shelterme.R;
+import edu.gatech.cs2340.shelterme.model.Age;
 import edu.gatech.cs2340.shelterme.model.GenderAccepted;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
@@ -36,9 +37,12 @@ public class ViewSheltersPage extends AppCompatActivity {
     private CheckBox showAllCheck;
 
     private int updateCounter = 0;
-    private final int updatesForInit = 2;   // signifies initialization is complete (to be compared against updateCounter)
-    private boolean saclAttached = false;   // signifies initialization is complete (showAllCheck listener attached)
-    private boolean ignoreUpdate = false;   // to avoid unnecessary subroutine calls
+    private final int updatesForInit = 2;
+    // signifies initialization is complete (to be compared against updateCounter)
+    private boolean saclAttached = false;
+    // signifies initialization is complete (showAllCheck listener attached)
+    private boolean ignoreUpdate = false;
+    // to avoid unnecessary subroutine calls
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,20 +59,22 @@ public class ViewSheltersPage extends AppCompatActivity {
 
         shelterList = findViewById(R.id.shelterList);
 
-        final Spinner ageSpin = (Spinner) findViewById(R.id.ageSpinner);
-        final Spinner genderSpin = (Spinner) findViewById(R.id.genderSpinner);
-        familyCheck = (CheckBox) findViewById(R.id.FamilyCheck);
-        showAllCheck = (CheckBox) findViewById(R.id.showAll);
+        final Spinner ageSpin = findViewById(R.id.ageSpinner);
+        final Spinner genderSpin = findViewById(R.id.genderSpinner);
+        familyCheck = findViewById(R.id.FamilyCheck);
+        showAllCheck = findViewById(R.id.showAll);
 
         showAllCheck.setChecked(true);
         showAllCheck.setOnCheckedChangeListener(null);
 
         //filling spinners
+        //noinspection unchecked,unchecked
         ArrayAdapter<String> adapterAge = new ArrayAdapter(this,
                 android.R.layout.simple_spinner_item, AgeRange.values());
         adapterAge.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ageSpin.setAdapter(adapterAge);
 
+        //noinspection unchecked,unchecked
         ArrayAdapter<String> adapterGen = new ArrayAdapter(this,
                 android.R.layout.simple_spinner_item, GenderAccepted.values());
         adapterGen.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -78,7 +84,8 @@ public class ViewSheltersPage extends AppCompatActivity {
         shelters = new HashMap<>(Model.getShelterListPointer());
 
 
-        adapter = new ArrayAdapter<>(ViewSheltersPage.this, R.layout.list_item, R.id.shelter_name,
+        adapter = new ArrayAdapter<>(ViewSheltersPage.this, R.layout.list_item,
+                R.id.shelter_name,
                 shelters.keySet().toArray(new String[shelters.keySet().size()]));
         shelterList.setAdapter(adapter);
         shelterList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -115,25 +122,27 @@ public class ViewSheltersPage extends AppCompatActivity {
         });
     }
 
-    private final AdapterView.OnItemSelectedListener ageItemSelect = new AdapterView.OnItemSelectedListener() {
+    private final AdapterView.OnItemSelectedListener ageItemSelect
+            = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             ignoreUpdate = true;
             if (showToggle()) {
-                Log.e("ageSpinItemSelect", "showAllCheck toggled to "+showAllCheck.isChecked() +", showAll = "+showAll);
+                Log.e("ageSpinItemSelect", "showAllCheck toggled to "
+                        +showAllCheck.isChecked() +", showAll = "+showAll);
             }
             switch (position) {
                 case 0:
                     selectedAgeRange = AgeRange.ANYONE;
                     break;
                 case 1:
-                    selectedAgeRange = AgeRange.FAMWITHYOUNG;
+                    selectedAgeRange = AgeRange.FAM_WITH_YOUNG;
                     break;
                 case 2:
                     selectedAgeRange = AgeRange.CHILDREN;
                     break;
                 case 3:
-                    selectedAgeRange = AgeRange.YOUNGADULTS;
+                    selectedAgeRange = AgeRange.YOUNG_ADULTS;
                     break;
                 case 4:
                     selectedAgeRange = AgeRange.ADULTS;
@@ -147,12 +156,14 @@ public class ViewSheltersPage extends AppCompatActivity {
         public void onNothingSelected(AdapterView<?> parent) { }
     };
 
-    private final AdapterView.OnItemSelectedListener genderItemSelect = new AdapterView.OnItemSelectedListener() {
+    private final AdapterView.OnItemSelectedListener genderItemSelect
+            = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             ignoreUpdate = true;
             if (showToggle()) {
-                Log.e("genderSpinItemSelect", "showAllCheck toggled to "+showAllCheck.isChecked());
+                Log.e("genderSpinItemSelect", "showAllCheck toggled to "
+                        +showAllCheck.isChecked());
             }
             switch (position) {
                 case 0:
@@ -173,13 +184,16 @@ public class ViewSheltersPage extends AppCompatActivity {
         public void onNothingSelected(AdapterView<?> parent) { }
     };
 
-    private final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
+    private final SearchView.OnQueryTextListener queryListener
+            = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
             ViewSheltersPage.this.adapter.getFilter().filter(query);
             if (showToggle()) {
-                Log.e("onQueryTextSubmit", "showAllCheck toggled to "+showAllCheck.isChecked());
+                Log.e("onQueryTextSubmit", "showAllCheck toggled to "+
+                        showAllCheck.isChecked());
             }
+
             return false;
         }
 
@@ -190,13 +204,15 @@ public class ViewSheltersPage extends AppCompatActivity {
         }
     };
 
-    private final CompoundButton.OnCheckedChangeListener famCheckListener = new CompoundButton.OnCheckedChangeListener() {
+    private final CompoundButton.OnCheckedChangeListener famCheckListener
+            = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
                 ignoreUpdate = true;
                 if (showToggle()) {
-                    Log.e("familyCheckListener", "showAllCheck toggled to " + showAllCheck.isChecked() + ", showAll = " + showAll);
+                    Log.e("familyCheckListener", "showAllCheck toggled to "
+                            + showAllCheck.isChecked() + ", showAll = " + showAll);
                 }
                 ignoreUpdate = false;
             }
@@ -204,7 +220,8 @@ public class ViewSheltersPage extends AppCompatActivity {
         }
     };
 
-    private final CompoundButton.OnCheckedChangeListener showAllCheckListener = new CompoundButton.OnCheckedChangeListener() {
+    private final CompoundButton.OnCheckedChangeListener showAllCheckListener
+            = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             showAll = (updateCounter >= updatesForInit) ? isChecked : showAll;
@@ -230,7 +247,8 @@ public class ViewSheltersPage extends AppCompatActivity {
         if (!ignoreUpdate) {
             shelters.clear();
             updateCounter++;
-            Log.e("updateSearch", String.format("  update #%d  showAll = %b", updateCounter, showAll));
+            Log.e("updateSearch", String.format("  update #%d  showAll = %b",
+                    updateCounter, showAll));
             if (showAll) {
                 for (Shelter s : Model.getShelterListPointer().values()) {
                     shelters.put(s.getShelterName(), s);
@@ -255,7 +273,8 @@ public class ViewSheltersPage extends AppCompatActivity {
     }
 
     private void updateResults() {
-        adapter = new ArrayAdapter<>(ViewSheltersPage.this, R.layout.list_item, R.id.shelter_name,
+        adapter = new ArrayAdapter<>(ViewSheltersPage.this, R.layout.list_item,
+                R.id.shelter_name,
                 shelters.keySet().toArray(new String[shelters.keySet().size()]));
         shelterList.setAdapter(adapter);
         shelterList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -271,7 +290,8 @@ public class ViewSheltersPage extends AppCompatActivity {
         if (famChecked && (key.charAt(0) == 'T')) {
             match = true;
         }
-        else if ((!famChecked) && (key.charAt(0) == 'F'))//key.charAt(1) == 'F' &&  key.charAt(2) == 'F') // FFF000_200_F
+        else if ((!famChecked) && (key.charAt(0) == 'F'))
+            //key.charAt(1) == 'F' &&  key.charAt(2) == 'F') // FFF000_200_F
         {
             match = true;
         }
@@ -295,36 +315,31 @@ public class ViewSheltersPage extends AppCompatActivity {
 
     private boolean ageRangeChoiceMatchesKey(String key) {
         boolean match = false;
-        int min = Integer.valueOf(key.substring(3,6));// + "_";//here lies the bug of the century; rest in peace, substring(3,5)
-//        Log.e("ViewShelters", String.valueOf(min));
-//        Log.e("ViewShelters", Age.MIN_AGE.getAgeKeyVal());
-//        Log.e("ViewShelters", selectedAgeRange.toString());
-        int max = Integer.valueOf(key.substring(7,10));// + "_";
+        int min = Integer.valueOf(key.substring(3,6));
+        int max = Integer.valueOf(key.substring(7,10));
         if ((selectedAgeRange.equals(AgeRange.ANYONE))) {
-            if ((min == 0) && (max == 200)) {
+            if ((min == Age.MIN_AGE.toInt()) && (max == Age.MAX_AGE.toInt())) {
                 match = true;
             }
         }
-//                ^
-        else if ((selectedAgeRange.equals(AgeRange.FAMWITHYOUNG))
-                && (min == 0) && (max >= 5)) {
+        else if ((selectedAgeRange.equals(AgeRange.FAM_WITH_YOUNG))
+                && (min == Age.MIN_AGE.toInt()) && (max >= Age.BABIES.toInt())) {
             match = true;
         }
         else if (selectedAgeRange.equals(AgeRange.CHILDREN)
-                && ((min <= 6)
-                && (max >= 15))){
+                && ((min <= Age.CHILDREN_BASE.toInt())
+                && (max >= Age.CHILDREN_CAP.toInt()))){
             match = true;}
-        else if (selectedAgeRange.equals(AgeRange.YOUNGADULTS)
-                && ((min <= 16)
-                && (max >= 25))) {
+        else if (selectedAgeRange.equals(AgeRange.YOUNG_ADULTS)
+                && ((min <= Age.YOUNG_ADULTS_BASE.toInt())
+                && (max >= Age.YOUNG_ADULTS_CAP.toInt()))) {
             match = true;
         }
         else if (selectedAgeRange.equals(AgeRange.ADULTS)
-                && ((min <= 26)
-                && (max >= 65))) {
+                && ((min <= Age.ADULTS_BASE.toInt())
+                && (max >= Age.ADULTS_CAP.toInt()))) {
             match = true;
         }
-
         return match;
     }
 
@@ -337,9 +352,9 @@ public class ViewSheltersPage extends AppCompatActivity {
 
     private enum AgeRange {
         ANYONE("Any age"),
-        FAMWITHYOUNG("Children under 5"),
+        FAM_WITH_YOUNG("Children under 5"),
         CHILDREN("Children (age 6 - 15)"),
-        YOUNGADULTS("Young adults (age 16 - 25)"),
+        YOUNG_ADULTS("Young adults (age 16 - 25)"),
         ADULTS("Adults (25+)");
 
 

@@ -11,13 +11,12 @@ import android.widget.ImageButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Collection;
+import java.util.HashMap;
+
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Account;
-import edu.gatech.cs2340.shelterme.model.Admin;
-import edu.gatech.cs2340.shelterme.model.Employee;
 import edu.gatech.cs2340.shelterme.model.Model;
-import edu.gatech.cs2340.shelterme.model.User;
-import edu.gatech.cs2340.shelterme.util.DBUtil;
 
 //import com.google.firebase.auth.FirebaseAuth;
 
@@ -32,8 +31,8 @@ public class LoginPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
 
-        mUsernameView=(EditText) findViewById(R.id.editText);
-        mPasswordView=(EditText) findViewById(R.id.editText2);
+        mUsernameView= findViewById(R.id.editText);
+        mPasswordView= findViewById(R.id.editText2);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
@@ -52,11 +51,12 @@ public class LoginPage extends AppCompatActivity {
                 if(attemptLogin()){
                     Account acct = model.getCurrUser();
                     Intent myIntent1 = null;
-                    if (acct instanceof User) {
+                    Account.Type type = acct.getAccountType();
+                    if (type == Account.Type.USER) {
                            myIntent1 = new Intent(view.getContext(), HomePage.class);
-                    } else if (acct instanceof Admin) {
+                    } else if (type == Account.Type.ADMIN) {
                         myIntent1 = new Intent(view.getContext(), AdminHomePage.class);
-                    } else if (acct instanceof Employee) {
+                    } else if (type == Account.Type.EMP) {
                         myIntent1 = new Intent(view.getContext(), EmployeeHomePage.class);
                     }
                     if (myIntent1 != null) {
@@ -84,41 +84,54 @@ public class LoginPage extends AppCompatActivity {
         });
     }
     private boolean attemptLogin() {
-        String username = mUsernameView.getText().toString().trim();
-        int password = mPasswordView.getText().toString().hashCode();
-        String email = DBUtil.getInstance().getEmailAssociatedWithUsername(username);
+        String username = mUsernameView.getText().toString();
+        username = username.trim();
+        String passString =  mPasswordView.getText().toString();
+        int password = passString.hashCode();
+        String email = Model.getEmailAssociatedWithUsername(username);
         Account attempting = Model.getAccountByEmail(email);
 
         if (Model.getAccountListPointer().isEmpty()) {
             Log.e("attemptLogin", "Account list is empty!");
         } else {
             int count = 0;
-            for (Account acct : Model.getAccountListPointer().values()) {
+            HashMap<String, Account> accountCollection = Model.getAccountListPointer();
+            for (Account acct : accountCollection.values()) {
                 Log.e("Account " + count, acct.getUsername());
                 count++;
             }
         }
 
-        if ("lady".equals(username) && (password == "password".hashCode())) {
-            model.setCurrUser("lady@shelterme.com");
-            return true;
-        }
+//        if ("lady".equals(username) && (password == "password".hashCode())) {
+//            model.setCurrUser("lady@shelterme.com");
+//            return true;
+//        }
         if ((password == 0) || TextUtils.isEmpty(username)) {
             model.displayErrorMessage("This field is required", this);
             return false;
 //        } else if (model.getAccountByIndex(0).validatePassword(password)
 //                || model.getAccountByIndex(0).getUsername().equals(username)) {
-        } else if ((attempting != null)
-                && username.equals(attempting.getUsername())
-                && email.equals(attempting.getEmail())
-                && attempting.validatePassword(password)) {
-            model.displaySuccessMessage("Login successful!", this);
-        } else if (!Model.getAccountListPointer().containsValue(attempting)) {
-            model.displayErrorMessage("User does not exist, please register an account", this);
-            return false;
-        } else if (!attempting.validatePassword(password)) {
-            model.displayErrorMessage("Incorrect username or password", this);
-            return false;
+        } else {
+            if (email == null) {
+                model.displayErrorMessage("No existing user found", this);
+                return false;
+            }
+            if ((attempting != null)
+                    && username.equals(attempting.getUsername())
+                    && email.equals(attempting.getEmail())
+                    && attempting.validatePassword(password)) {
+                model.displaySuccessMessage("Login successful!", this);
+            } else //noinspection ChainedMethodCall
+                if (!Model.getAccountListPointer().containsValue(attempting)) {
+                model.displayErrorMessage("User does not exist, please register an account", this);
+                return false;
+            } else {
+                assert attempting != null;
+                if (!attempting.validatePassword(password)) {
+                    model.displayErrorMessage("Incorrect username or password", this);
+                    return false;
+                }
+            }
         }
         model.setCurrUser(email);
         return true;

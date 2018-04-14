@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -222,7 +223,8 @@
             android:layout_alignParentRight="true"
             android:text="@string/cancel"
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp" />
+            tools:layout_editor_absoluteY="0dp"
+            tools:ignore="ButtonOrder" />
 
         <Spinner
             android:id="@+id/shelterSpinner"
@@ -240,7 +242,8 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/securityAnswer"
             android:text="Place of Work"
-            android:textColor="@android:color/background_light" />
+            android:textColor="@android:color/background_light"
+            tools:ignore="HardcodedText" />
 
     </RelativeLayout>
 

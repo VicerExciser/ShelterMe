@@ -23,13 +23,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
+import edu.gatech.cs2340.shelterme.model.StayReport;
 import edu.gatech.cs2340.shelterme.model.User;
 import edu.gatech.cs2340.shelterme.util.DBUtil;
+import edu.gatech.cs2340.shelterme.util.ReservationManager;
 
 public class RequestStayReport extends AppCompatActivity {
 
@@ -137,41 +140,49 @@ public class RequestStayReport extends AppCompatActivity {
 
         Button submit = findViewById(R.id.submit);
         submit.setOnClickListener(new View.OnClickListener() {
+            @SuppressWarnings("ChainedMethodCall")
             @Override
             public void onClick(View view) {
                 boolean success = true;
                 User user = (User)model.getCurrUser();
                 if (agreed) {
-                    if (shelter.getVacancies() >= selctedNumber) {
-                        try {
-                            HashMap<String, Collection<Bed>> reserved = shelter.reserveBed(selectedBedType, selctedNumber);
-                            for (String s : reserved.keySet()) {
-                                Log.e("BED_KEY", s);
-                                for (Bed b : reserved.get(s)) {
-                                    Log.e("\nKEY_ID", b.getId());
-                                }
+                    if (shelter.getVacancies() >= selctedNumber) try {
+                        ReservationManager reservationManager = new ReservationManager(shelter);
+                        Map<String, Collection<Bed>> reserved
+                                = reservationManager.reserveBed(selectedBedType, selctedNumber);
+                        for (String s : reserved.keySet()) {
+                            Log.e("BED_KEY", s);
+                            for (Bed b : reserved.get(s)) {
+                                Log.e("\nKEY_ID", b.getId());
                             }
-                            dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, true);
-                            dbUtil.updateUserOccupancyAndStayReports(user);
-                        } catch (IllegalArgumentException iae) {
-                            model.displayErrorMessage(iae.getMessage(), RequestStayReport.this);
-                            success = false;
                         }
-                    } else {
+                        dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, true);
+                        dbUtil.updateUserOccupancyAndStayReports(user);
+                    } catch (IllegalArgumentException iae) {
+                        model.displayErrorMessage(iae.getMessage(),
+                                RequestStayReport.this);
+                        success = false;
+                    }
+                    else {
                         model.displayErrorMessage("This shelter does not have "
-                                + String.valueOf(selctedNumber) + " bed(s) available", RequestStayReport.this);
+                                + String.valueOf(selctedNumber) + " bed(s) available",
+                                RequestStayReport.this);
                         success = false;
                     }
                 }else {
-                    model.displayErrorMessage("Must agree to shelter terms to submit a request",
+                    model.displayErrorMessage("Must agree to shelter terms " +
+                                    "to submit a request",
                             RequestStayReport.this);
                     success = false;
                 }
                 if (success) {
-                    @SuppressLint("DefaultLocale") String message = String.format("Your reservation for %d bed(s) "
+                    StayReport newStay = user.getCurrentStayReport();
+                    @SuppressLint("DefaultLocale") String message = String.format
+                            ("Your reservation for %d bed(s) "
                             + "at %s was confirmed for %s", selctedNumber, shelter.getShelterName(),
-                            user.getCurrentStayReport().getCheckInDate());
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(RequestStayReport.this);
+                            newStay.getCheckInDate());
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(
+                            RequestStayReport.this);
                     dialog.setTitle("Success!").setMessage(message)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
@@ -197,7 +208,8 @@ public class RequestStayReport extends AppCompatActivity {
 
     private void returnToDetailsPage() {
         Shelter shelter = model.verifyShelterParcel(shelterParcel);
-        Intent newIntent = new Intent(RequestStayReport.this, ShelterDetailsPage.class);
+        Intent newIntent = new Intent(RequestStayReport.this,
+                ShelterDetailsPage.class);
         newIntent.putExtra("Shelter", shelter);
 //        try {
 //            java.util.concurrent.TimeUnit.SECONDS.sleep(1);

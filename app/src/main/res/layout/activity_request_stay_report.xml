@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,7 +12,8 @@
         android:layout_height="601dp"
         android:paddingLeft="14dp"
         android:paddingRight="4dp"
-        tools:layout_editor_absoluteX="0dp">
+        tools:layout_editor_absoluteX="0dp"
+        tools:ignore="RtlHardcoded">
 
         <TextView
             android:id="@+id/header"
@@ -25,7 +26,9 @@
             android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:fontFamily="serif" />
+            android:fontFamily="serif"
+            tools:targetApi="jelly_bean"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/moreInfo"
@@ -37,7 +40,9 @@
             android:textAlignment="center"
             android:textColor="@android:color/background_light"
             android:textSize="20sp"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            tools:targetApi="jelly_bean"
+            tools:ignore="HardcodedText" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,7 +57,9 @@
                 android:text="Select a bed type:"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:fontFamily="serif" />
+                android:fontFamily="serif"
+                tools:targetApi="jelly_bean"
+                tools:ignore="HardcodedText" />
 
             <Spinner
                 android:id="@+id/bedType"
@@ -61,7 +68,8 @@
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
                 android:fontFamily="serif"
-                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+                tools:textColor="@color/common_google_signin_btn_text_dark_default"
+                tools:targetApi="jelly_bean" />
 
             <TextView
                 android:id="@+id/selectBed"
@@ -71,7 +79,9 @@
                 android:textSize="18sp"
                 android:fontFamily="serif"
                 android:textColor="@android:color/black"
-                android:text="Number of beds requested:" />
+                android:text="Number of beds requested:"
+                tools:targetApi="jelly_bean"
+                tools:ignore="HardcodedText" />
 
             <Spinner
                 android:id="@+id/numOfBeds"
@@ -82,7 +92,8 @@
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
                 android:fontFamily="serif"
-                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+                tools:textColor="@color/common_google_signin_btn_text_dark_default"
+                tools:targetApi="jelly_bean" />
 
             <CheckBox
                 android:id="@+id/checkAgreement"
@@ -95,10 +106,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="By checking, I hearby declare that I have read and agreed to the Rules and Agreements of this shelter."
+                android:text="@string/reservation_rules_check"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:fontFamily="serif" />
+                android:fontFamily="serif"
+                tools:targetApi="jelly_bean"
+                tools:ignore="HardcodedText" />
 
             <Button
                 android:id="@+id/submit"
@@ -107,7 +120,8 @@
                 android:layout_marginTop="25dp"
                 android:text="Submit Request"
                 android:textSize="20sp"
-                tools:background="#C67EDC" />
+                tools:background="#C67EDC"
+                tools:ignore="HardcodedText" />
 
             <Button
                 android:id="@+id/cancel"
@@ -117,7 +131,8 @@
                 android:textSize="20sp"
                 android:contentDescription="This cancels the form and returns to previuos page"
                 android:text="Cancel"
-                tools:background="#AA6FBC" />
+                tools:background="#AA6FBC"
+                tools:ignore="HardcodedText" />
         </LinearLayout>
 
     </RelativeLayout>

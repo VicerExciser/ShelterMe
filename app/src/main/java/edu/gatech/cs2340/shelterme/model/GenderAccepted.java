@@ -1,9 +1,5 @@
 package edu.gatech.cs2340.shelterme.model;
 
-/**
- * Created by austincondict on 4/6/18.
- */
-
 public enum GenderAccepted {
     ANY("Any gender"),
     MEN("Men only"),

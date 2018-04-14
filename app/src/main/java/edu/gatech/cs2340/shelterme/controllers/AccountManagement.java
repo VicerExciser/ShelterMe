@@ -12,18 +12,16 @@ import android.widget.CompoundButton;
 import android.widget.SearchView;
 
 import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Account;
 import edu.gatech.cs2340.shelterme.model.Model;
-import edu.gatech.cs2340.shelterme.util.AccountAdapter;
 
+@SuppressWarnings("ALL")  // This activity has not been finished (ignore for inspection)
 public class AccountManagement extends AppCompatActivity {
 
-    // Customize this activity to suit full purposes; integrate Firebase realtime updates for RecyclerView data
+    // Customize this activity to suit full purposes; integrate Firebase realtime updates for
+    // RecyclerView data
 
     // --Commented out by Inspection (4/13/2018 6:17 PM):private AccountAdapter accountAdapter;
     private AbstractMap<String, Account> dataSet;

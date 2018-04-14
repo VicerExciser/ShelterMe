@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/background_dark"
     android:backgroundTint="#ffffff"
-    tools:context="edu.gatech.cs2340.shelterme.controllers.ViewSheltersPage">
+    tools:context="edu.gatech.cs2340.shelterme.controllers.ViewSheltersPage"
+    tools:targetApi="lollipop">
 
     <include
         layout="@layout/content_view_shelters_page"
@@ -26,7 +27,8 @@
             android:layout_alignParentRight="true"
             android:layout_marginEnd="11dp"
             android:layout_marginRight="11dp"
-            android:text="RETURN TO HOME PAGE" />
+            android:text="RETURN TO HOME PAGE"
+            tools:ignore="HardcodedText" />
 
         <ListView
             android:id="@+id/shelterList"
@@ -38,7 +40,7 @@
             android:layout_below="@+id/genderSpinner"
             android:background="@color/common_google_signin_btn_text_dark_focused"
             android:divider="#FF9900"
-            android:dividerHeight="2px"
+            android:dividerHeight="2dp"
             android:entries="@android:drawable/divider_horizontal_textfield"
             android:footerDividersEnabled="true"
             android:headerDividersEnabled="true"
@@ -53,7 +55,9 @@
             android:scrollbars="vertical"
             android:smoothScrollbar="true"
             android:textColor="@android:color/background_light"
-            tools:textColor="@android:color/background_light" />
+            tools:textColor="@android:color/background_light"
+            tools:ignore="PxUsage"
+            tools:targetApi="m" />
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -72,7 +76,9 @@
                 android:textAlignment="center"
                 android:textColor="#FF9900"
                 android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:targetApi="jelly_bean"
+                tools:ignore="HardcodedText" />
 
             <SearchView
                 android:id="@+id/inputSearch"
@@ -92,7 +98,8 @@
             android:layout_above="@+id/genderSpinner"
             android:layout_toLeftOf="@+id/FamilyCheck"
             android:layout_toStartOf="@+id/FamilyCheck"
-            android:backgroundTint="#000000" />
+            android:backgroundTint="#000000"
+            tools:targetApi="lollipop" />
 
         <Spinner
             android:id="@+id/genderSpinner"
@@ -111,7 +118,8 @@
             android:layout_alignEnd="@+id/backButton"
             android:layout_alignRight="@+id/backButton"
             android:layout_below="@+id/linearLayout2"
-            android:text="Accepts Families" />
+            android:text="Accepts Families"
+            tools:ignore="HardcodedText" />
 
         <CheckBox
             android:id="@+id/showAll"
@@ -123,7 +131,8 @@
             android:layout_toEndOf="@+id/ageSpinner"
             android:layout_toRightOf="@+id/ageSpinner"
             android:checked="true"
-            android:text="Show All" />
+            android:text="Show All"
+            tools:ignore="HardcodedText" />
 
     </RelativeLayout>
 

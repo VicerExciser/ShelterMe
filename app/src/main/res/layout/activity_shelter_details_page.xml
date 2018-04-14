@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,7 +21,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:text="RETURN TO LIST" />
+            android:text="RETURN TO LIST"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/stayRequest"
@@ -30,7 +31,8 @@
             android:layout_alignBottom="@+id/backButton"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:text="Request to Stay" />
+            android:text="Request to Stay"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/header"
@@ -45,7 +47,9 @@
             android:textAlignment="center"
             android:textColor="@android:color/background_light"
             android:textSize="26sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:targetApi="jelly_bean"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/notes"
@@ -59,7 +63,9 @@
             android:textAlignment="center"
             android:textColor="@android:color/background_light"
             android:textSize="20sp"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            tools:targetApi="jelly_bean"
+            tools:ignore="HardcodedText" />
 
         <ScrollView
             android:id="@+id/details"
@@ -79,7 +85,8 @@
             android:layout_centerVertical="true"
             android:layout_marginVertical="@dimen/activity_vertical_margin"
             android:orientation="vertical"
-            android:id="@+id/linearLayout">
+            android:id="@+id/linearLayout"
+            tools:targetApi="o">
 
             <TextView
                 android:id="@+id/capacity"
@@ -89,7 +96,8 @@
                 android:text="Capacity:"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="22sp"
-                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+                tools:textColor="@color/common_google_signin_btn_text_dark_default"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/restrictions"
@@ -98,7 +106,8 @@
                 android:text="Accepts:"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="22sp"
-                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+                tools:textColor="@color/common_google_signin_btn_text_dark_default"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/address"
@@ -116,7 +125,8 @@
                 android:text="Phone:"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="22sp"
-                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+                tools:textColor="@color/common_google_signin_btn_text_dark_default"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/longitude"
@@ -125,7 +135,8 @@
                 android:text="Longitude:"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="22sp"
-                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+                tools:textColor="@color/common_google_signin_btn_text_dark_default"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/latitude"
@@ -134,7 +145,8 @@
                 android:text="Latitude:"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="22sp"
-                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+                tools:textColor="@color/common_google_signin_btn_text_dark_default"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/vacancies"
@@ -143,7 +155,8 @@
                 android:text="Vacancies:"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="22sp"
-                tools:textColor="@color/common_google_signin_btn_text_dark_default" />
+                tools:textColor="@color/common_google_signin_btn_text_dark_default"
+                tools:ignore="HardcodedText" />
 
         </LinearLayout>
 

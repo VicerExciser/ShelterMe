@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,14 +13,17 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="#000000"
-        tools:layout_editor_absoluteY="8dp">
+        tools:layout_editor_absoluteY="8dp"
+        tools:ignore="MissingConstraints">
 
         <Button
             android:id="@+id/logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#CEF6EC"
-            android:text="Log Out" />
+            android:text="Log Out"
+            tools:targetApi="lollipop"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/title"
@@ -35,7 +39,9 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:targetApi="jelly_bean"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/editShelter"
@@ -48,7 +54,9 @@
             android:layout_alignStart="@+id/sendRequest"
             android:layout_marginBottom="28dp"
             android:backgroundTint="#F8ECE0"
-            android:text="Edit My Shelter" />
+            android:text="Edit My Shelter"
+            tools:targetApi="lollipop"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/sendRequest"
@@ -59,7 +67,9 @@
             android:layout_marginBottom="52dp"
             android:background="@android:drawable/bottom_bar"
             android:backgroundTint="#F6E3CE"
-            android:text="Send Admin Request" />
+            android:text="Send Admin Request"
+            tools:targetApi="lollipop"
+            tools:ignore="HardcodedText" />
 
         <ImageView
             android:id="@+id/cs_sg_logo"
@@ -68,7 +78,8 @@
             android:layout_below="@+id/title"
             android:layout_centerHorizontal="true"
             app:srcCompat="@mipmap/cs_social_good"
-            android:contentDescription="TODO" />
+            android:contentDescription="TODO"
+            tools:ignore="ContentDescription,HardcodedText" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

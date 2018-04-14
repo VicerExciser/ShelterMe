@@ -9,10 +9,6 @@ import android.widget.TextView;
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Message;
 
-/**
- * Created by austincondict on 4/10/18.
- */
-
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
     private final Message[] dataSet;
 
@@ -49,6 +45,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     // Provide a suitable constructor (depends on the kind of data set)
     public MessageAdapter(Message[] dataSet) {
+        //noinspection AssignmentToCollectionOrArrayFieldFromParameter
         this.dataSet = dataSet;
     }
 

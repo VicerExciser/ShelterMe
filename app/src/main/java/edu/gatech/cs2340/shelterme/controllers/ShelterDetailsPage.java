@@ -67,19 +67,23 @@ public class ShelterDetailsPage extends AppCompatActivity {
                     User user = (User)(Model.getInstance().getCurrUser());
                     if (!(user.isOccupyingBed())) {
                         if ((vacancyRaw > 0) && shelter.hasOpenBed(user.generateKey())) {
-                            Intent request = new Intent(ShelterDetailsPage.this, RequestStayReport.class);
+                            Intent request = new Intent(ShelterDetailsPage.this,
+                                    RequestStayReport.class);
                             request.putExtra("Shelter", shelter);
                             startActivity(request);
                         } else {
-                            Model.getInstance().displayErrorMessage("This shelter has no available beds.",
+                            Model.getInstance().displayErrorMessage("This shelter has " +
+                                            "no available beds.",
                                     ShelterDetailsPage.this);
                         }
                     } else {
-                        Model.getInstance().displayErrorMessage("Your account already has beds claimed at another shelter.",
+                        Model.getInstance().displayErrorMessage("Your account already " +
+                                        "has beds claimed at another shelter.",
                                 ShelterDetailsPage.this);
                     }
                 } else {
-                    Model.getInstance().displayErrorMessage("Must be a registered user to request a stay.",
+                    Model.getInstance().displayErrorMessage("Must be a registered user " +
+                                    "to request a stay.",
                             ShelterDetailsPage.this);
                 }
             }
@@ -89,7 +93,8 @@ public class ShelterDetailsPage extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ShelterDetailsPage.this, ViewSheltersPage.class));
+                startActivity(new Intent(ShelterDetailsPage.this,
+                        ViewSheltersPage.class));
             }
         });
     }

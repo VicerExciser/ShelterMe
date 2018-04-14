@@ -22,7 +22,6 @@ import edu.gatech.cs2340.shelterme.util.MessageAdapter;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,11 +36,12 @@ public class MessageBoard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_board);
 
-        messageRecyclerView = (RecyclerView) findViewById(R.id.recycler_message);
+        messageRecyclerView = findViewById(R.id.recycler_message);
         Model.initMessages();
 
         // Just for testing adding a Message to DB
-        Model.getInstance().testMessage();
+        Model model = Model.getInstance();
+        model.testMessage();
 
         dataSet = Model.getMessageListPointer();
         // use this setting to improve performance if you know that changes
@@ -61,8 +61,9 @@ public class MessageBoard extends AppCompatActivity {
 
 //--------------------------------------------------------------------------------------------------
 
-        CheckBox showAddressedCheckBox = (CheckBox) findViewById(R.id._showAddressedCheckBox);
-        showAddressedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        CheckBox showAddressedCheckBox = findViewById(R.id._showAddressedCheckBox);
+        showAddressedCheckBox.setOnCheckedChangeListener(
+                new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -117,7 +118,8 @@ public class MessageBoard extends AppCompatActivity {
             Iterator<Message> iterator = dataList.iterator();
             while (iterator.hasNext()) {
                 Message message = iterator.next();
-                if (!message.getSenderEmail().contains(searchText)) {
+                String email = message.getSenderEmail();
+                if (!email.contains(searchText)) {
                     iterator.remove();
                 }
             }
@@ -136,7 +138,7 @@ public class MessageBoard extends AppCompatActivity {
 //        Message[] dataArray = new Message[dataSet.size()];
 //        List<Message> dataList = new ArrayList<>(dataSet.values());
         Collections.sort(dataList, Collections.reverseOrder()); // display in descending order
-        dataArray = (Message[])(dataList.toArray(dataArray));
+        dataArray = dataList.toArray(dataArray);
         MessageAdapter messageAdapter = new MessageAdapter(dataArray);
         messageRecyclerView.setAdapter(messageAdapter);
         Model.maintainMessages(messageRecyclerView, messageAdapter);
