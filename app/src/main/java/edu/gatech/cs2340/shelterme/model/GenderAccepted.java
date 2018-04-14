@@ -11,5 +11,10 @@ public enum GenderAccepted {
 
     private final String _msg;
     GenderAccepted(String msg) { _msg = msg; }
+
+    /**
+     * A to-string method for _msg
+     * @return _msg as a String
+     */
     public String toString() { return _msg; }
 }
