@@ -1,25 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.gatech.cs2340.shelterme.controllers.EmployeeHomePage">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="edu.gatech.cs2340.shelterme.controllers.EmployeeHomePage"
+    tools:showIn="@layout/activity_employee_home_page">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteY="8dp">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#CEF6EC"
+            android:text="Log Out" />
 
-    </android.support.design.widget.AppBarLayout>
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="44dp"
+            android:fontFamily="cursive"
+            android:text="ShelterMe"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <include layout="@layout/content_employee_home_page" />
+        <Button
+            android:id="@+id/editShelter"
+            android:layout_width="wrap_content"
+            android:layout_height="@android:dimen/notification_large_icon_height"
+            android:layout_above="@+id/sendRequest"
+            android:layout_alignEnd="@+id/sendRequest"
+            android:layout_alignLeft="@+id/sendRequest"
+            android:layout_alignRight="@+id/sendRequest"
+            android:layout_alignStart="@+id/sendRequest"
+            android:layout_marginBottom="28dp"
+            android:backgroundTint="#F8ECE0"
+            android:text="Edit My Shelter" />
 
-</android.support.design.widget.CoordinatorLayout>
+        <Button
+            android:id="@+id/sendRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="52dp"
+            android:background="@android:drawable/bottom_bar"
+            android:backgroundTint="#F6E3CE"
+            android:text="Send Admin Request" />
+
+        <ImageView
+            android:id="@+id/cs_sg_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@mipmap/cs_social_good" />
+
+    </RelativeLayout>
+</android.support.constraint.ConstraintLayout>
