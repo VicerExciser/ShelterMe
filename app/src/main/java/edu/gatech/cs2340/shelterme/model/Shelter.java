@@ -298,11 +298,12 @@ public class Shelter implements Parcelable {
         this.singleCapacity = singleCapacity;
     }
 
+    @Nullable
     public Bed getLastBedAdded() {
         return lastBedAdded;
     }
 
-    public void setLastBedAdded(Bed lastBedAdded) {
+    public void setLastBedAdded(@Nullable Bed lastBedAdded) {
         this.lastBedAdded = lastBedAdded;
     }
 }

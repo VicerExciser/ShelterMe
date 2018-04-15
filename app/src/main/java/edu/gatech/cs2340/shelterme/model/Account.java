@@ -1,5 +1,8 @@
 package edu.gatech.cs2340.shelterme.model;
 
+/**
+ * Represents an Account
+ */
 
 public abstract class Account {
     private final String name;
@@ -12,6 +15,15 @@ public abstract class Account {
     private Question secQuest;
     private String secAns;
 
+    /**
+     * A constructor for Account class
+     * @param name the name of the account holder
+     * @param username the username of the account holder
+     * @param email the email of the account holder
+     * @param password the password of the account holder
+     * @param secQuest the security question of the account holder
+     * @param secAns the security answer of the account holder
+     */
     Account(String name, String username, String email, int password,
             Question secQuest, String secAns) {
         this.name = name;
@@ -23,21 +35,42 @@ public abstract class Account {
         accountLocked = false;
     }
 
+    /**
+     * A getter for name
+     * @return the name of the account holder
+     */
     @SuppressWarnings("unused")
     String getName() {
         return this.name;
     }
 
+    /**
+     * A getter for username
+     * @return the username of the account holder
+     */
     public String getUsername() {
         return this.username;
     }
 
+    /**
+     * A getter for email
+     * @return the email of the account holder
+     */
     public String getEmail() { return this.email; }
 
+    /**
+     * A method to validate the password
+     * @param pw the password of the account
+     * @return true if password matches, false otherwise
+     */
     public boolean validatePassword(int pw) {
         return pw == this.password;
     }
 
+    /**
+     * A method to check if the account is locked
+     * @return true if account is locked, false otherwise
+     */
     @SuppressWarnings("unused")
     public boolean isAccountLocked() { return this.accountLocked; }
 
@@ -66,16 +99,20 @@ public abstract class Account {
         return result;
     }
 
-// --Commented out by Inspection START (4/13/2018 6:17 PM):
-//    public Type getAccountType() {
-//        return accountType;
-//    }
-// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
     // Work to eliminate any sort of subclass type checking
+    /**
+     * A setter for account types
+     * @param accountType the account type (admin, employee, user)
+     */
     void setAccountType(Type accountType) {
         this.accountType = accountType;
     }
+
+    /**
+     * A getter for the account type
+     * @return the type of the account (admin, employee, user)
+     */
     public Type getAccountType() { return this.accountType; }
 
     @SuppressWarnings("unused")
@@ -93,6 +130,7 @@ public abstract class Account {
         return secAns;
     }
 
+    @SuppressWarnings("unused")
     public void setSecAns(String secAns) {
         this.secAns = secAns;
     }
