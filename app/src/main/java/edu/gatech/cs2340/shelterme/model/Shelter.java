@@ -51,6 +51,7 @@ public class Shelter implements Parcelable {
 
     public Shelter(String key, String name, String capacity, String restrictions, double longitude,
                    double latitude, String address, String specNotes, String num) {
+
         shelterKey = key;
         if ((key != null) && !shelterKey.contains("s_")) {
             shelterKey = "s_" + key;
@@ -168,6 +169,7 @@ public class Shelter implements Parcelable {
 
     public void setRestrictions(String restrictions) {
         this.restrictions = restrictions;
+        new ShelterBuilder(this).processRestrictions(restrictions);
     }
 
     public double getLatitude() {
