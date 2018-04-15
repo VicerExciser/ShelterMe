@@ -156,7 +156,8 @@ public class ShelterBuilder {
         }
 
 //        this.bedManager = new BedManager(newShelter);
-        BedManager bedManager = newShelter.get().getShelterBedManager();
+        Shelter shelterTemporary = newShelter.get();
+        BedManager bedManager = shelterTemporary.getShelterBedManager();
 
         //this.setVacancies(singleBeds + familyBeds);
         if (singleBeds > 0) {

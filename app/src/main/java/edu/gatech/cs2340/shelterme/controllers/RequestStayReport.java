@@ -144,19 +144,20 @@ public class RequestStayReport extends AppCompatActivity {
                 boolean success = true;
                 User user = (User)model.getCurrUser();
                 if (agreed) {
-                    if (shelter.getVacancies() >= selctedNumber) try {
-                        ReservationManager reservationManager = new ReservationManager(shelter);
-                        Map<String, Collection<Bed>> reserved
-                                = reservationManager.reserveBed(selectedBedType, selctedNumber);
+                    if (shelter.getVacancies() >= selctedNumber) {
+                        try {
+                            ReservationManager reservationManager = new ReservationManager(shelter);
+                            Map<String, Collection<Bed>> reserved
+                                    = reservationManager.reserveBed(selectedBedType, selctedNumber);
 
-                        dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, true);
-                        dbUtil.updateUserOccupancyAndStayReports(user);
-                    } catch (IllegalArgumentException iae) {
-                        model.displayErrorMessage(iae.getMessage(),
-                                RequestStayReport.this);
-                        success = false;
-                    }
-                    else {
+                            dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, true);
+                            dbUtil.updateUserOccupancyAndStayReports(user);
+                        } catch (IllegalArgumentException iae) {
+                            model.displayErrorMessage(iae.getMessage(),
+                                    RequestStayReport.this);
+                            success = false;
+                        }
+                    } else {
                         model.displayErrorMessage("This shelter does not have "
                                 + String.valueOf(selctedNumber) + " bed(s) available",
                                 RequestStayReport.this);

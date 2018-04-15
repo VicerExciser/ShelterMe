@@ -116,9 +116,12 @@ public class StayReport {
     @Override
     public int hashCode() {
         int result = 17;
-        result = (31 * result) + this.checkInDate.toLowerCase().hashCode();
-        result = (31 * result) + this.shelterName.toLowerCase().hashCode();
-        result = (31 * result) + this.accountEmail.toLowerCase().hashCode();
+        String checkInDateLower = this.checkInDate.toLowerCase();
+        result = (31 * result) + checkInDateLower.hashCode();
+        String shelterNameLower = this.shelterName.toLowerCase();
+        result = (31 * result) + shelterNameLower.hashCode();
+        String accountEmailLower = this.accountEmail.toLowerCase();
+        result = (31 * result) + accountEmailLower.hashCode();
         return result;
     }
 }

@@ -131,14 +131,14 @@ public class Shelter implements Parcelable {
     public boolean hasOpenBed(String userKey) {
         // Ex key: 'FM25F'  <-- not family acct, male, 25 yrs old, not veteran
         BedManager bedManager = getShelterBedManager();
-        return bedManager != null && bedManager.findValidBedType(userKey) != null;
+        return (bedManager != null) && (bedManager.findValidBedType(userKey) != null);
     }
 
     public BedManager getShelterBedManager() {
 //        if (shelterBuilder != null) {
 //            bedManager = shelterBuilder.getBedManager();
 //        }
-        return bedManager != null ? bedManager : new BedManager(this);
+        return (bedManager != null) ? bedManager : new BedManager(this);
     }
 
     public String getShelterName() {
@@ -273,9 +273,11 @@ public class Shelter implements Parcelable {
     public int hashCode() {
         int result = 17;
         result = (31 * result) + this.shelterKey.hashCode();
-        result = (31 * result) + this.shelterName.toLowerCase().hashCode();
+        String shelterNameLower = this.shelterName.toLowerCase();
+        result = (31 * result) + shelterNameLower.hashCode();
 //        result = 31 * result + this.restrictions.toLowerCase().hashCode();
-        result = (31 * result) + this.address.toLowerCase().hashCode();
+        String addressLower = this.address.toLowerCase();
+        result = (31 * result) + addressLower.hashCode();
         result = (31 * result) + this.phone.hashCode();
         return result;
     }

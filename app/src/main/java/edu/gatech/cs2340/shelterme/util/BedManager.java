@@ -169,7 +169,8 @@ public class BedManager {
                         //make sure user is within the appropriate age range
                         thisBedOpen = false;
                     }
-                    if (bedMap.get(bedKey).isEmpty()) {
+                    Map<String, Bed> bedType = bedMap.get(bedKey);
+                    if (bedType.isEmpty()) {
                         //cannot have 0 vacancies of this bed type to be valid for use
                         thisBedOpen = false;
                     }

@@ -94,7 +94,8 @@ public class LoginPage extends AppCompatActivity {
         String email = Model.getEmailAssociatedWithUsername(username);
         Account attempting = Model.getAccountByEmail(email);
 
-        if (Model.getAccountListPointer().isEmpty()) {
+        Map<String, Account> accountMap = Model.getAccountListPointer();
+        if (accountMap.isEmpty()) {
             Log.e("attemptLogin", "Account list is empty!");
         } else {
             int count = 0;

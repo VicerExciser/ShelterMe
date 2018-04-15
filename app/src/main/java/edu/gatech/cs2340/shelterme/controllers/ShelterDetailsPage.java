@@ -46,7 +46,8 @@ public class ShelterDetailsPage extends AppCompatActivity {
         String accptText = "Accepts: \n\t\t\t\t"+shelter.getRestrictions();
         restrictions.setText(accptText);
         String CITY = "Atlanta";
-        String streetCity[] = shelter.getAddress().split(CITY);
+        String shelterAddress = shelter.getAddress();
+        String streetCity[] = shelterAddress.split(CITY);
         String addrText = "Address: \n\t\t\t\t"+streetCity[0]+"\n\t\t\t\t"+ CITY +streetCity[1];
         address.setText(addrText);
         String phoneText = "Phone: \n\t\t\t\t"+shelter.getPhone();

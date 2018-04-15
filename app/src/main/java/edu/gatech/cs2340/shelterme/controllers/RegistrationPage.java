@@ -70,8 +70,9 @@ public class RegistrationPage extends AppCompatActivity {
 //        workplaceField = findViewById(R.id.workplace);
         shelterSpinner = findViewById(R.id.shelterSpinner);
         powPrompt = findViewById(R.id.textView11);
+        Map<String, Shelter> shelterList = Model.getShelterListPointer();
         AbstractCollection<String> shelterNames
-                = new HashSet<>(Model.getShelterListPointer().keySet());
+                = new HashSet<>(shelterList.keySet());
 //        for (Shelter s : Model.getShelterListPointer()) {
 //            shelterNames.add(s.getShelterName());
 //        }
