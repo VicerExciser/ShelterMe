@@ -67,7 +67,9 @@ public class ReservationManager {
             curShelter = currentShelter;
         }
         String userKey = user.generateKey();
-        if (bedManager == null) bedManager = curShelter.getShelterBedManager();
+        if (bedManager == null) {
+            bedManager = curShelter.getShelterBedManager();
+        }
 //        if (bedManager == null) bedManager = new BedManager(curShelter);
         String bedTypeFoundKey = bedManager.findValidBedType(userKey);
         int curVacancies = curShelter.getVacancies();

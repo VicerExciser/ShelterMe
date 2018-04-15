@@ -9,6 +9,7 @@ public class Message implements Comparable<Message> {
     private final String message;
     private final String timeSent;
     private final String senderEmail;
+    @SuppressWarnings("FieldMayBeFinal")
     private boolean isAddressed;
 
     public Message(String message, Account sender) {

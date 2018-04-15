@@ -139,7 +139,9 @@ public class Shelter implements Parcelable {
 //        if (shelterBuilder != null) {
 //            bedManager = shelterBuilder.getBedManager();
 //        }
-        if (this.bedManager == null) this.bedManager = new BedManager(this);
+        if (this.bedManager == null) {
+            this.bedManager = new BedManager(this);
+        }
         return this.bedManager;  // != null ? bedManager : new BedManager(this);
     }
 

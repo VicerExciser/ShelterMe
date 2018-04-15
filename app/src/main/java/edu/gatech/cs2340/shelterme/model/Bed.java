@@ -20,7 +20,7 @@ public class Bed {
     private boolean veteranOnly;
     private String savedBedKey;
     //bed Key saved so it can be easily grouped with other beds of its type
-    private String associatedShelterName;
+    private final String associatedShelterName;
     // stored for preservation of uniqueness when comparisons made
 
     public Bed(String id, boolean isFamily, boolean menOnly, boolean womenOnly, Age minAge,
