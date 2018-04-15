@@ -35,7 +35,8 @@ public class ShelterDetailsPage extends AppCompatActivity {
 
         Intent intent = getIntent();
         final Shelter shelterParcel = intent.getParcelableExtra("Shelter");
-        final Shelter shelter = Model.getInstance().verifyShelterParcel(shelterParcel);
+        final Model modelInstance = Model.getInstance();
+        final Shelter shelter = modelInstance.verifyShelterParcel(shelterParcel);
         vacancyRaw = shelter.getVacancies();
         String vacancyString = String.valueOf(vacancyRaw);
 
@@ -64,8 +65,8 @@ public class ShelterDetailsPage extends AppCompatActivity {
         stayRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Model.getInstance().getCurrUser() != null) {
-                    User user = (User)(Model.getInstance().getCurrUser());
+                if (modelInstance.getCurrUser() != null) {
+                    User user = (User)(modelInstance.getCurrUser());
                     if (!(user.isOccupyingBed())) {
                         if ((vacancyRaw > 0) && shelter.hasOpenBed(user.generateKey())) {
                             Intent request = new Intent(ShelterDetailsPage.this,
@@ -73,17 +74,17 @@ public class ShelterDetailsPage extends AppCompatActivity {
                             request.putExtra("Shelter", shelter);
                             startActivity(request);
                         } else {
-                            Model.getInstance().displayErrorMessage("This shelter has " +
+                            modelInstance.displayErrorMessage("This shelter has " +
                                             "no available beds.",
                                     ShelterDetailsPage.this);
                         }
                     } else {
-                        Model.getInstance().displayErrorMessage("Your account already " +
+                        modelInstance.displayErrorMessage("Your account already " +
                                         "has beds claimed at another shelter.",
                                 ShelterDetailsPage.this);
                     }
                 } else {
-                    Model.getInstance().displayErrorMessage("Must be a registered user " +
+                    modelInstance.displayErrorMessage("Must be a registered user " +
                                     "to request a stay.",
                             ShelterDetailsPage.this);
                 }
