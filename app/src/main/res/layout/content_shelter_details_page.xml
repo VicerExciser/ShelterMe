@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="edu.gatech.cs2340.shelterme.controllers.ShelterDetailsPage"
-    tools:showIn="@layout/activity_shelter_details_page">
+    tools:showIn="@layout/activity_shelter_details_page"
+    tools:ignore="UnusedResources">
 
 </android.support.constraint.ConstraintLayout>

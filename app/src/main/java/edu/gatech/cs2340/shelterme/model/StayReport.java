@@ -30,9 +30,11 @@ public class StayReport {
         if (!account.isOccupyingBed())
             account.setIsOccupyingBed(true);
         setAccountEmail(account.getEmail());
-        Date timestamp = (Calendar.getInstance().getTime());
+        Calendar calendar = Calendar.getInstance();
+        Date timestamp = calendar.getTime();
         Long startDate = timestamp.getTime();
-        this.setCheckInDate(new Date(startDate).toString());
+        this.setCheckInDate(timestamp.toString());
+//        this.setCheckInDate(new Date(startDate).toString());
         this.setCheckOutDate(null);
         this.reservedBeds = new Stack<>();
         for (Bed b : bedList) {
