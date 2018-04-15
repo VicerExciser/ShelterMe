@@ -66,18 +66,21 @@ public class Shelter implements Parcelable {
         this.phone = num;
         setFamilyCapacity(0);
         setSingleCapacity(0);
-        ShelterBuilder shelterBuilder = new ShelterBuilder(this);
-//        bedManager = new BedManager(this);
         this.beds = new HashMap<>();
         //noinspection MismatchedQueryAndUpdateOfCollection
         Map<String, Bed> occupiedBeds = new HashMap<>();
         // Occupied beds is used and maintained purely by Firebase
         this.beds.put("O", occupiedBeds);
         this.lastBedAdded = null;
-        if (restrictions != null) {
+        finishBuildingShelter();
+    }
+
+    private void finishBuildingShelter() {
+        ShelterBuilder shelterBuilder = new ShelterBuilder(this);
+        if (this.restrictions != null) {
             shelterBuilder.processRestrictions(this.restrictions);
         } else {
-            Log.v("Shelter", "restrictions for " + name + " were not found\n"
+            Log.v("Shelter", "restrictions for " + shelterName + " were not found\n"
                     + this.toString());
         }
     }
@@ -287,11 +290,11 @@ public class Shelter implements Parcelable {
         return result;
     }
 
-    public void setFamilyCapacity(int familyCapacity) {
+    public final void setFamilyCapacity(int familyCapacity) {
         this.familyCapacity = familyCapacity;
     }
 
-    public void setSingleCapacity(int singleCapacity) {
+    public final void setSingleCapacity(int singleCapacity) {
         this.singleCapacity = singleCapacity;
     }
 
