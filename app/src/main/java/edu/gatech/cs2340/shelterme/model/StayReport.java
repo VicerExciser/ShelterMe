@@ -11,6 +11,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Stack;
 
+/**
+ * Information holder for a User's stay at a Shelter
+ * Instances created from Shelter.reserveBed()
+ */
+
 public class StayReport {
 
     private boolean active;
@@ -18,12 +23,22 @@ public class StayReport {
     private String shelterName;
     private final Collection<String> reservedBeds;
     private String checkInDate;
+    private String checkOutDate;
     private String accountEmail;
 
+    /**
+     * A no-arg constructor for StayReport class
+     */
     public StayReport() {
         this(new Shelter(), new User(), new ArrayList<Bed>());
     }
 
+    /**
+     * A cosntructor for StayReport class
+     * @param shelter the name of the shelter
+     * @param account the account type
+     * @param bedList the list of beds
+     */
     public StayReport(Shelter shelter, User account, Iterable<Bed> bedList) {
         this.setActive(true);
         this.setShelterName(shelter.getShelterName());
@@ -45,21 +60,38 @@ public class StayReport {
 //        this.numReserved = 1; // default val for testing
     }
 
-    // Called from Shelter.undoReservation()
+    // Called from Shelter.undoReservation
+    /**
+     * Sets the stay/reservation checkout time
+     */
     public void checkOut() {
         setActive(false);
-        this.setCheckOutDate(Calendar.getInstance().getTime().toString());
+        Calendar calendar = Calendar.getInstance();
+        Date time = calendar.getTime();
+        this.setCheckOutDate(time.toString());
     }
+
+    /**
+     * A getter for the active status of the stay/reservation
+     * @return
+     */
 
     public boolean isActive() {
         return this.active;
     }
 
+    /**
+     * A getter for numReserved
+     * @return the number of beds reserved
+     */
     public int getNumReserved() {
         return numReserved;
     }
 
-    // Returns a List of the reserved Bed IDs for this stay (i.e. "bed_50")
+    /**
+     * A getter for the reserved beds
+     * @return a List of the reserved Bed IDs for this stay (i.e. "bed_50")
+     */
     public Collection<String> getReservedBeds() {
         return this.reservedBeds;
     }
@@ -70,10 +102,13 @@ public class StayReport {
     //          -  if (time1.compareTo(new Date(stayReport2.getCheckInDate())) <= 0)
     //                 stayReport1 should be listed before stayReport2
 
+    /**
+     * A getter for checkInDate
+     * @return the check in date for the bed's occupant
+     */
     public String getCheckInDate() { return this.checkInDate; }
 
-    // --Commented out by Inspection (4/13/2018 6:17 PM):
-    // public String getCheckOutDate() { return this.checkOutDate; }
+    public String getCheckOutDate() { return this.checkOutDate; }
 
     public String getAccountEmail() {
         return accountEmail;
@@ -96,7 +131,7 @@ public class StayReport {
     }
 
     private void setCheckOutDate(String checkOutDate) {
-        @SuppressWarnings("unused") String checkOutDate1 = checkOutDate;
+        this.checkOutDate = checkOutDate;
     }
 
     private void setActive(boolean active) {
@@ -110,7 +145,6 @@ public class StayReport {
 
     @Override
     public boolean equals(Object other) {
-//        if (other == this) return true;
         return (other == this) || ((other instanceof StayReport)
                 && ((StayReport) other).checkInDate.equalsIgnoreCase(this.checkInDate)
                 && ((StayReport) other).shelterName.equalsIgnoreCase(this.shelterName)

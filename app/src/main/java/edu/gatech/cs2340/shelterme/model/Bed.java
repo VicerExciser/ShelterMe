@@ -4,6 +4,10 @@ import android.support.annotation.Nullable;
 
 import java.util.Map;
 
+/**
+ * Represents a Bed in a shelter.
+ */
+
 public class Bed {
     // Had to change Bed id to a String in the form: "bed_1" for the sake of serialization
 

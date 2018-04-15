@@ -1,5 +1,9 @@
 package edu.gatech.cs2340.shelterme.model;
 
+/**
+ * Represents Age for a shelter's restrictions.
+ */
+
 // Had to change the key values to use '_' because '/' is not allowed in a HashMap key
 public enum Age {
     MIN_AGE("000_"),
@@ -18,10 +22,17 @@ public enum Age {
         this.ageKeyVal = ageKeyVal;
     }
 
+    /**
+     * A getter for ageKeyValue
+     * @return the key associated with age
+     */
     public String getAgeKeyVal() {
         return ageKeyVal;
     }
 
+    /**
+     * @return An integer representation of the age value
+     */
     public int toInt() {
         int cutoff = this.ageKeyVal.indexOf('_');
         return Integer.valueOf(this.ageKeyVal.substring(0, cutoff));
