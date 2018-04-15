@@ -1,6 +1,8 @@
 package edu.gatech.cs2340.shelterme.model;
 
-
+/**
+ * Represents an Employee account.
+ */
 public class Employee extends Account {
 
     private Shelter placeOfWork;

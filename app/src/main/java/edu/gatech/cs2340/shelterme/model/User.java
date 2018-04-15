@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Stack;
 
 /**
+ * Represents a User account.
  * Created by austincondict on 2/12/18.
  */
 

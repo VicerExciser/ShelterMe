@@ -3,6 +3,9 @@ package edu.gatech.cs2340.shelterme.model;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Represents the message board containing the messages sent and received via the app.
+ */
 public class MessageBoardModel {
     public static List<Message> messages = new LinkedList<>();
     public static List<Message> unaddressedMessages = new LinkedList<>();

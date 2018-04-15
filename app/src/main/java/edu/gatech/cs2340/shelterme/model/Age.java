@@ -1,6 +1,7 @@
 package edu.gatech.cs2340.shelterme.model;
 
 /**
+ * Represents Age for a user.
  * Created by Russell on 3/6/2018.
  */
 

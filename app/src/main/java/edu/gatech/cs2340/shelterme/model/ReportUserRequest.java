@@ -1,6 +1,7 @@
 package edu.gatech.cs2340.shelterme.model;
 
 /**
+ * Represents a request for reporting a user.
  * Created by austincondict on 2/21/18.
  */
 

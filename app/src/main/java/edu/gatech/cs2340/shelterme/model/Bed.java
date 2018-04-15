@@ -1,6 +1,7 @@
 package edu.gatech.cs2340.shelterme.model;
 
 /**
+ * Represents a Bed in a shelter.
  * Created by austincondict on 2/20/18.
  */
 

@@ -4,13 +4,14 @@
  */
 package edu.gatech.cs2340.shelterme.model;
 
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
-
+/**
+ * Represents a stay request by a user.
+ */
 public class StayReport {
 
     private boolean active;

@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
+ * Represents messages are sent and received via the app.
  * Created by austincondict on 2/21/18.
  */
 

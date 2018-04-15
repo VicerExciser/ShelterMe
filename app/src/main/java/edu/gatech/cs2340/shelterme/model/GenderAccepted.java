@@ -1,6 +1,7 @@
 package edu.gatech.cs2340.shelterme.model;
 
 /**
+ * Represents the genders accepted/not accepted at a shelters.
  * Created by austincondict on 4/6/18.
  */
 
@@ -13,8 +14,7 @@ public enum GenderAccepted {
     GenderAccepted(String msg) { _msg = msg; }
 
     /**
-     * A to-string method for _msg
-     * @return _msg as a String
+     * @return a string representation of the object
      */
     public String toString() { return _msg; }
 }

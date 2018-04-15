@@ -3,6 +3,9 @@ package edu.gatech.cs2340.shelterme.model;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
+/**
+ * Represents an Account
+ */
 
 public abstract class Account {
     String name;
@@ -136,6 +139,9 @@ public abstract class Account {
             _code = code;
         }
 
+        /**
+         * @return a string representation of the object
+         */
         public String toString() { return _code; }
     }
 
@@ -153,7 +159,7 @@ public abstract class Account {
         }
 
         /**
-         * @return Returns a string representation of the object
+         * @return a string representation of the object
          */
         public String toString() { return _code; }
     }
@@ -169,6 +175,9 @@ public abstract class Account {
             _code = code;
         }
 
+        /**
+         * @return a string representation of the object.
+         */
         public String toString() { return _code; }
     }
 
