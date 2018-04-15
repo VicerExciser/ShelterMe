@@ -119,15 +119,15 @@ public class ReserveBedTest {
         PowerMockito.mockStatic(DBUtil.class);
         when(DBUtil.getInstance()).thenReturn(mockDBUtil);
 
-        when(mockModel.getCurrUser()).thenReturn((User)currUser);
-        when(Model.getInstance().getCurrUser()).thenReturn((User)currUser);
+        when(mockModel.getCurrUser(userEmail)).thenReturn((User)currUser);
+        when(Model.getInstance().getCurrUser(userEmail)).thenReturn((User)currUser);
         when(Model.getShelterListPointer()).thenReturn((HashMap<String, Shelter>) mockShelterList);
         when(Model.getInstance().verifyShelterParcel(currShelter)).thenReturn(currShelter);
     }
 
     @Test
     public void verifySetup() {
-        assertEquals(mockModel.getCurrUser(), currUser);
+        assertEquals(mockModel.getCurrUser(userEmail), currUser);
 //        assertTrue(Model.getAccountListPointer().containsValue(currUser));
         assertNull(currUser.getCurrentStayReport());
         assertFalse(currUser.isOccupyingBed());
@@ -145,37 +145,37 @@ public class ReserveBedTest {
 
         // Bed type cannot be null or gibberish (must be "Single" or "Family")
         try {
-            currShelter.reserveBed(null, 1);
+            currShelter.reserveBed(userEmail, null, 1);
         } catch (IllegalArgumentException iae) {
             failCount++;
         }
 
         try {
-            currShelter.reserveBed("lksjafhkjsbkjsf", 1);
+            currShelter.reserveBed(userEmail, "lksjafhkjsbkjsf", 1);
         } catch (IllegalArgumentException iae) {
             failCount++;
         }
 
         // Number of beds must be a positive integer less than shelter capacity/current vacancies
         try {
-            currShelter.reserveBed(bedType, -1);
+            currShelter.reserveBed(userEmail, bedType, -1);
         } catch (IllegalArgumentException iae) {
             failCount++;
         }
 
-        reservedResults = currShelter.reserveBed(bedType, 0);
+        reservedResults = currShelter.reserveBed(userEmail, bedType, 0);
         if (reservedResults == null) {
             failCount++;
         }
 
         try {
-            currShelter.reserveBed("Single", 1000);
+            currShelter.reserveBed(userEmail, "Single", 1000);
         } catch (IllegalArgumentException iae) {
             failCount++;
         }
 
         try {
-            currShelter.reserveBed("Family", 1000);
+            currShelter.reserveBed(userEmail, "Family", 1000);
         } catch (IllegalArgumentException iae) {
             failCount++;
         }
@@ -189,25 +189,25 @@ public class ReserveBedTest {
         int failCount = 0;
         nullUser = null;
         mockModel.setCurrUser(null, nullUser);
-        when(Model.getInstance().getCurrUser()).thenReturn(nullUser);
-        assertNull(mockModel.getCurrUser());
+        when(Model.getInstance().getCurrUser(null)).thenReturn(nullUser);
+        assertNull(mockModel.getCurrUser(null));
 
 
         // User cannot be null
         try {
-            currShelter.reserveBed("Single", 5);
+            currShelter.reserveBed(userEmail, "Single", 5);
         } catch (IllegalArgumentException iae) {
             failCount++;
 //            currUser = new User(userFullName, username, userEmail, userPassword, userSex, userAge,
 //                    userIsFamily, secQuest, secAns);
             mockModel.setCurrUser(userEmail, currUser);
-            when(Model.getInstance().getCurrUser()).thenReturn((User)currUser);
+            when(Model.getInstance().getCurrUser(userEmail)).thenReturn((User)currUser);
         }
 
         // User must not have already reserved a bed
         currUser.setIsOccupyingBed(true);
         try {
-            currShelter.reserveBed(bedType, bedsToReserve);
+            currShelter.reserveBed(userEmail, bedType, bedsToReserve);
         } catch (IllegalArgumentException iae) {
             failCount++;
             currUser.clearOccupiedBed();
@@ -216,7 +216,7 @@ public class ReserveBedTest {
         // User cannot have any active stay report
         currUser.addStayReport(new StayReport());
         try {
-            currShelter.reserveBed(bedType, bedsToReserve);
+            currShelter.reserveBed(userEmail, bedType, bedsToReserve);
         } catch (IllegalArgumentException iae) {
             failCount++;
             currUser.clearStayReportHistory();
@@ -228,9 +228,9 @@ public class ReserveBedTest {
 
     @Test
     public void testReserveBedCall() {
-        if (mockModel.getCurrUser() == null)
+        if (mockModel.getCurrUser(userEmail) == null)
             mockModel.setCurrUser(userEmail, currUser);
-        reservedResults = currShelter.reserveBed(bedType, bedsToReserve);
+        reservedResults = currShelter.reserveBed(userEmail, bedType, bedsToReserve);
         assertFalse(reservedResults.isEmpty());
         assertTrue(reservedResults.containsKey(bedKeyExpected));
 //    }

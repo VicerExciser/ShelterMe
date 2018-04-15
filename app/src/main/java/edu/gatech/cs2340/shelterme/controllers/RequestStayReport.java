@@ -141,11 +141,13 @@ public class RequestStayReport extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 boolean success = true;
-                User user = (User)model.getCurrUser();
+                Bundle bundle = getIntent().getExtras();
+                String email = bundle.getString("userEmail");
+                User user = (User)model.getCurrUser(email);
                 if (agreed) {
                     if (shelter.getVacancies() >= selctedNumber) {
                         try {
-                            HashMap<String, Collection<Bed>> reserved = shelter.reserveBed(selectedBedType, selctedNumber);
+                            HashMap<String, Collection<Bed>> reserved = shelter.reserveBed(email, selectedBedType, selctedNumber);
                             for (String s : reserved.keySet()) {
                                 Log.e("BED_KEY", s);
                                 for (Bed b : reserved.get(s)) {

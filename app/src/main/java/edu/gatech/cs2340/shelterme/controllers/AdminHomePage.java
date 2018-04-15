@@ -33,7 +33,11 @@ public class AdminHomePage extends AppCompatActivity {
         viewMessages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AdminHomePage.this, MessageBoard.class));
+                Bundle bundle = getIntent().getExtras();
+                String email = bundle.getString("userEmail");
+                Intent intent = new Intent(AdminHomePage.this, MessageBoard.class);
+                intent.putExtra("userEmail", email);
+                startActivity(intent);
             }
         });
     }

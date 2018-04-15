@@ -67,12 +67,15 @@ public class ShelterDetailsPage extends AppCompatActivity {
         stayRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Model.getInstance().getCurrUser() != null) {
-                    User user = (User)(Model.getInstance().getCurrUser());
+                Bundle bundle = getIntent().getExtras();
+                String email = bundle.getString("userEmail");
+                if (Model.getInstance().getCurrUser(email) != null) {
+                    User user = (User)(Model.getInstance().getCurrUser(email));
                     if (!(user.isOccupyingBed())) {
                         if (vacancyRaw > 0 && shelter.hasOpenBed(user.generateKey())) {
                             Intent request = new Intent(ShelterDetailsPage.this, RequestStayReport.class);
                             request.putExtra("Shelter", shelter);
+                            request.putExtra("userEmail", email);
                             startActivity(request);
                         } else {
                             Model.getInstance().displayErrorMessage("This shelter has no available beds.",

@@ -380,8 +380,8 @@ public class Shelter implements Parcelable {
         return null;
     }
 
-    public HashMap<String, Collection<Bed>> reserveBed() {
-        return reserveBed("Single", 1);
+    public HashMap<String, Collection<Bed>> reserveBed(String email) {
+        return reserveBed(email, "Single", 1);
     }
 
     /**
@@ -391,7 +391,7 @@ public class Shelter implements Parcelable {
      * @return A HashMap that maps a bedKey (representative of the User type that can legitimately
      *          sleep in this bed) to a collection of bedIDs (i.e. bed_50)
      */
-    public HashMap<String, Collection<Bed>> reserveBed(String type, int numBeds) { //function takes in User and returns ID of bed(s) being reserved
+    public HashMap<String, Collection<Bed>> reserveBed(String email, String type, int numBeds) { //function takes in User and returns ID of bed(s) being reserved
         if (type == null) {
             throw new IllegalArgumentException("Bed type cannot be null.");
         }
@@ -401,7 +401,7 @@ public class Shelter implements Parcelable {
             return null;
         }
 
-        User user = ((User) (Model.getInstance().getCurrUser()));
+        User user = ((User) (Model.getInstance().getCurrUser(email)));
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null.");
         } else if (user.isOccupyingBed()) {
@@ -491,7 +491,8 @@ public class Shelter implements Parcelable {
     // Equivalent for checking out w/ a StayReport
     public HashMap<String, Collection<Bed>> undoReservation(StayReport curStay) {
         Model model = Model.getInstance();
-        User user = ((User)(model.getCurrUser()));
+        String email = curStay.getAccountEmail();
+        User user = ((User)(model.getCurrUser(email)));
         Shelter curShelter = model.verifyShelterParcel(this);
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null.");

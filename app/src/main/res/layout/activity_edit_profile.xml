@@ -1,33 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout5"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="edu.gatech.cs2340.shelterme.controllers.EditProfile">
 
-    <android.support.design.widget.AppBarLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/coordinatorLayout4"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        android:background="#ff00bbbb"
+        tools:context="edu.gatech.cs2340.shelterme.controllers.AccountDetails">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBarLayout2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    </android.support.design.widget.AppBarLayout>
+        </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_edit_profile" />
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:text="              Edit Details"
+            android:textAllCaps="true"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/appBarLayout2" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="317dp"
+            android:layout_height="18dp"
+            android:text="Username:"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="70dp" />
 
-</android.support.design.widget.CoordinatorLayout>
+        <EditText
+            android:id="@+id/textView22"
+            android:layout_width="317dp"
+            android:layout_height="39dp"
+            android:hint="Enter new username"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="88dp" />
+
+        <TextView
+            android:id="@+id/textView23"
+            android:layout_width="317dp"
+            android:layout_height="19dp"
+            android:text="Password:"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="136dp" />
+
+        <EditText
+            android:id="@+id/textView24"
+            android:layout_width="317dp"
+            android:layout_height="38dp"
+            android:hint="Enter new password"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="156dp" />
+
+        <Button
+            android:id="@+id/switch1"
+            android:layout_width="83dp"
+            android:layout_height="43dp"
+            android:text="Sumbit"
+            tools:layout_editor_absoluteX="285dp"
+            tools:layout_editor_absoluteY="508dp" />
+
+        <TextView
+            android:id="@+id/textView25"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:text="Gender:"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="205dp" />
+
+        <EditText
+            android:id="@+id/textView27"
+            android:layout_width="317dp"
+            android:layout_height="39dp"
+            android:hint="Enter Gender"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="225dp" />
+
+        <TextView
+            android:id="@+id/textView28"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:text="Age:"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="274dp" />
+
+        <EditText
+            android:id="@+id/textView29"
+            android:layout_width="317dp"
+            android:layout_height="39dp"
+            android:hint="Enter new age"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="292dp" />
+
+        <TextView
+            android:id="@+id/textView30"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:text="Family:"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="346dp" />
+
+        <EditText
+            android:id="@+id/textView33"
+            android:layout_width="317dp"
+            android:layout_height="43dp"
+            android:hint="Enter family status"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="365dp" />
+
+        <TextView
+            android:id="@+id/textView34"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:text="Veteran Status:"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="418dp" />
+
+        <EditText
+            android:id="@+id/textView35"
+            android:layout_width="317dp"
+            android:layout_height="38dp"
+            android:hint="Enter veteran status"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="437dp" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>
