@@ -63,7 +63,9 @@ public class ReservationManager {
         }
 
         Shelter curShelter = model.verifyShelterParcel(currentShelter);
-        if (curShelter == null) curShelter = currentShelter;
+        if (curShelter == null) {
+            curShelter = currentShelter;
+        }
         String userKey = user.generateKey();
         if (bedManager == null) bedManager = curShelter.getShelterBedManager();
 //        if (bedManager == null) bedManager = new BedManager(curShelter);

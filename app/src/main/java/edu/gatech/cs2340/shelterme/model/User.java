@@ -145,7 +145,10 @@ public class User extends Account {
         int result = 17;
         result += super.hashCode();
         result = (31 * result) + this.age;
-        result = (31 * result) + this.sex.toString().toLowerCase().hashCode();
+        String sexString = this.sex.toString();
+        sexString = sexString.toLowerCase();
+        //noinspection ChainedMethodCall
+        result = (31 * result) + sexString.hashCode();
         result += 31 * (this.isOccupyingBed ? 1 : 0);
         result += 31 * (this.isVeteran ? 1 : 0);
         result += 31 * (this.isFamily ? 1 : 0);

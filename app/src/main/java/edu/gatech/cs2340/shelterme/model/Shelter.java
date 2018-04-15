@@ -2,6 +2,7 @@ package edu.gatech.cs2340.shelterme.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.HashMap;
@@ -32,10 +33,10 @@ public class Shelter implements Parcelable {
 
 //    private HashMap<String, LinkedHashMap<String, Bed>> beds;
     private Map<String, Map<String, Bed>> beds;
+    @Nullable
     private Bed lastBedAdded;
     private int vacancies;
 
-    private ShelterBuilder shelterBuilder;
     private BedManager bedManager;
 
 //    @interface IgnoreExtraProperties {}
@@ -64,7 +65,7 @@ public class Shelter implements Parcelable {
         this.phone = num;
         setFamilyCapacity(0);
         setSingleCapacity(0);
-        this.shelterBuilder = new ShelterBuilder(this);
+        ShelterBuilder shelterBuilder = new ShelterBuilder(this);
 //        bedManager = new BedManager(this);
         this.beds = new HashMap<>();
         //noinspection MismatchedQueryAndUpdateOfCollection
@@ -130,7 +131,7 @@ public class Shelter implements Parcelable {
     public boolean hasOpenBed(String userKey) {
         // Ex key: 'FM25F'  <-- not family acct, male, 25 yrs old, not veteran
         BedManager bedManager = getShelterBedManager();
-        return bedManager != null && bedManager.findValidBedType(userKey) != null;
+        return (bedManager != null) && (bedManager.findValidBedType(userKey) != null);
     }
 
     public BedManager getShelterBedManager() {
@@ -273,9 +274,11 @@ public class Shelter implements Parcelable {
     public int hashCode() {
         int result = 17;
         result = (31 * result) + this.shelterKey.hashCode();
-        result = (31 * result) + this.shelterName.toLowerCase().hashCode();
+        String shelterNameLower = this.shelterName.toLowerCase();
+        result = (31 * result) + shelterNameLower.hashCode();
 //        result = 31 * result + this.restrictions.toLowerCase().hashCode();
-        result = (31 * result) + this.address.toLowerCase().hashCode();
+        String addressLower = this.address.toLowerCase();
+        result = (31 * result) + addressLower.hashCode();
         result = (31 * result) + this.phone.hashCode();
         return result;
     }

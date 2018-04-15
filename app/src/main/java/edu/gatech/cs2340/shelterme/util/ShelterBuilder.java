@@ -87,12 +87,13 @@ public class ShelterBuilder {
     //       Age minAge, Age maxAge, boolean veteranOnly)
     private void parseCapacity(String cp, boolean fm, boolean mo, boolean wo, int mna, int mxa,
                                boolean vo) {
+        String cp1 = cp;
         int singleBeds = 0;
         int familyBeds = 0;
-        if ((cp != null) && !cp.isEmpty() && !"N/A".equals(cp)) {
+        if ((cp1 != null) && !cp1.isEmpty() && !"N/A".equals(cp1)) {
             // split up Capacity strings by spaces
-            cp = cp.toLowerCase();
-            String[] tokens = cp.split(" ");
+            cp1 = cp1.toLowerCase();
+            String[] tokens = cp1.split(" ");
             int length = tokens.length;
             for (int i = 0; i < length; i++) {
                 int val = getInt(tokens[i]);
@@ -155,7 +156,8 @@ public class ShelterBuilder {
         }
 
 //        this.bedManager = new BedManager(newShelter);
-        BedManager bedManager = newShelter.get().getShelterBedManager();
+        Shelter shelterTemporary = newShelter.get();
+        BedManager bedManager = shelterTemporary.getShelterBedManager();
 
         //this.setVacancies(singleBeds + familyBeds);
         if (singleBeds > 0) {

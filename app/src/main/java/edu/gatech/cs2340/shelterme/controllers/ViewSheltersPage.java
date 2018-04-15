@@ -16,9 +16,12 @@ import android.widget.Spinner;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Age;
+import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.GenderAccepted;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
@@ -83,10 +86,10 @@ public class ViewSheltersPage extends AppCompatActivity {
         // Omit shelters where this user is ineligible to stay  <- nah
         shelters = new HashMap<>(Model.getShelterListPointer());
 
-
+        Set<String> shelterKeys = shelters.keySet();
         adapter = new ArrayAdapter<>(ViewSheltersPage.this, R.layout.list_item,
                 R.id.shelter_name,
-                shelters.keySet().toArray(new String[shelters.keySet().size()]));
+                shelterKeys.toArray(new String[shelterKeys.size()]));
         shelterList.setAdapter(adapter);
         shelterList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -249,13 +252,15 @@ public class ViewSheltersPage extends AppCompatActivity {
             updateCounter++;
             Log.e("updateSearch", String.format("  update #%d  showAll = %b",
                     updateCounter, showAll));
+            Map<String, Shelter> shelterList = Model.getShelterListPointer();
             if (showAll) {
-                for (Shelter s : Model.getShelterListPointer().values()) {
+                for (Shelter s : shelterList.values()) {
                     shelters.put(s.getShelterName(), s);
                 }
             } else {
-                for (Shelter s : Model.getShelterListPointer().values()) {
-                    for (String key : s.getBeds().keySet()) {
+                for (Shelter s : shelterList.values()) {
+                    Map<String, Map<String, Bed>> beds = s.getBeds();
+                    for (String key : beds.keySet()) {
                         if (key.length() > 1) {
 //                        Log.e("ViewShelters", "key = " + key);
                             if (familyChoiceMatchesKey(key, isChecked) && (s.getVacancies() > 0)) {
@@ -273,9 +278,10 @@ public class ViewSheltersPage extends AppCompatActivity {
     }
 
     private void updateResults() {
+        Set<String> shelterKeys = shelters.keySet();
         adapter = new ArrayAdapter<>(ViewSheltersPage.this, R.layout.list_item,
                 R.id.shelter_name,
-                shelters.keySet().toArray(new String[shelters.keySet().size()]));
+                shelterKeys.toArray(new String[shelterKeys.size()]));
         shelterList.setAdapter(adapter);
         shelterList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
