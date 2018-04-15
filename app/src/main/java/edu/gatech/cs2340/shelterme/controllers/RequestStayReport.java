@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.R;
@@ -150,12 +149,7 @@ public class RequestStayReport extends AppCompatActivity {
                         ReservationManager reservationManager = new ReservationManager(shelter);
                         Map<String, Collection<Bed>> reserved
                                 = reservationManager.reserveBed(selectedBedType, selctedNumber);
-                        for (String s : reserved.keySet()) {
-                            Log.e("BED_KEY", s);
-                            for (Bed b : reserved.get(s)) {
-                                Log.e("\nKEY_ID", b.getId());
-                            }
-                        }
+
                         dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, true);
                         dbUtil.updateUserOccupancyAndStayReports(user);
                     } catch (IllegalArgumentException iae) {

@@ -5,7 +5,7 @@ class ReportUserRequest extends Message {
 
     public ReportUserRequest(User reportedUser, String message, Employee sender) {
         super(message, sender);
-        String reportedUserEmail = reportedUser.getEmail();
+        @SuppressWarnings("unused") String reportedUserEmail = reportedUser.getEmail();
     }
 
 // --Commented out by Inspection START (4/13/2018 6:17 PM):

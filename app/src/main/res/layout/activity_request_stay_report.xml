@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#D2B4DE"
-    tools:context="edu.gatech.cs2340.shelterme.controllers.RequestStayReport">
+    tools:context="edu.gatech.cs2340.shelterme.controllers.RequestStayReport"
+    tools:ignore="Overdraw">
 
     <RelativeLayout
         android:layout_width="370dp"

@@ -11,7 +11,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.SearchView;
 
-import java.util.AbstractMap;
+import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Account;
@@ -24,7 +24,7 @@ public class AccountManagement extends AppCompatActivity {
     // RecyclerView data
 
     // --Commented out by Inspection (4/13/2018 6:17 PM):private AccountAdapter accountAdapter;
-    private AbstractMap<String, Account> dataSet;
+    private Map<String, Account> dataSet;
 
 
     @Override

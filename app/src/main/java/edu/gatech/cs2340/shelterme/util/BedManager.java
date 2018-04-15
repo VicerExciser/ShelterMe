@@ -12,12 +12,19 @@ import edu.gatech.cs2340.shelterme.model.Shelter;
 
 public class BedManager {
 
-    private Shelter currentShelter;
-    private String currShelterName;
+    private final Shelter currentShelter;
+//    private final String currShelterName;
 
-    public BedManager(String shelterName){
-        currShelterName = shelterName;
-        currentShelter = Model.findShelterByName(shelterName);
+    public BedManager(Shelter shelter){
+        if (shelter == null) {
+            throw new IllegalArgumentException("No BedManager can exist for a null Shelter.");
+        }
+        if (shelter.getBeds() != null) {
+            this.currentShelter = shelter;
+        } else {
+            Model model = Model.getInstance();
+            this.currentShelter = model.verifyShelterParcel(shelter); //.findShelterByName(shelter);
+        }
     }
 
 
@@ -64,7 +71,7 @@ public class BedManager {
         for (int i = lastId + 1; i < (lastId + numberOfBeds + 1); i++) {
             String newId = String.format(Locale.US, "bed_%d", i);
             Bed newBed = new Bed(newId, isFamily, menOnly, womenOnly, minAge, maxAge,
-                    veteranOnly, bedKey, currShelterName);
+                    veteranOnly, bedKey, currentShelter.getShelterName());
             bedType.put(newId, newBed);
             int curVacancy = currentShelter.getVacancies();
             currentShelter.setVacancies(curVacancy + 1);
@@ -175,3 +182,28 @@ public class BedManager {
         return null;
     }
 }
+
+
+/*
+    // Clears all occupied beds for this shelter
+    public void clearOccupiedBeds() {
+        Shelter curShelter = Model.getInstance().verifyShelterParcel(this);
+//        DBUtil dbUtil = DBUtil.getInstance();
+        for (String bedId : curShelter.beds.get("O").keySet()) {
+            Bed bed = curShelter.beds.get("O").remove(bedId);
+            User occupant = (User)Model.getAccountByEmail(bed.getOccupantEmail());
+            bed.removeOccupant(occupant.getEmail());
+            occupant.clearOccupiedBed();
+            StayReport curStay = occupant.getCurrentStayReport();
+            if (curStay != null && curStay.isActive())
+                curStay.checkOut();
+//            dbUtil.updateUserOccupancyAndStayReports(occupant);
+            String bedKey = bed.getSavedBedKey();
+            if (curShelter.beds.get(bedKey) != null) {
+                curShelter.beds.get(bedKey).put(bedKey, bed);
+            }
+            curShelter.vacancies++;
+        }
+    }
+    */
+

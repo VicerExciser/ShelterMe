@@ -15,14 +15,14 @@ import edu.gatech.cs2340.shelterme.model.User;
 
 public class ReservationManager {
 
-    private Shelter currentShelter;
+    private final Shelter currentShelter;
     private BedManager bedManager;
-    private Model model;
-    private User user;
+    private final Model model;
+    private final User user;
 
     public ReservationManager(Shelter shelter) {
         currentShelter = shelter;
-        bedManager = new BedManager(shelter);
+//        bedManager = new BedManager(shelter.getShelterName());
         model = Model.getInstance();
         user = ((User) (model.getCurrUser()));
     }
@@ -44,8 +44,7 @@ public class ReservationManager {
         } else if (numBeds == 0) {
             return null;
         }
-//        Model model = Model.getInstance();
-//        User user = ((User) (model.getCurrUser()));
+
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null.");
         }
@@ -59,7 +58,10 @@ public class ReservationManager {
         }
 
         Shelter curShelter = model.verifyShelterParcel(currentShelter);
+        if (curShelter == null) curShelter = currentShelter;
         String userKey = user.generateKey();
+        bedManager = curShelter.getShelterBedManager();
+//        if (bedManager == null) bedManager = new BedManager(curShelter);
         String bedTypeFoundKey = bedManager.findValidBedType(userKey);
         int curVacancies = curShelter.getVacancies();
 
@@ -195,6 +197,10 @@ public class ReservationManager {
 
         return reserved;
     }
+
+//    public BedManager getBedManager() {
+//        return bedManager;
+//    }
 
         /*
     // Clears all occupied beds for this shelter

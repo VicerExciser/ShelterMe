@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/common_google_signin_btn_text_light_pressed"
-    tools:context="edu.gatech.cs2340.shelterme.controllers.ShelterDetailsPage">
+    tools:context="edu.gatech.cs2340.shelterme.controllers.ShelterDetailsPage"
+    tools:ignore="Overdraw">
 
     <RelativeLayout
         android:layout_width="362dp"

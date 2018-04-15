@@ -26,7 +26,7 @@ Necessary shelter data to collect for each:
   - Shelter Name
   - Capacity (for individuals or for families)
   - Restrictions
-    -- Age (Families w/ newborns, Children, Yound Adults, Anyone)
+    -- Age (Families w/ newborns, Children, Young Adults, Anyone)
     -- Gender (Male, Female, Anyone)
     -- Families (Yes/No)
     -- Veterans only (Yes/No)

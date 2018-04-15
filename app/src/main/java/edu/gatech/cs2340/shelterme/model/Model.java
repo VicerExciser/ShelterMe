@@ -6,12 +6,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.util.DBUtil;
 import edu.gatech.cs2340.shelterme.util.MessageAdapter;
 
+/* Facade Controller */
 
 // SINGLETON -- Updated to be Thread-Safe for Synchronization
 @SuppressWarnings("AssignmentToStaticFieldFromInstanceMethod")
@@ -89,6 +89,7 @@ public final class Model {
     }
 
     public Account getCurrUser() {return currUser;}
+    @SuppressWarnings("unused")
     public void setCurrUser(String email, User usr) { this.currUser = usr;}
     public void setCurrUser(String email) {currUser = getAccountByEmail(email);}
 

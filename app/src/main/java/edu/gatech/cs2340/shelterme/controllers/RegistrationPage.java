@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import java.util.AbstractCollection;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Account;
@@ -336,7 +336,7 @@ public class RegistrationPage extends AppCompatActivity {
                 // between valid username or email for login validity checks
                 username = email;
             }
-            HashMap<String, Account> accountHashMap = Model.getAccountListPointer();
+            Map<String, Account> accountHashMap = Model.getAccountListPointer();
             for (Account a : accountHashMap.values()) {
                 String aEmail = a.getEmail();
                 String aUsername = a.getUsername();

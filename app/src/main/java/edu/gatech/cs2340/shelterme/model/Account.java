@@ -23,6 +23,7 @@ public abstract class Account {
         accountLocked = false;
     }
 
+    @SuppressWarnings("unused")
     String getName() {
         return this.name;
     }
@@ -37,6 +38,7 @@ public abstract class Account {
         return pw == this.password;
     }
 
+    @SuppressWarnings("unused")
     public boolean isAccountLocked() { return this.accountLocked; }
 
     // --Commented out by Inspection (4/13/2018 6:17 PM):
@@ -60,7 +62,7 @@ public abstract class Account {
         result = (31 * result) + this.email.toLowerCase().hashCode();
         result = (31 * result) + this.name.toLowerCase().hashCode();
         result = (31 * result) + this.password;
-        result = (31 * result) + this.accountType.toString().toLowerCase().hashCode();
+//        result = (31 * result) + this.accountType.toString().toLowerCase().hashCode();
         return result;
     }
 
@@ -70,19 +72,23 @@ public abstract class Account {
 //    }
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
+    // Work to eliminate any sort of subclass type checking
     void setAccountType(Type accountType) {
         this.accountType = accountType;
     }
     public Type getAccountType() { return this.accountType; }
 
+    @SuppressWarnings("unused")
     public Question getSecQuest() {
         return secQuest;
     }
 
+    @SuppressWarnings("unused")
     public void setSecQuest(Question secQuest) {
         this.secQuest = secQuest;
     }
 
+    @SuppressWarnings("unused")
     public String getSecAns() {
         return secAns;
     }

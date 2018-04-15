@@ -5,17 +5,25 @@ import edu.gatech.cs2340.shelterme.model.Age;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
 public class ShelterBuilder {
-    private static final int DEFAULT_BED_COUNT = 50;
-//    private Shelter newShelter;
-    private BedManager bedManager;
 
-    public void processRestrictions(String rs, Shelter newShelter) {
-//        if (rs != null && !rs.isEmpty())
-//            rs = "Anyone";
-//        this.newShelter = shelter;
-        bedManager = new BedManager(newShelter.getShelterName());
-//        String cp = shelter.capacityStr;
-        String cp = newShelter.getCapacityStr();
+    private static final int DEFAULT_BED_COUNT = 50;
+//    private BedManager bedManager;
+    private final ThreadLocal<Shelter> newShelter;
+
+
+    public ShelterBuilder(final Shelter shelter) {
+        this.newShelter = new ThreadLocal<Shelter>() {
+            @Override
+            protected Shelter initialValue() {
+                return shelter;
+            }
+        };
+    }
+
+    public void processRestrictions(String rs) {
+//        bedManager = new BedManager(newShelter);
+        Shelter shelter = newShelter.get();
+        String cp = shelter.getCapacityStr();
         boolean fam;
         boolean anyone;
         boolean exMen;
@@ -24,35 +32,30 @@ public class ShelterBuilder {
         boolean youngAdults;
         int ageFloor = Age.MIN_AGE.toInt();
         int ageCeiling = Age.MAX_AGE.toInt();
-        String rs1 = rs.toLowerCase();
-        anyone = rs1.contains("anyone");
+        String restrictionString = rs.toLowerCase();
+        anyone = restrictionString.contains("anyone");
         if (anyone) {
-/*
-fam = true;
-exMen = false;
-exWomen = false;
-exVets = false;
-*/
             ageFloor = Age.MIN_AGE.toInt();
             ageCeiling = Age.MAX_AGE.toInt();
             parseCapacity(cp, true, false, false, ageFloor, ageCeiling, false);
             return;
         } else {
-            fam = rs1.contains("families");
-            exWomen = !fam && rs1.contains("women");
-            exMen = !fam && !exWomen && rs1.contains("men");
+            fam = restrictionString.contains("families");
+            exWomen = !fam && restrictionString.contains("women");
+            exMen = !fam && !exWomen && restrictionString.contains("men");
         }
         if (exMen) {
             ageFloor = Age.ADULTS_BASE.toInt();
         }
-        exVets = rs1.contains("veterans");
+        exVets = restrictionString.contains("veterans");
         if (exVets) {
             ageFloor = Age.ADULTS_BASE.toInt();
             ageCeiling = Age.MAX_AGE.toInt();
         }
-        youngAdults = rs1.contains("young adults");
-        if (rs1.contains("children") || rs1.contains("newborns")) {
-            if (rs1.contains("newborns") || rs1.contains("under 5") || exWomen || exMen) {
+        youngAdults = restrictionString.contains("young adults");
+        if (restrictionString.contains("children") || restrictionString.contains("newborns")) {
+            if (restrictionString.contains("newborns") || restrictionString.contains("under 5")
+                    || exWomen || exMen) {
                 ageFloor = Age.MIN_AGE.toInt();
                 ageCeiling = Age.BABIES.toInt();
             } else {
@@ -72,8 +75,11 @@ exVets = false;
             ageFloor = Age.YOUNG_ADULTS_BASE.toInt();
             ageCeiling = Age.YOUNG_ADULTS_CAP.toInt();
         }
+
         parseCapacity(cp, fam, exMen, exWomen, ageFloor, ageCeiling, exVets);
     }
+
+
 
     // parse Capacity strings to extrapolate integers & bed types
     // make this set totalCapacity & call:
@@ -101,7 +107,7 @@ exVets = false;
                                     singleBeds += val;
                                 } else if (tokens[i + j].contains("apartment")) {
                                     familyBeds += val / 2;
-                                    singleBeds += val * 2;      // Special case! (Sorry, Mom.)
+                                    singleBeds += val * 2;
                                 }
                             }
                         }
@@ -148,6 +154,9 @@ exVets = false;
             maxAge = Age.MAX_AGE;
         }
 
+//        this.bedManager = new BedManager(newShelter);
+        BedManager bedManager = newShelter.get().getShelterBedManager();
+
         //this.setVacancies(singleBeds + familyBeds);
         if (singleBeds > 0) {
             bedManager.addNewBeds(singleBeds, false, mo, wo, minAge, maxAge, vo);
@@ -167,4 +176,7 @@ exVets = false;
         return val;
     }
 
+//    public BedManager getBedManager() {
+//        return this.bedManager;
+//    }
 }

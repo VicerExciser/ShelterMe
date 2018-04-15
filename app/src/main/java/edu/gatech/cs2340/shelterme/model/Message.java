@@ -64,9 +64,11 @@ public class Message implements Comparable<Message> {
 //    }
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
-    public void address() {
-        isAddressed = true;
-    }
+// --Commented out by Inspection START (4/14/18, 6:04 PM):
+//    public void address() {
+//        isAddressed = true;
+//    }
+// --Commented out by Inspection STOP (4/14/18, 6:04 PM)
 
     @Override
     public String toString() {

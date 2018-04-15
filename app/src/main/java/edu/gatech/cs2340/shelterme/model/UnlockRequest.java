@@ -4,7 +4,7 @@ class UnlockRequest extends Message {
 
     public UnlockRequest(User lockedUser, String message, Account sender) {
         super(message, sender);
-        String lockedUserEmail = lockedUser.getEmail();
+        @SuppressWarnings("unused") String lockedUserEmail = lockedUser.getEmail();
     }
 
 // --Commented out by Inspection START (4/13/2018 6:17 PM):

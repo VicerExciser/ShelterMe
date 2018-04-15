@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Bed;
@@ -17,6 +17,7 @@ import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.StayReport;
 import edu.gatech.cs2340.shelterme.model.User;
 import edu.gatech.cs2340.shelterme.util.DBUtil;
+import edu.gatech.cs2340.shelterme.util.ReservationManager;
 
 public class HomePage extends AppCompatActivity {
 
@@ -79,8 +80,9 @@ public class HomePage extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     try {
-                        HashMap<String, Collection<Bed>> reserved
-                                = shelter.undoReservation(curStay);
+                        ReservationManager reservationManager = new ReservationManager(shelter);
+                        Map<String, Collection<Bed>> reserved
+                                = reservationManager.undoReservation(curStay);
 //
                         dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, false);
                         dbUtil.updateUserOccupancyAndStayReports(curUser);

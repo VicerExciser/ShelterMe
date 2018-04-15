@@ -1,5 +1,6 @@
 package edu.gatech.cs2340.shelterme;
 
+import edu.gatech.cs2340.shelterme.util.BedManager;
 import edu.gatech.cs2340.shelterme.util.DBUtil;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.Bed;
@@ -7,6 +8,8 @@ import edu.gatech.cs2340.shelterme.model.User;
 import edu.gatech.cs2340.shelterme.model.StayReport;
 import edu.gatech.cs2340.shelterme.model.Account;
 import edu.gatech.cs2340.shelterme.model.Model;
+import edu.gatech.cs2340.shelterme.util.ReservationManager;
+import edu.gatech.cs2340.shelterme.util.ShelterBuilder;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -28,25 +31,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Collection;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
- * A class that tests the reserveBed() method in Shelter.java
+ * A class that tests the reserveBed() method that is handled by ReservationManager.java
  *
  * @author Austin Condict
  */
 @SuppressWarnings("ALL")
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(JUnit4.class)
-@PrepareForTest({ FirebaseDatabase.class, Model.class, DBUtil.class })
+@PrepareForTest({ FirebaseDatabase.class, Model.class, DBUtil.class, ReservationManager.class,
+        BedManager.class, ShelterBuilder.class, FirebaseApp.class})
 public class ReserveBedTest {
 
     /* Necessary fields for testing outcomes of reserveBed */
-    private Map<String, Collection<Bed>> reservedResults;
+    private static Map<String, Collection<Bed>> reservedResults;
     private static Map<String, Shelter> mockShelterList;
     private static Shelter currShelter;
     private static User currUser;
@@ -54,18 +60,22 @@ public class ReserveBedTest {
     private static final String bedKeyExpected = "FTF026_200_F";
     private static final String bedType = "Single";
     private static final int bedsToReserve = 5;
-
     @Mock
     private static Model mockModel;
-
     @Mock
     private static DBUtil mockDBUtil;
-
     @Mock
     private static DatabaseReference mockDatabaseReference;
-
     @Mock
     private static FirebaseDatabase mockFirebaseDatabase;
+    @Mock
+    private static FirebaseApp mockFirebaseApp;
+    @Mock
+    private static ReservationManager mockReservationManager;
+    @Mock
+    private static BedManager mockBedManager;
+    @Mock
+    private static ShelterBuilder mockShelterBuilder;
 
     /* Necessary attributes for instantiating a Shelter */
     private static final String shelterKey = "s_20_Sample Shelter";
@@ -94,13 +104,18 @@ public class ReserveBedTest {
     public static void setup() {
         mockModel = Mockito.mock(Model.class);
         mockDBUtil = Mockito.mock(DBUtil.class);
+        mockReservationManager = Mockito.mock(ReservationManager.class);
         currUser = new User(userFullName, username, userEmail, userPassword, userSex, userAge,
                 userIsFamily, secQuest, secAns);
+//        when(Model.findShelterByName(shelterName)).thenReturn(currShelter);
+        PowerMockito.mock(Shelter.class);
         currShelter = new Shelter(shelterKey, shelterName, capacityStr, restrictions, longitude,
                 latitude, address, notes, phone);
         userKey = currUser.generateKey();
         mockShelterList = new HashMap<>();
         mockShelterList.put(currShelter.getShelterName(), currShelter);
+//        mockReservationManager = new ReservationManager(currShelter);
+//        bedManager = new BedManager(currShelter.getShelterName());
     }
 
     @Before
@@ -112,16 +127,47 @@ public class ReserveBedTest {
         PowerMockito.mockStatic(FirebaseDatabase.class);
         when(FirebaseDatabase.getInstance()).thenReturn(mockFirebaseDatabase);
 
+        PowerMockito.mockStatic(FirebaseApp.class);
+        when(FirebaseApp.getInstance()).thenReturn(mockFirebaseApp);
+
         PowerMockito.mockStatic(Model.class);
         when(Model.getInstance()).thenReturn(mockModel);
 
         PowerMockito.mockStatic(DBUtil.class);
         when(DBUtil.getInstance()).thenReturn(mockDBUtil);
 
+        PowerMockito.mock(ShelterBuilder.class);
+        try {
+            whenNew(ShelterBuilder.class).withArguments(currShelter).thenReturn(mockShelterBuilder);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        PowerMockito.mock(BedManager.class);
+
+        mockBedManager = currShelter.getShelterBedManager();  //////////
+
+        try {
+            whenNew(BedManager.class).withArguments(currShelter).thenReturn(mockBedManager);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mockReservationManager = new ReservationManager(currShelter);   //////
+
+        try {
+            whenNew(ReservationManager.class).withArguments(currShelter)
+                    .thenReturn(mockReservationManager);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         when(mockModel.getCurrUser()).thenReturn((User)currUser);
+
+
+//        when(currShelter.getShelterBedManager()).thenReturn(mockBedManager);
         when(Model.getInstance().getCurrUser()).thenReturn((User)currUser);
-        when(Model.getShelterListPointer()).thenReturn((HashMap<String, Shelter>) mockShelterList);
+        when(Model.getShelterListPointer()).thenReturn((Map<String, Shelter>) mockShelterList);
         when(Model.getInstance().verifyShelterParcel(currShelter)).thenReturn(currShelter);
+        when(Model.findShelterByName(shelterName)).thenReturn(currShelter);
     }
 
     @Test
@@ -133,7 +179,8 @@ public class ReserveBedTest {
         assertEquals(currShelter.getVacancies(), 5);
         assertEquals(currShelter.getSingleCapacity(), 5);
         assertEquals(currShelter.getBeds().values().size(), 2);
-        assertEquals(currShelter.findValidBedType(userKey), bedKeyExpected);
+        assertEquals(currShelter.getShelterBedManager().findValidBedType(userKey),
+                bedKeyExpected);
     }
 
     @Test
@@ -142,37 +189,37 @@ public class ReserveBedTest {
 
         // Bed type cannot be null or gibberish (must be "Single" or "Family")
         try {
-            currShelter.reserveBed(null, 1);
+            mockReservationManager.reserveBed(null, 1);
         } catch (IllegalArgumentException iae) {
             failCount++;
         }
 
         try {
-            currShelter.reserveBed("lksjafhkjsbkjsf", 1);
+            mockReservationManager.reserveBed("lksjafhkjsbkjsf", 1);
         } catch (IllegalArgumentException iae) {
             failCount++;
         }
 
         // Number of beds must be a positive integer less than shelter capacity/current vacancies
         try {
-            currShelter.reserveBed(bedType, -1);
+            mockReservationManager.reserveBed(bedType, -1);
         } catch (IllegalArgumentException iae) {
             failCount++;
         }
 
-        reservedResults = currShelter.reserveBed(bedType, 0);
+        reservedResults = mockReservationManager.reserveBed(bedType, 0);
         if (reservedResults == null) {
             failCount++;
         }
 
         try {
-            currShelter.reserveBed("Single", 1000);
+            mockReservationManager.reserveBed("Single", 1000);
         } catch (IllegalArgumentException iae) {
             failCount++;
         }
 
         try {
-            currShelter.reserveBed("Family", 1000);
+            mockReservationManager.reserveBed("Family", 1000);
         } catch (IllegalArgumentException iae) {
             failCount++;
         }
@@ -192,7 +239,7 @@ public class ReserveBedTest {
 
         // User cannot be null
         try {
-            currShelter.reserveBed("Single", 5);
+            mockReservationManager.reserveBed("Single", 5);
         } catch (IllegalArgumentException iae) {
             failCount++;
             mockModel.setCurrUser(userEmail, currUser);
@@ -202,7 +249,7 @@ public class ReserveBedTest {
         // User must not have already reserved a bed
         currUser.setIsOccupyingBed(true);
         try {
-            currShelter.reserveBed(bedType, bedsToReserve);
+            mockReservationManager.reserveBed(bedType, bedsToReserve);
         } catch (IllegalArgumentException iae) {
             failCount++;
             currUser.clearOccupiedBed();
@@ -211,7 +258,7 @@ public class ReserveBedTest {
         // User cannot have any active stay report
         currUser.addStayReport(new StayReport());
         try {
-            currShelter.reserveBed(bedType, bedsToReserve);
+            mockReservationManager.reserveBed(bedType, bedsToReserve);
         } catch (IllegalArgumentException iae) {
             failCount++;
             currUser.clearStayReportHistory();
@@ -226,7 +273,7 @@ public class ReserveBedTest {
         if (mockModel.getCurrUser() == null) {
             mockModel.setCurrUser(userEmail, currUser);
         }
-        reservedResults = currShelter.reserveBed(bedType, bedsToReserve);
+        reservedResults = mockReservationManager.reserveBed(bedType, bedsToReserve);
 
         // Test that reservation returned valid beds
         assertFalse(reservedResults.isEmpty());
@@ -240,7 +287,7 @@ public class ReserveBedTest {
         assertTrue(currUser.isOccupyingBed());
 
         // Test that shelter's list of occupied beds was correctly populated
-        AbstractMap<String, Bed> occupied = currShelter.getBeds().get("O");
+        Map<String, Bed> occupied = currShelter.getBeds().get("O");
         assertNotNull(occupied);
         assertFalse(occupied.isEmpty());
 

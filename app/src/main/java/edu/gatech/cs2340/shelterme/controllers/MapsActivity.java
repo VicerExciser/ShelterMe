@@ -22,6 +22,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Bed;
@@ -168,7 +169,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         double tempLatitude = 33.7490;
         double tempLongitude = -84.3880;
         LatLng loc = new LatLng(tempLatitude, tempLongitude);
-        List<Marker> markers = populateMap();
+        @SuppressWarnings("unused") List<Marker> markers = populateMap();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
         int tempZoom = 11;
         mMap.moveCamera(CameraUpdateFactory.zoomTo(tempZoom));
@@ -199,14 +200,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (!ignoreUpdate) {
             shelters.clear();
             updateCounter++;
-            HashMap<String, Shelter> shelterHashMap = Model.getShelterListPointer();
+            Map<String, Shelter> shelterHashMap = Model.getShelterListPointer();
             if (showAll) {
                 for (Shelter s : shelterHashMap.values()) {
                     shelters.put(s.getShelterName(), s);
                 }
             } else {
                 for (Shelter s : shelterHashMap.values()) {
-                    HashMap<String, HashMap<String, Bed>> bedHashmap = s.getBeds();
+                    Map<String, Map<String, Bed>> bedHashmap = s.getBeds();
                     for (String key : bedHashmap.keySet()) {
                         if (key.length() > 1) {
                             if (familyChoiceMatchesKey(key, isChecked) && (s.getVacancies() > 0)) {

@@ -7,8 +7,8 @@ package edu.gatech.cs2340.shelterme.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Stack;
 
 public class StayReport {
@@ -16,7 +16,7 @@ public class StayReport {
     private boolean active;
     private int numReserved;
     private String shelterName;
-    private final List<String> reservedBeds;
+    private final Collection<String> reservedBeds;
     private String checkInDate;
     private String accountEmail;
 
@@ -56,7 +56,7 @@ public class StayReport {
     }
 
     // Returns a List of the reserved Bed IDs for this stay (i.e. "bed_50")
-    public List<String> getReservedBeds() {
+    public Collection<String> getReservedBeds() {
         return this.reservedBeds;
     }
 
@@ -92,7 +92,7 @@ public class StayReport {
     }
 
     private void setCheckOutDate(String checkOutDate) {
-        String checkOutDate1 = checkOutDate;
+        @SuppressWarnings("unused") String checkOutDate1 = checkOutDate;
     }
 
     private void setActive(boolean active) {

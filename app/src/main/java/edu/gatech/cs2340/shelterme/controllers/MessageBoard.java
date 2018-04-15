@@ -19,16 +19,16 @@ import edu.gatech.cs2340.shelterme.model.Message;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.util.MessageAdapter;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class MessageBoard extends AppCompatActivity {
 
     private RecyclerView messageRecyclerView;
-    private AbstractMap<String, Message> dataSet;
+    private Map<String, Message> dataSet;
 
 
     @Override

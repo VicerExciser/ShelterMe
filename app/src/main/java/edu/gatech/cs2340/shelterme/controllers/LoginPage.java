@@ -11,8 +11,7 @@ import android.widget.ImageButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Account;
@@ -95,7 +94,7 @@ public class LoginPage extends AppCompatActivity {
             Log.e("attemptLogin", "Account list is empty!");
         } else {
             int count = 0;
-            HashMap<String, Account> accountCollection = Model.getAccountListPointer();
+            Map<String, Account> accountCollection = Model.getAccountListPointer();
             for (Account acct : accountCollection.values()) {
                 Log.e("Account " + count, acct.getUsername());
                 count++;

@@ -67,7 +67,7 @@ public class BedIDTest {
         when(Model.getInstance()).thenReturn(testModel);
         PowerMockito.mockStatic(DBUtil.class);
         when(DBUtil.getInstance()).thenReturn(testDBUtil);
-        when(Model.getShelterListPointer()).thenReturn((HashMap<String, Shelter>) testShelterList);
+        when(Model.getShelterListPointer()).thenReturn(testShelterList);
     }
 
     @Test

@@ -33,8 +33,7 @@ import edu.gatech.cs2340.shelterme.model.User;
 import static android.content.ContentValues.TAG;
 
 // Properly configured implementation of Runnable interface so that not all work done on main thread
-@SuppressWarnings({"SynchronizeOnNonFinalField", "AssignmentToStaticFieldFromInstanceMethod",
-        "FieldMayBeFinal", "CanBeFinal", "MismatchedQueryAndUpdateOfCollection", "ChainedMethodCall"})
+@SuppressWarnings("ALL")
 // Declared volatile rather than final for sync.
 //@Singleton
 public final class DBUtil implements Runnable {
@@ -398,18 +397,18 @@ public final class DBUtil implements Runnable {
 //-------------------------------------------------------------------------------------------------
 
     // Map: <Email, Account>
-    public static HashMap<String, Account> getAccountListPointer() {
-        return (HashMap<String, Account>) accountList;
+    public static Map<String, Account> getAccountListPointer() {
+        return accountList;
     }
 
     // Map: <ShelterName, Shelter>
-    public static HashMap<String, Shelter> getShelterListPointer() {
-        return (HashMap<String, Shelter>) shelterList;
+    public static Map<String, Shelter> getShelterListPointer() {
+        return shelterList;
     }
 
     // Map<String, Message> messageList
-    public static HashMap<String, Message> getMessageListPointer() {
-        return (HashMap<String, Message>) messageList;
+    public static Map<String, Message> getMessageListPointer() {
+        return messageList;
     }
 
 // --Commented out by Inspection START (4/13/2018 6:17 PM):
@@ -421,6 +420,7 @@ public final class DBUtil implements Runnable {
 
 //-------------------------------------------------------------------------------------------------
     // Primary key = shelterKey_shelterName
+    @SuppressWarnings("unused")
     public void addShelter(Shelter newShelter) {
         String key = newShelter.getShelterKey() + "_" + newShelter.getShelterName();
         sheltersRef.child(key).setValue(newShelter,
