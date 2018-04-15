@@ -16,7 +16,6 @@ import edu.gatech.cs2340.shelterme.model.User;
 public class ReservationManager {
 
     private final Shelter currentShelter;
-    private BedManager bedManager;
     private final Model model;
     private final User user;
 
@@ -60,7 +59,7 @@ public class ReservationManager {
         Shelter curShelter = model.verifyShelterParcel(currentShelter);
         if (curShelter == null) curShelter = currentShelter;
         String userKey = user.generateKey();
-        bedManager = curShelter.getShelterBedManager();
+        BedManager bedManager = curShelter.getShelterBedManager();
 //        if (bedManager == null) bedManager = new BedManager(curShelter);
         String bedTypeFoundKey = bedManager.findValidBedType(userKey);
         int curVacancies = curShelter.getVacancies();

@@ -51,12 +51,16 @@ public class LoginPage extends AppCompatActivity {
                     Account acct = model.getCurrUser();
                     Intent myIntent1 = null;
                     Account.Type type = acct.getAccountType();
-                    if (type == Account.Type.USER) {
-                           myIntent1 = new Intent(view.getContext(), HomePage.class);
-                    } else if (type == Account.Type.ADMIN) {
-                        myIntent1 = new Intent(view.getContext(), AdminHomePage.class);
-                    } else if (type == Account.Type.EMP) {
-                        myIntent1 = new Intent(view.getContext(), EmployeeHomePage.class);
+                    switch (type) {
+                        case USER:
+                            myIntent1 = new Intent(view.getContext(), HomePage.class);
+                            break;
+                        case ADMIN:
+                            myIntent1 = new Intent(view.getContext(), AdminHomePage.class);
+                            break;
+                        case EMP:
+                            myIntent1 = new Intent(view.getContext(), EmployeeHomePage.class);
+                            break;
                     }
                     if (myIntent1 != null) {
                         startActivityForResult(myIntent1, 0);

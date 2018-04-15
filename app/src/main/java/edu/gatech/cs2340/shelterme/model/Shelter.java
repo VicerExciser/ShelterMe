@@ -2,6 +2,7 @@ package edu.gatech.cs2340.shelterme.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.HashMap;
@@ -32,10 +33,10 @@ public class Shelter implements Parcelable {
 
 //    private HashMap<String, LinkedHashMap<String, Bed>> beds;
     private Map<String, Map<String, Bed>> beds;
+    @Nullable
     private Bed lastBedAdded;
     private int vacancies;
 
-    private ShelterBuilder shelterBuilder;
     private BedManager bedManager;
 
 //    @interface IgnoreExtraProperties {}
@@ -64,7 +65,7 @@ public class Shelter implements Parcelable {
         this.phone = num;
         setFamilyCapacity(0);
         setSingleCapacity(0);
-        this.shelterBuilder = new ShelterBuilder(this);
+        ShelterBuilder shelterBuilder = new ShelterBuilder(this);
 //        bedManager = new BedManager(this);
         this.beds = new HashMap<>();
         //noinspection MismatchedQueryAndUpdateOfCollection

@@ -23,7 +23,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
 // .keySet() returns a Set<String>
 // .values() returns a Collection<Bed>
