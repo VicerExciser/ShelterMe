@@ -80,7 +80,8 @@ public class HomePage extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     try {
-                        ReservationManager reservationManager = new ReservationManager(shelter);
+                        ReservationManager reservationManager
+                                = new ReservationManager(shelter, curUser);
                         Map<String, Collection<Bed>> reserved
                                 = reservationManager.undoReservation(curStay);
 //

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -146,24 +147,25 @@ public class RequestStayReport extends AppCompatActivity {
                 if (agreed) {
                     if (shelter.getVacancies() >= selctedNumber) {
                         try {
-                            ReservationManager reservationManager = new ReservationManager(shelter);
-                            Map<String, Collection<Bed>> reserved
+                                ReservationManager reservationManager
+                                    = new ReservationManager(shelter, user);
+                                Map<String, Collection<Bed>> reserved
                                     = reservationManager.reserveBed(selectedBedType, selctedNumber);
 
-                            dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, true);
-                            dbUtil.updateUserOccupancyAndStayReports(user);
-                        } catch (IllegalArgumentException iae) {
-                            model.displayErrorMessage(iae.getMessage(),
-                                    RequestStayReport.this);
-                            success = false;
-                        }
+                                dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, true);
+                                dbUtil.updateUserOccupancyAndStayReports(user);
+                            } catch (IllegalArgumentException iae) {
+                                model.displayErrorMessage(iae.getMessage(),
+                                        RequestStayReport.this);
+                                success = false;
+                            }
                     } else {
                         model.displayErrorMessage("This shelter does not have "
                                 + String.valueOf(selctedNumber) + " bed(s) available",
                                 RequestStayReport.this);
                         success = false;
                     }
-                }else {
+                } else {
                     model.displayErrorMessage("Must agree to shelter terms " +
                                     "to submit a request",
                             RequestStayReport.this);
