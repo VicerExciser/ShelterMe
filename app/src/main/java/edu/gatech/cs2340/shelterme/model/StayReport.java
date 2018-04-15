@@ -27,7 +27,8 @@ public class StayReport {
     public StayReport(Shelter shelter, User account, Iterable<Bed> bedList) {
         this.setActive(true);
         this.setShelterName(shelter.getShelterName());
-        account.setIsOccupyingBed(true);
+        if (!account.isOccupyingBed())
+            account.setIsOccupyingBed(true);
         setAccountEmail(account.getEmail());
         Date timestamp = (Calendar.getInstance().getTime());
         Long startDate = timestamp.getTime();

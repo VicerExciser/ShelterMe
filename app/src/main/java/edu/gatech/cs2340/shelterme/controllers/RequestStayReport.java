@@ -146,7 +146,8 @@ public class RequestStayReport extends AppCompatActivity {
                 User user = (User)model.getCurrUser();
                 if (agreed) {
                     if (shelter.getVacancies() >= selctedNumber) try {
-                        ReservationManager reservationManager = new ReservationManager(shelter);
+                        ReservationManager reservationManager
+                                = new ReservationManager(shelter, user);
                         Map<String, Collection<Bed>> reserved
                                 = reservationManager.reserveBed(selectedBedType, selctedNumber);
 
