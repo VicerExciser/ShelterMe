@@ -5,6 +5,7 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ff00bbbb"
     tools:context="edu.gatech.cs2340.shelterme.controllers.EditShelter">
 
     <EditText

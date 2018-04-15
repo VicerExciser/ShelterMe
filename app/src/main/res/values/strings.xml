@@ -57,6 +57,5 @@
     <string name="view_all_shelters">VIEW ALL SHELTERS</string>
     <string name="map_of_nearby_shelters">MAP OF NEARBY SHELTERS</string>
     <string name="check_out_from_current_shelter_stay">CHECK OUT FROM CURRENT SHELTER STAY</string>
-    <string name="show_only_unaddressed_messages">Show only unaddressed messages</string>
 
 </resources>
