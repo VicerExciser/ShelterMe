@@ -27,9 +27,6 @@ dependencies {
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
-    //noinspection GradleDependency
-//    implementation 'com.google.android.gms:play-services:11.8.0'
-    //noinspection GradleDependency
     implementation 'com.google.android.gms:play-services-maps:11.8.0'
 
     testImplementation 'junit:junit:4.12'
