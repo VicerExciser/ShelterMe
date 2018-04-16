@@ -1,8 +1,5 @@
 package edu.gatech.cs2340.shelterme;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,9 +12,8 @@ import static org.junit.Assert.*;
 /**
  * Created by kyraalexandraleroux on 4/15/18.
  */
-@RunWith(AndroidJUnit4.class)
 public class KyraGenerateKeyTest {
-    User user = new User("j", "l", "jl", 0, Account.Sex.MALE, 00,
+    private User user = new User("j", "l", "jl", 0, Account.Sex.MALE, 0,
          false,
          null, null);
     @Test
@@ -41,5 +37,16 @@ public class KyraGenerateKeyTest {
         User user = new User("j", "l", "jl", 0, Account.Sex.MALE, 120,
                 false, null, null);
         assertEquals("FM120F", user.generateKey());
+    }
+    @Test
+    public void SomethingsMissingTest() {
+        User user = new User("j", "l", "jl", 0, null, 120,
+                false, null, null);
+        assertEquals("F", user.generateKey());
+    }
+    @Test
+    public void DefaultUserTest() {
+        User user = new User();
+        assertEquals("FM25F", user.generateKey());
     }
 }

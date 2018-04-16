@@ -66,12 +66,16 @@ public class User extends Account {
      */
     public String generateKey() {
         // Ex. key:  'FM25F'  <-- not family account, male, 25 yrs old, not a veteran
+
         String userKey = "";
-        userKey += this.isFamily ? 'T' : 'F';
-        userKey += this.sex.toString();
-        userKey += Integer.toString(this.age);
-        userKey += this.isVeteran ? 'T' : 'F';
-        return userKey;
+        try {
+            userKey += this.isFamily ? 'T' : 'F';
+            userKey += this.sex.toString();
+            userKey += Integer.toString(this.age);
+            userKey += this.isVeteran ? 'T' : 'F';
+        } finally {
+            return userKey;
+        }
     }
 
     /**
