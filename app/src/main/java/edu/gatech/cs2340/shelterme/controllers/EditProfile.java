@@ -10,6 +10,9 @@ import android.support.v7.widget.Toolbar;
 
 import edu.gatech.cs2340.shelterme.R;
 
+/**
+ * The type Edit profile.
+ */
 public class EditProfile extends AppCompatActivity {
     // --Commented out by Inspection (4/13/2018 6:17 PM):DBUtil dbUtil = DBUtil.getInstance();
 

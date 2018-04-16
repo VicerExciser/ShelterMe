@@ -12,6 +12,9 @@ import android.view.View;
 
 import edu.gatech.cs2340.shelterme.R;
 
+/**
+ * The type Stay report history.
+ */
 public class StayReportHistory extends AppCompatActivity {
 
     @Override

@@ -2,17 +2,36 @@ package edu.gatech.cs2340.shelterme.model;
 import java.util.List;
 import java.util.Stack;
 
+/**
+ * The type User.
+ */
 public class User extends Account {
 
     private final boolean isFamily;
     private final int age;
     private final Sex sex;
     private final boolean isVeteran;
+    /**
+     * The Is occupying bed.
+     */
     public boolean isOccupyingBed;
     private List<StayReport> stayReports;
 
 
-    // Collect isVeteran information from registration/edit profile, pass into constructor
+    /**
+     * Instantiates a new User.
+     *
+     * @param name     the name
+     * @param uname    the uname
+     * @param email    the email
+     * @param pass     the pass
+     * @param sex      the sex
+     * @param age      the age
+     * @param isFamily the is family
+     * @param secQ     the sec q
+     * @param secA     the sec a
+     */
+// Collect isVeteran information from registration/edit profile, pass into constructor
     // (set to False for default until then)
     public User(String name, String uname, String email, int pass, Sex sex, int age,
                 boolean isFamily,
@@ -28,6 +47,9 @@ public class User extends Account {
     }
 
 
+    /**
+     * Instantiates a new User.
+     */
     public User() {
         //noinspection MagicNumber
         this("user steve", "user", "user@gmail.com", "pass".hashCode(),
@@ -36,6 +58,11 @@ public class User extends Account {
     }
 
 
+    /**
+     * Generate key string.
+     *
+     * @return the string
+     */
     public String generateKey() {
         // Ex. key:  'FM25F'  <-- not family account, male, 25 yrs old, not a veteran
         String userKey = "";
@@ -46,14 +73,29 @@ public class User extends Account {
         return userKey;
     }
 
+    /**
+     * Gets stay reports.
+     *
+     * @return the stay reports
+     */
     public List<StayReport> getStayReports() {
         return this.stayReports;
     }
 
+    /**
+     * Add stay report.
+     *
+     * @param stay the stay
+     */
     public void addStayReport(StayReport stay) {
         this.stayReports.add(stay);
     }
 
+    /**
+     * Gets current stay report.
+     *
+     * @return the current stay report
+     */
     public StayReport getCurrentStayReport () {
         StayReport cur = null;
         if (!this.stayReports.isEmpty()) {
@@ -110,18 +152,34 @@ public class User extends Account {
 //    }
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
+    /**
+     * Is occupying bed boolean.
+     *
+     * @return the boolean
+     */
     public boolean isOccupyingBed() {
         return this.isOccupyingBed;
     }
 
+    /**
+     * Sets is occupying bed.
+     *
+     * @param tf the tf
+     */
     public final void setIsOccupyingBed(boolean tf) {
         this.isOccupyingBed = tf;
     }
 
+    /**
+     * Clear occupied bed.
+     */
     public void clearOccupiedBed() {
         setIsOccupyingBed(false);
     }
 
+    /**
+     * Clear stay report history.
+     */
     public void clearStayReportHistory() {
         this.stayReports.clear();
         if (stayReports == null) {

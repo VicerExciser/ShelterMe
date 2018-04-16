@@ -10,11 +10,19 @@ import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
+/**
+ * The type Bed manager.
+ */
 public class BedManager {
 
     private final Shelter currentShelter;
 //    private final String currShelterName;
 
+    /**
+     * Instantiates a new Bed manager.
+     *
+     * @param shelter the shelter
+     */
     public BedManager(Shelter shelter){
         if (shelter == null) {
             throw new IllegalArgumentException("No BedManager can exist for a null Shelter.");
@@ -28,7 +36,18 @@ public class BedManager {
     }
 
 
-    //Bed Handling
+    /**
+     * Add new beds.
+     *
+     * @param numberOfBeds the number of beds
+     * @param isFamily     the is family
+     * @param menOnly      the men only
+     * @param womenOnly    the women only
+     * @param minAge       the min age
+     * @param maxAge       the max age
+     * @param veteranOnly  the veteran only
+     */
+//Bed Handling
 // Ex. bedKey: 'FFF026_200_T'  <-- single bed, not men only, not women only, minAge = 26 (ADULT),
 //                                   maxAge = 200 (MAX_AGE), is veterans only
 // CALLED FROM SHELTER BUILDER
@@ -91,6 +110,12 @@ public class BedManager {
 //        return findValidBedType(userKey) != null;
 //    }
 
+    /**
+     * Find valid bed type string.
+     *
+     * @param userKey the user key
+     * @return the string
+     */
 //----------------------------------------------------------------------------------
 // CALLED FROM RESERVATION MANAGER
     public String findValidBedType(String userKey) {

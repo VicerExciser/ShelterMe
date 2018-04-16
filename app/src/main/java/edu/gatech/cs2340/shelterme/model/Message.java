@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * The type Message.
+ */
 public class Message implements Comparable<Message> {
     private final String message;
     private final String timeSent;
@@ -12,6 +15,12 @@ public class Message implements Comparable<Message> {
     @SuppressWarnings("FieldMayBeFinal")
     private boolean isAddressed;
 
+    /**
+     * Instantiates a new Message.
+     *
+     * @param message the message
+     * @param sender  the sender
+     */
     public Message(String message, Account sender) {
         this.message = message;
         //noinspection ChainedMethodCall
@@ -20,11 +29,19 @@ public class Message implements Comparable<Message> {
         this.isAddressed = false;
     }
 
+    /**
+     * Instantiates a new Message.
+     */
     public Message() {
         this("No Message Given", new User());
     }
 
 
+    /**
+     * Gets message.
+     *
+     * @return the message
+     */
     public String getMessage() {
         return message;
     }
@@ -35,6 +52,11 @@ public class Message implements Comparable<Message> {
 //    }
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
+    /**
+     * Gets time sent.
+     *
+     * @return the time sent
+     */
     public String getTimeSent() {
         return timeSent;
     }
@@ -45,6 +67,11 @@ public class Message implements Comparable<Message> {
 //    }
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
+    /**
+     * Gets sender email.
+     *
+     * @return the sender email
+     */
     public String getSenderEmail() {
         return senderEmail;
     }
@@ -55,6 +82,11 @@ public class Message implements Comparable<Message> {
 //    }
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
+    /**
+     * Is addressed boolean.
+     *
+     * @return the boolean
+     */
     public boolean isAddressed() {
         return isAddressed;
     }

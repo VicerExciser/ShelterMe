@@ -10,6 +10,9 @@ import android.support.v7.widget.Toolbar;
 
 import edu.gatech.cs2340.shelterme.R;
 
+/**
+ * The type Send admin request.
+ */
 public class SendAdminRequest extends AppCompatActivity {
 
     @Override

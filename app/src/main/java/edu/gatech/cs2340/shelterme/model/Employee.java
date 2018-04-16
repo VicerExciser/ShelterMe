@@ -1,16 +1,33 @@
 package edu.gatech.cs2340.shelterme.model;
 
 
+/**
+ * The type Employee.
+ */
 public class Employee extends Account {
 
     private Shelter placeOfWork;
 
+    /**
+     * Instantiates a new Employee.
+     *
+     * @param name  the name
+     * @param uname the uname
+     * @param email the email
+     * @param pass  the pass
+     * @param work  the work
+     * @param secQ  the sec q
+     * @param secA  the sec a
+     */
     public Employee(String name, String uname, String email, int pass, Shelter work,
                     Question secQ, String secA) {
         super(name, uname, email, pass, secQ, secA);
         setPlaceOfWork(work);
     }
 
+    /**
+     * Instantiates a new Employee.
+     */
     public Employee() {
         super("Working Employee", "shelterboi420", "employeeboi@shelters.com",
                 "employee".hashCode(), Question.PET, "Spot");

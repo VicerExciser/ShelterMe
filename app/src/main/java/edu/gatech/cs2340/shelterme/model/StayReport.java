@@ -15,7 +15,6 @@ import java.util.Stack;
  * Information holder for a User's stay at a Shelter
  * Instances created from Shelter.reserveBed()
  */
-
 public class StayReport {
 
     private boolean active;
@@ -35,6 +34,7 @@ public class StayReport {
 
     /**
      * A cosntructor for StayReport class
+     *
      * @param shelter the name of the shelter
      * @param account the account type
      * @param bedList the list of beds
@@ -61,6 +61,7 @@ public class StayReport {
     }
 
     // Called from Shelter.undoReservation
+
     /**
      * Sets the stay/reservation checkout time
      */
@@ -73,15 +74,16 @@ public class StayReport {
 
     /**
      * A getter for the active status of the stay/reservation
-     * @return
+     *
+     * @return boolean
      */
-
     public boolean isActive() {
         return this.active;
     }
 
     /**
      * A getter for numReserved
+     *
      * @return the number of beds reserved
      */
     public int getNumReserved() {
@@ -90,6 +92,7 @@ public class StayReport {
 
     /**
      * A getter for the reserved beds
+     *
      * @return a List of the reserved Bed IDs for this stay (i.e. "bed_50")
      */
     public Collection<String> getReservedBeds() {
@@ -104,12 +107,23 @@ public class StayReport {
 
     /**
      * A getter for checkInDate
+     *
      * @return the check in date for the bed's occupant
      */
     public String getCheckInDate() { return this.checkInDate; }
 
+    /**
+     * Gets check out date.
+     *
+     * @return the check out date
+     */
     public String getCheckOutDate() { return this.checkOutDate; }
 
+    /**
+     * Gets account email.
+     *
+     * @return the account email
+     */
     public String getAccountEmail() {
         return accountEmail;
     }
@@ -118,6 +132,11 @@ public class StayReport {
         this.accountEmail = accountEmail;
     }
 
+    /**
+     * Gets shelter name.
+     *
+     * @return the shelter name
+     */
     public String getShelterName() {
         return shelterName;
     }

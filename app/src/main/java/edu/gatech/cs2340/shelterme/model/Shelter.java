@@ -12,6 +12,9 @@ import java.util.Map;
 import edu.gatech.cs2340.shelterme.util.BedManager;
 import edu.gatech.cs2340.shelterme.util.ShelterBuilder;
 
+/**
+ * The type Shelter.
+ */
 public class Shelter implements Parcelable {
     // Had to change shelterKey to String in the form: "s_1" for the sake of serialization
     // (throws DatabaseException otherwise)
@@ -43,12 +46,28 @@ public class Shelter implements Parcelable {
 //    @JsonIgnore
 //    private DBUtil dbUtil = DBUtil.getInstance();
 
+    /**
+     * Instantiates a new Shelter.
+     */
     public Shelter() {
         this("s_1001", "<Shelter Name Here>", "500", "Anyone",
                 0, 0,
                 "123 Sesame St", "", "(800) 800-8008");
     }
 
+    /**
+     * Instantiates a new Shelter.
+     *
+     * @param key          the key
+     * @param name         the name
+     * @param capacity     the capacity
+     * @param restrictions the restrictions
+     * @param longitude    the longitude
+     * @param latitude     the latitude
+     * @param address      the address
+     * @param specNotes    the spec notes
+     * @param num          the num
+     */
     public Shelter(String key, String name, String capacity, String restrictions, double longitude,
                    double latitude, String address, String specNotes, String num) {
 
@@ -85,6 +104,11 @@ public class Shelter implements Parcelable {
         }
     }
 
+    /**
+     * Instantiates a new Shelter.
+     *
+     * @param parcel the parcel
+     */
     public Shelter(Parcel parcel) {
         shelterKey = parcel.readString();
         shelterName = parcel.readString();
@@ -108,6 +132,11 @@ public class Shelter implements Parcelable {
                 capacityStr, restrictions, longitude, latitude, address, notes, phone);
     }
 
+    /**
+     * Detail string.
+     *
+     * @return the string
+     */
     String detail() {
         String buff = "====================================================================" +
                 "========================\n";
@@ -132,12 +161,23 @@ public class Shelter implements Parcelable {
 //    }
     // ^ can also do user.getCurrentStayReport().getReservedBeds();
 
+    /**
+     * Has open bed boolean.
+     *
+     * @param userKey the user key
+     * @return the boolean
+     */
     public boolean hasOpenBed(String userKey) {
         // Ex key: 'FM25F'  <-- not family acct, male, 25 yrs old, not veteran
         BedManager bedManager = getShelterBedManager();
         return (bedManager != null) && (bedManager.findValidBedType(userKey) != null);
     }
 
+    /**
+     * Gets shelter bed manager.
+     *
+     * @return the shelter bed manager
+     */
     public BedManager getShelterBedManager() {
 //        if (shelterBuilder != null) {
 //            bedManager = shelterBuilder.getBedManager();
@@ -148,66 +188,146 @@ public class Shelter implements Parcelable {
         return this.bedManager;  // != null ? bedManager : new BedManager(this);
     }
 
+    /**
+     * Gets shelter name.
+     *
+     * @return the shelter name
+     */
     public String getShelterName() {
         return this.shelterName;
     }
 
+    /**
+     * Gets shelter key.
+     *
+     * @return the shelter key
+     */
     public String getShelterKey() {
         return this.shelterKey;
     }
 
+    /**
+     * Gets capacity str.
+     *
+     * @return the capacity str
+     */
     public String getCapacityStr() {
         return this.capacityStr;
     }
 
+    /**
+     * Gets family capacity.
+     *
+     * @return the family capacity
+     */
     public int getFamilyCapacity() {
         return this.familyCapacity;
     }
 
+    /**
+     * Gets single capacity.
+     *
+     * @return the single capacity
+     */
     public int getSingleCapacity() {
         return this.singleCapacity;
     }
 
+    /**
+     * Gets restrictions.
+     *
+     * @return the restrictions
+     */
     public String getRestrictions() {
         return restrictions;
     }
 
+    /**
+     * Sets restrictions.
+     *
+     * @param restrictions the restrictions
+     */
     public void setRestrictions(String restrictions) {
         this.restrictions = restrictions;
         new ShelterBuilder(this).processRestrictions(restrictions);
     }
 
+    /**
+     * Gets latitude.
+     *
+     * @return the latitude
+     */
     public double getLatitude() {
         return latitude;
     }
 
+    /**
+     * Sets latitude.
+     *
+     * @param latitude the latitude
+     */
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
 
+    /**
+     * Gets longitude.
+     *
+     * @return the longitude
+     */
     public double getLongitude() {
         return longitude;
     }
 
+    /**
+     * Sets longitude.
+     *
+     * @param longitude the longitude
+     */
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
+    /**
+     * Gets notes.
+     *
+     * @return the notes
+     */
     public String getNotes() {
         return notes;
     }
 
+    /**
+     * Sets notes.
+     *
+     * @param notes the notes
+     */
     public void setNotes(String notes) {
         this.notes = notes;
     }
 
+    /**
+     * Gets phone.
+     *
+     * @return the phone
+     */
     public String getPhone() { return this.phone; }
 
+    /**
+     * Gets address.
+     *
+     * @return the address
+     */
     public String getAddress() {
         return address;
     }
 
+    /**
+     * Sets address.
+     *
+     * @param address the address
+     */
     public void setAddress(String address) {
         this.address = address;
     }
@@ -236,6 +356,9 @@ public class Shelter implements Parcelable {
 //        dest.writeMap(this.beds);
     }
 
+    /**
+     * The constant CREATOR.
+     */
     @SuppressWarnings("unused")
     public static final Parcelable.Creator<Shelter> CREATOR = new Parcelable.Creator<Shelter>() {
         @Override
@@ -249,6 +372,11 @@ public class Shelter implements Parcelable {
         }
     };
 
+    /**
+     * Gets beds.
+     *
+     * @return the beds
+     */
     public Map<String, Map<String, Bed>> getBeds() {
         return beds;
     }
@@ -259,10 +387,20 @@ public class Shelter implements Parcelable {
 //    }
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
+    /**
+     * Gets vacancies.
+     *
+     * @return the vacancies
+     */
     public int getVacancies() {
         return this.vacancies;
     }
 
+    /**
+     * Sets vacancies.
+     *
+     * @param vacancies the vacancies
+     */
     public void setVacancies(int vacancies) {
         this.vacancies = vacancies;
     }
@@ -290,19 +428,39 @@ public class Shelter implements Parcelable {
         return result;
     }
 
+    /**
+     * Sets family capacity.
+     *
+     * @param familyCapacity the family capacity
+     */
     public final void setFamilyCapacity(int familyCapacity) {
         this.familyCapacity = familyCapacity;
     }
 
+    /**
+     * Sets single capacity.
+     *
+     * @param singleCapacity the single capacity
+     */
     public final void setSingleCapacity(int singleCapacity) {
         this.singleCapacity = singleCapacity;
     }
 
+    /**
+     * Gets last bed added.
+     *
+     * @return the last bed added
+     */
     @Nullable
     public Bed getLastBedAdded() {
         return lastBedAdded;
     }
 
+    /**
+     * Sets last bed added.
+     *
+     * @param lastBedAdded the last bed added
+     */
     public void setLastBedAdded(@Nullable Bed lastBedAdded) {
         this.lastBedAdded = lastBedAdded;
     }

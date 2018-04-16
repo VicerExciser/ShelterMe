@@ -19,6 +19,9 @@ import edu.gatech.cs2340.shelterme.model.Model;
 
 //import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * The type Login page.
+ */
 public class LoginPage extends AppCompatActivity {
 
     private EditText mUsernameView;

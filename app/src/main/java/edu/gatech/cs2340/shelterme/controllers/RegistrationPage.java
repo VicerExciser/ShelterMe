@@ -28,6 +28,9 @@ import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.util.DBUtil;
 
 
+/**
+ * The type Registration page.
+ */
 public class RegistrationPage extends AppCompatActivity {
 
     private DBUtil dbUtil;

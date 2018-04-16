@@ -13,6 +13,9 @@ import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.StayReport;
 import edu.gatech.cs2340.shelterme.model.User;
 
+/**
+ * The type Reservation manager.
+ */
 public class ReservationManager {
 
     private final Shelter currentShelter;
@@ -20,6 +23,12 @@ public class ReservationManager {
     private final Model model;
     private User user;
 
+    /**
+     * Instantiates a new Reservation manager.
+     *
+     * @param shelter the shelter
+     * @param user    the user
+     */
     public ReservationManager(Shelter shelter, User user) {
         currentShelter = shelter;
 //        bedManager = new BedManager(shelter.getShelterName());
@@ -30,10 +39,10 @@ public class ReservationManager {
 
     /**
      * Equivalent for checking in a User to a Shelter with a StayReport
-     * @param type The type of bed to be reserved (Single or Family)
+     *
+     * @param type    The type of bed to be reserved (Single or Family)
      * @param numBeds An integer from 1 to 5 for the quantity of beds to reserve at this shelter
-     * @return A HashMap that maps a bedKey (representative of the User type that can legitimately
-     *          sleep in this bed) to a collection of bedIDs (i.e. bed_50)
+     * @return A HashMap that maps a bedKey (representative of the User type that can legitimately          sleep in this bed) to a collection of bedIDs (i.e. bed_50)
      */
     public Map<String, Collection<Bed>> reserveBed(String type, int numBeds) {
         //function takes in User and returns ID of bed(s) being reserved
@@ -131,7 +140,13 @@ public class ReservationManager {
         return validBedsFound;
     }
 
-    // Equivalent for checking out w/ a StayReport
+    /**
+     * Undo reservation map.
+     *
+     * @param curStay the cur stay
+     * @return the map
+     */
+// Equivalent for checking out w/ a StayReport
     public Map<String, Collection<Bed>> undoReservation(StayReport curStay) {
 //        Model model = Model.getInstance();
 //        User user = ((User)(model.getCurrUser()));

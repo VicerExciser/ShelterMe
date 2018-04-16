@@ -13,6 +13,9 @@ import edu.gatech.cs2340.shelterme.util.MessageAdapter;
 
 /* Facade Controller */
 
+/**
+ * The type Model.
+ */
 // SINGLETON -- Updated to be Thread-Safe for Synchronization
 @SuppressWarnings("AssignmentToStaticFieldFromInstanceMethod")
 //@Singleton
@@ -41,6 +44,11 @@ public final class Model {
         }
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static Model getInstance() {
         if (modelInstance == null) {
             synchronized (Model.class) {
@@ -53,26 +61,53 @@ public final class Model {
     }
 
 
-    // Map: <Email, Account>
+    /**
+     * Gets account list pointer.
+     *
+     * @return the account list pointer
+     */
+// Map: <Email, Account>
     public static Map<String, Account> getAccountListPointer() {
         return accounts;
     }
 
-    // Map: <ShelterName, Shelter>
+    /**
+     * Gets shelter list pointer.
+     *
+     * @return the shelter list pointer
+     */
+// Map: <ShelterName, Shelter>
     public static Map<String, Shelter> getShelterListPointer() {
         return shelters;
     }
 
+    /**
+     * Gets message list pointer.
+     *
+     * @return the message list pointer
+     */
     public static Map<String, Message> getMessageListPointer() { return messages; }
 
+    /**
+     * Init messages.
+     */
     public static void initMessages() {
         dbUtil.initMessages();
     }
 
+    /**
+     * Maintain messages.
+     *
+     * @param messagesRecyclerView the messages recycler view
+     * @param adapter              the adapter
+     */
     public static void maintainMessages(RecyclerView messagesRecyclerView, MessageAdapter adapter) {
         dbUtil.maintainMessages(messagesRecyclerView, adapter);
     }
 
+    /**
+     * Test message.
+     */
     public void testMessage() {
         addToMessages(new Message());
     }
@@ -81,6 +116,12 @@ public final class Model {
         dbUtil.addMessage(msg);
     }
 
+    /**
+     * Verify shelter parcel shelter.
+     *
+     * @param shelter the shelter
+     * @return the shelter
+     */
     public Shelter verifyShelterParcel(Shelter shelter) {
         if (shelters.containsValue(shelter)) {
             return shelters.get(shelter.getShelterName());
@@ -88,15 +129,44 @@ public final class Model {
         return shelter;
     }
 
+    /**
+     * Gets curr user.
+     *
+     * @return the curr user
+     */
     public Account getCurrUser() {return currUser;}
+
+    /**
+     * Sets curr user.
+     *
+     * @param email the email
+     * @param usr   the usr
+     */
     @SuppressWarnings("unused")
     public void setCurrUser(String email, User usr) { this.currUser = usr;}
+
+    /**
+     * Sets curr user.
+     *
+     * @param email the email
+     */
     public void setCurrUser(String email) {currUser = getAccountByEmail(email);}
 
+    /**
+     * Add to accounts.
+     *
+     * @param acct the acct
+     */
     public void addToAccounts(Account acct) {
         accounts.put(acct.getEmail(), acct);
     }
 
+    /**
+     * Gets account by email.
+     *
+     * @param email the email
+     * @return the account by email
+     */
     public static Account getAccountByEmail(String email) {
         if (email == null) {
             return null;
@@ -108,6 +178,12 @@ public final class Model {
                 : ((type == Account.Type.EMP) ? (Employee) toRet : toRet));
     }
 
+    /**
+     * Gets email associated with username.
+     *
+     * @param username the username
+     * @return the email associated with username
+     */
     public static String getEmailAssociatedWithUsername(String username) {
         if (username != null) {
             for (Account a : accounts.values()) {
@@ -138,6 +214,11 @@ public final class Model {
 //    }
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
+    /**
+     * Add shelter.
+     *
+     * @param s the s
+     */
     public void addShelter(Shelter s) {
         shelters.put(s.getShelterName(), s);
 //        dbUtil.addShelter(s);
@@ -154,16 +235,31 @@ public final class Model {
         Log.v(TAG, s.detail());
     }
 
+    /**
+     * Gets all shelter details.
+     */
     public void getAllShelterDetails() {
         for (Shelter s : shelters.values()) {
             getShelterDetails(s);
         }
     }
 
+    /**
+     * Find shelter by name shelter.
+     *
+     * @param name the name
+     * @return the shelter
+     */
     public static Shelter findShelterByName(String name) {
         return shelters.get(name);
     }
 
+    /**
+     * Is valid email address boolean.
+     *
+     * @param email the email
+     * @return the boolean
+     */
     public static boolean isValidEmailAddress(CharSequence email) {
         String ePattern = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]" +
                 "+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
@@ -172,6 +268,12 @@ public final class Model {
         return m.find();
     }
 
+    /**
+     * Display success message.
+     *
+     * @param message     the message
+     * @param callerClass the caller class
+     */
     @SuppressWarnings("ChainedMethodCall")
     public void displaySuccessMessage(CharSequence message, Context callerClass) {
         AlertDialog.Builder builder = new AlertDialog.Builder(callerClass);
@@ -186,6 +288,12 @@ public final class Model {
                 .show();
     }
 
+    /**
+     * Display error message.
+     *
+     * @param error       the error
+     * @param callerClass the caller class
+     */
     @SuppressWarnings("ChainedMethodCall")
     public void displayErrorMessage(String error, Context callerClass) {
         AlertDialog.Builder builder = new AlertDialog.Builder(callerClass);

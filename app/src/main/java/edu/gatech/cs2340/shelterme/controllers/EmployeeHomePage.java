@@ -9,6 +9,9 @@ import android.view.View;
 
 import edu.gatech.cs2340.shelterme.R;
 
+/**
+ * The type Employee home page.
+ */
 public class EmployeeHomePage extends AppCompatActivity {
 
     @Override

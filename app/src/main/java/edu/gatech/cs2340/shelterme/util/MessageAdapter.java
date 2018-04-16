@@ -9,19 +9,34 @@ import android.widget.TextView;
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Message;
 
+/**
+ * The type Message adapter.
+ */
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
     private final Message[] dataSet;
 
-    // Provide a reference to the views for each data item
+    /**
+     * The type View holder.
+     */
+// Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        // each data item is a Message in this case:
+        /**
+         * The Message text view.
+         */
+// each data item is a Message in this case:
 //         String message;
 //         String timeSent;
 //         String senderEmail;
 //         boolean isAddressed;
         final TextView messageTextView;
+
+        /**
+         * Instantiates a new View holder.
+         *
+         * @param v the v
+         */
         ViewHolder(View v) {
             super(v);
             messageTextView = v.findViewById(R.id._row);
@@ -43,7 +58,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 //        }
     }
 
-    // Provide a suitable constructor (depends on the kind of data set)
+    /**
+     * Instantiates a new Message adapter.
+     *
+     * @param dataSet the data set
+     */
+// Provide a suitable constructor (depends on the kind of data set)
     public MessageAdapter(Message[] dataSet) {
         //noinspection AssignmentToCollectionOrArrayFieldFromParameter
         this.dataSet = dataSet;

@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Documents-ShelterMe.iml" filepath="$PROJECT_DIR$/Documents-ShelterMe.iml" />
       <module fileurl="file://$PROJECT_DIR$/ShelterMe.iml" filepath="$PROJECT_DIR$/ShelterMe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/ShelterMe-app.iml" filepath="$PROJECT_DIR$/app/ShelterMe-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

@@ -33,6 +33,9 @@ import edu.gatech.cs2340.shelterme.model.User;
 import edu.gatech.cs2340.shelterme.util.DBUtil;
 import edu.gatech.cs2340.shelterme.util.ReservationManager;
 
+/**
+ * The type Request stay report.
+ */
 public class RequestStayReport extends AppCompatActivity {
 
     private final DBUtil dbUtil = DBUtil.getInstance();

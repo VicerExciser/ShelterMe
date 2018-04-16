@@ -8,6 +8,9 @@ import android.widget.Button;
 
 import edu.gatech.cs2340.shelterme.R;
 
+/**
+ * The type Admin home page.
+ */
 public class AdminHomePage extends AppCompatActivity {
 
     @Override

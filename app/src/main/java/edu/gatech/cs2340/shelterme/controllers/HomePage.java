@@ -19,6 +19,9 @@ import edu.gatech.cs2340.shelterme.model.User;
 import edu.gatech.cs2340.shelterme.util.DBUtil;
 import edu.gatech.cs2340.shelterme.util.ReservationManager;
 
+/**
+ * The type Home page.
+ */
 public class HomePage extends AppCompatActivity {
 
     private final Model model = Model.getInstance();

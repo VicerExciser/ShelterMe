@@ -26,6 +26,9 @@ import edu.gatech.cs2340.shelterme.model.GenderAccepted;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
+/**
+ * The type View shelters page.
+ */
 public class ViewSheltersPage extends AppCompatActivity {
 
     private ArrayAdapter<String> adapter;
@@ -357,10 +360,25 @@ public class ViewSheltersPage extends AppCompatActivity {
     }
 
     private enum AgeRange {
+        /**
+         * The Anyone.
+         */
         ANYONE("Any age"),
+        /**
+         * The Fam with young.
+         */
         FAM_WITH_YOUNG("Children under 5"),
+        /**
+         * The Children.
+         */
         CHILDREN("Children (age 6 - 15)"),
+        /**
+         * The Young adults.
+         */
         YOUNG_ADULTS("Young adults (age 16 - 25)"),
+        /**
+         * Adults age range.
+         */
         ADULTS("Adults (25+)");
 
 

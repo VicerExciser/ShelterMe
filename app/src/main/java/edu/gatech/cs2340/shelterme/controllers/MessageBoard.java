@@ -25,6 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Message board.
+ */
 public class MessageBoard extends AppCompatActivity {
 
     private RecyclerView messageRecyclerView;

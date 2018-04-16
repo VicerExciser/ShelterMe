@@ -12,6 +12,9 @@ import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.User;
 
+/**
+ * The type Shelter details page.
+ */
 public class ShelterDetailsPage extends AppCompatActivity {
     private int vacancyRaw;
 

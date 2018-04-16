@@ -14,6 +14,9 @@ import android.view.View;
 
 import edu.gatech.cs2340.shelterme.R;
 
+/**
+ * The type Account details.
+ */
 public class AccountDetails extends AppCompatActivity {
 
     @Override

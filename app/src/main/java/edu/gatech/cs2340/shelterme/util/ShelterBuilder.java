@@ -4,6 +4,9 @@ package edu.gatech.cs2340.shelterme.util;
 import edu.gatech.cs2340.shelterme.model.Age;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
+/**
+ * The type Shelter builder.
+ */
 public class ShelterBuilder {
 
     private static final int DEFAULT_BED_COUNT = 50;
@@ -11,6 +14,11 @@ public class ShelterBuilder {
     private final ThreadLocal<Shelter> newShelter;
 
 
+    /**
+     * Instantiates a new Shelter builder.
+     *
+     * @param shelter the shelter
+     */
     public ShelterBuilder(final Shelter shelter) {
         this.newShelter = new ThreadLocal<Shelter>() {
             @Override
@@ -20,6 +28,11 @@ public class ShelterBuilder {
         };
     }
 
+    /**
+     * Process restrictions.
+     *
+     * @param rs the rs
+     */
     public void processRestrictions(String rs) {
 //        bedManager = new BedManager(newShelter);
         Shelter shelter = newShelter.get();

@@ -3,7 +3,6 @@ package edu.gatech.cs2340.shelterme.model;
 /**
  * Represents an Account
  */
-
 public abstract class Account {
     private final String name;
     private final String username;          // login name (in recognition of current popular trends,
@@ -17,12 +16,13 @@ public abstract class Account {
 
     /**
      * A constructor for Account class
-     * @param name the name of the account holder
+     *
+     * @param name     the name of the account holder
      * @param username the username of the account holder
-     * @param email the email of the account holder
+     * @param email    the email of the account holder
      * @param password the password of the account holder
      * @param secQuest the security question of the account holder
-     * @param secAns the security answer of the account holder
+     * @param secAns   the security answer of the account holder
      */
     Account(String name, String username, String email, int password,
             Question secQuest, String secAns) {
@@ -37,6 +37,7 @@ public abstract class Account {
 
     /**
      * A getter for name
+     *
      * @return the name of the account holder
      */
     @SuppressWarnings("unused")
@@ -46,6 +47,7 @@ public abstract class Account {
 
     /**
      * A getter for username
+     *
      * @return the username of the account holder
      */
     public String getUsername() {
@@ -54,12 +56,14 @@ public abstract class Account {
 
     /**
      * A getter for email
+     *
      * @return the email of the account holder
      */
     public String getEmail() { return this.email; }
 
     /**
      * A method to validate the password
+     *
      * @param pw the password of the account
      * @return true if password matches, false otherwise
      */
@@ -69,6 +73,7 @@ public abstract class Account {
 
     /**
      * A method to check if the account is locked
+     *
      * @return true if account is locked, false otherwise
      */
     @SuppressWarnings("unused")
@@ -101,8 +106,10 @@ public abstract class Account {
 
 
     // Work to eliminate any sort of subclass type checking
+
     /**
      * A setter for account types
+     *
      * @param accountType the account type (admin, employee, user)
      */
     void setAccountType(Type accountType) {
@@ -111,34 +118,67 @@ public abstract class Account {
 
     /**
      * A getter for the account type
+     *
      * @return the type of the account (admin, employee, user)
      */
     public Type getAccountType() { return this.accountType; }
 
+    /**
+     * Gets sec quest.
+     *
+     * @return the sec quest
+     */
     @SuppressWarnings("unused")
     public Question getSecQuest() {
         return secQuest;
     }
 
+    /**
+     * Sets sec quest.
+     *
+     * @param secQuest the sec quest
+     */
     @SuppressWarnings("unused")
     public void setSecQuest(Question secQuest) {
         this.secQuest = secQuest;
     }
 
+    /**
+     * Gets sec ans.
+     *
+     * @return the sec ans
+     */
     @SuppressWarnings("unused")
     public String getSecAns() {
         return secAns;
     }
 
+    /**
+     * Sets sec ans.
+     *
+     * @param secAns the sec ans
+     */
     @SuppressWarnings("unused")
     public void setSecAns(String secAns) {
         this.secAns = secAns;
     }
 
 
+    /**
+     * The enum Sex.
+     */
     public enum Sex {
+        /**
+         * Male sex.
+         */
         MALE ("M"),
+        /**
+         * Female sex.
+         */
         FEMALE ("F"),
+        /**
+         * Other sex.
+         */
         OTHER ("O");
 
         private final String _code;
@@ -150,11 +190,26 @@ public abstract class Account {
         public String toString() { return _code; }
     }
 
+    /**
+     * The enum Question.
+     */
     public enum Question {
-        // Could make Question a key-value pair (Q & A)
+        /**
+         * The Mom.
+         */
+// Could make Question a key-value pair (Q & A)
         MOM ("What was your mother's maiden name?"),
+        /**
+         * The City.
+         */
         CITY ("What city were you born in?"),
+        /**
+         * The Pet.
+         */
         PET ("What was the name of your first pet?"),
+        /**
+         * The School.
+         */
         SCHOOL ("What was the name of your first school?");
 
         private final String _code;
@@ -166,9 +221,21 @@ public abstract class Account {
         public String toString() { return _code; }
     }
 
+    /**
+     * The enum Type.
+     */
     public enum Type {
+        /**
+         * User type.
+         */
         USER ("User"),
+        /**
+         * The Emp.
+         */
         EMP ("Shelter Employee"),
+        /**
+         * Admin type.
+         */
         ADMIN ("Admin");
 
         private final String _code;

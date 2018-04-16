@@ -13,6 +13,9 @@ import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
+/**
+ * The type Create shelter.
+ */
 public class CreateShelter extends AppCompatActivity {
 
 
