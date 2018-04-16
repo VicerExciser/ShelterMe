@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/background_dark"
     android:backgroundTint="#ffffff"
-    tools:context="edu.gatech.cs2340.shelterme.controllers.ViewSheltersPage"
-    tools:targetApi="lollipop"
-    tools:ignore="Overdraw">
+    tools:context="edu.gatech.cs2340.shelterme.controllers.ViewSheltersPage">
 
     <include
         layout="@layout/content_view_shelters_page"
@@ -20,45 +18,22 @@
         android:layout_height="567dp">
 
         <Button
-            android:id="@+id/backButton"
+            android:id="@+id/swtichMap"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginEnd="11dp"
-            android:layout_marginRight="11dp"
-            android:text="RETURN TO HOME PAGE"
-            tools:ignore="HardcodedText" />
-
-        <ListView
-            android:id="@+id/shelterList"
-            style="@style/Widget.AppCompat.ListView"
-            android:layout_width="match_parent"
-            android:layout_height="439dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/genderSpinner"
-            android:background="@color/common_google_signin_btn_text_dark_focused"
-            android:divider="#FF9900"
-            android:dividerHeight="2dp"
-            android:entries="@android:drawable/divider_horizontal_textfield"
-            android:footerDividersEnabled="true"
-            android:headerDividersEnabled="true"
-            android:isScrollContainer="true"
-            android:outlineProvider="bounds"
-            android:scrollIndicators="right"
-            android:scrollbarAlwaysDrawHorizontalTrack="false"
-            android:scrollbarAlwaysDrawVerticalTrack="true"
-            android:scrollbarSize="18dp"
-            android:scrollbarStyle="insideInset"
-            android:scrollbarTrackVertical="@color/common_google_signin_btn_text_dark_default"
-            android:scrollbars="vertical"
-            android:smoothScrollbar="true"
-            android:textColor="@android:color/background_light"
-            tools:textColor="@android:color/background_light"
-            tools:ignore="PxUsage"
-            tools:targetApi="m" />
+            android:text="Switch to Map View" />
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/swtichMap"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="RETURN TO HOME PAGE" />
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -70,20 +45,20 @@
                 android:id="@+id/textView12"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="false"
                 android:fontFamily="serif"
                 android:text="Available Shelters"
                 android:textAlignment="center"
-                android:textColor="#FF9900"
+                android:textColor="#FFFFFF"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                tools:targetApi="jelly_bean"
-                tools:ignore="HardcodedText" />
+                android:textStyle="bold" />
 
             <SearchView
                 android:id="@+id/inputSearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#FF9900"
+                android:background="#FFFFFF"
                 android:visibility="visible">
 
             </SearchView>
@@ -97,8 +72,7 @@
             android:layout_above="@+id/genderSpinner"
             android:layout_toLeftOf="@+id/FamilyCheck"
             android:layout_toStartOf="@+id/FamilyCheck"
-            android:backgroundTint="#000000"
-            tools:targetApi="lollipop" />
+            android:backgroundTint="#000000" />
 
         <Spinner
             android:id="@+id/genderSpinner"
@@ -117,21 +91,46 @@
             android:layout_alignEnd="@+id/backButton"
             android:layout_alignRight="@+id/backButton"
             android:layout_below="@+id/linearLayout2"
-            android:text="Accepts Families"
-            tools:ignore="HardcodedText" />
+            android:text="Accepts Families" />
 
         <CheckBox
             android:id="@+id/showAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/shelterList"
             android:layout_alignEnd="@+id/FamilyCheck"
             android:layout_alignRight="@+id/FamilyCheck"
             android:layout_toEndOf="@+id/ageSpinner"
             android:layout_toRightOf="@+id/ageSpinner"
             android:checked="true"
-            android:text="Show All"
-            tools:ignore="HardcodedText" />
+            android:text="Show All" />
+
+        <ListView
+            android:id="@+id/shelterList"
+            style="@style/Widget.AppCompat.ListView"
+            android:layout_width="match_parent"
+            android:layout_height="404dp"
+            android:layout_above="@+id/backButton"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="@color/common_google_signin_btn_text_dark_focused"
+            android:divider="#FFFFFF"
+            android:dividerHeight="2px"
+            android:entries="@android:drawable/divider_horizontal_textfield"
+            android:footerDividersEnabled="true"
+            android:headerDividersEnabled="true"
+            android:isScrollContainer="true"
+            android:outlineProvider="bounds"
+            android:scrollIndicators="right"
+            android:scrollbarAlwaysDrawHorizontalTrack="false"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbarSize="18dp"
+            android:scrollbarStyle="insideInset"
+            android:scrollbarTrackVertical="@color/common_google_signin_btn_text_dark_default"
+            android:scrollbars="vertical"
+            android:smoothScrollbar="true"
+            android:textColor="@android:color/background_light"
+            tools:layout_editor_absoluteY="91dp"
+            tools:textColor="@android:color/background_light" />
 
     </RelativeLayout>
 
