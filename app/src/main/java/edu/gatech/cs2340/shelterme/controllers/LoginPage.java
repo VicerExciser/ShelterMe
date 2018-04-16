@@ -65,9 +65,7 @@ public class LoginPage extends AppCompatActivity {
                             myIntent1 = new Intent(view.getContext(), EmployeeHomePage.class);
                             break;
                     }
-                    if (myIntent1 != null) {
-                        startActivityForResult(myIntent1, 0);
-                    }
+                    startActivityForResult(myIntent1, 0);
                 }}
         });
 

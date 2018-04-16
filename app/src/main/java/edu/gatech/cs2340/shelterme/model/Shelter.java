@@ -249,7 +249,8 @@ public class Shelter implements Parcelable {
      */
     public void setRestrictions(String restrictions) {
         this.restrictions = restrictions;
-        new ShelterBuilder(this).processRestrictions(restrictions);
+        ShelterBuilder sb = new ShelterBuilder(this);
+        sb.processRestrictions(restrictions);
     }
 
     /**

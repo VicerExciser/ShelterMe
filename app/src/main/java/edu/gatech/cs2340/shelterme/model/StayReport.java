@@ -33,7 +33,7 @@ public class StayReport {
     }
 
     /**
-     * A cosntructor for StayReport class
+     * A constructor for StayReport class
      *
      * @param shelter the name of the shelter
      * @param account the account type
