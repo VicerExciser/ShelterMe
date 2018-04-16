@@ -14,6 +14,7 @@ public class User extends Account {
     /**
      * The Is occupying bed.
      */
+    @SuppressWarnings("PublicField")
     public boolean isOccupyingBed;
     private List<StayReport> stayReports;
 

@@ -4,6 +4,8 @@ import android.support.annotation.Nullable;
 
 import java.util.Map;
 
+import edu.gatech.cs2340.shelterme.util.ShelterBuilder;
+
 /**
  * Represents a Bed in a shelter.
  */
@@ -23,46 +25,40 @@ public class Bed {
     private boolean veteranOnly;
     private String savedBedKey;
     //bed Key saved so it can be easily grouped with other beds of its type
-    private final String associatedShelterName;
+    private String associatedShelterName;
     // stored for preservation of uniqueness when comparisons made
 
     /**
      * Instantiates a new Bed.
      *
-     * @param id                    the id
-     * @param isFamily              the is family
-     * @param menOnly               the men only
-     * @param womenOnly             the women only
-     * @param minAge                the min age
-     * @param maxAge                the max age
-     * @param veteranOnly           the veteran only
-     * @param savedBedKey           the saved bed key
-     * @param associatedShelterName the associated shelter name
+     * @param id the id
+     * @param savedBedKey the saved bed key
+     * @param struct the information holder used for initializing other Bed fields
      */
-    public Bed(String id, boolean isFamily, boolean menOnly, boolean womenOnly, Age minAge,
-               Age maxAge,
-               boolean veteranOnly, String savedBedKey, String associatedShelterName) {
+//    public Bed(String id, boolean isFamily, boolean menOnly, boolean womenOnly, Age minAge,
+//               Age maxAge,
+//               boolean veteranOnly, String savedBedKey, String associatedShelterName) {
+    public Bed(String id, String savedBedKey, CapacityStruct struct) {
         this.id = id;
         if ((id != null) && !id.contains("bed_")) {
             this.id = "bed_" + id;
         }
         this.isOccupied = false;
-        this.isFamily = isFamily;
-        this.menOnly = menOnly;
-        this.womenOnly = womenOnly;
-        this.minAge = minAge;
-        this.maxAge = maxAge;
-        this.veteranOnly = veteranOnly;
+        this.isFamily = struct.family;
+        this.menOnly = struct.menOnly;
+        this.womenOnly = struct.womenOnly;
+        this.minAge = struct.fromAge;
+        this.maxAge = struct.toAge;
+        this.veteranOnly = struct.vetsOnly;
         this.savedBedKey = savedBedKey;
-        this.associatedShelterName = associatedShelterName;
+        this.associatedShelterName = struct.shelterName;
     }
 
     /**
      * Instantiates a new Bed.
      */
     public Bed() {
-        this("bed_1001", false, false, false, Age.MIN_AGE, Age.MAX_AGE,
-                false, "FFF000_200_F", "Hope Atlanta");
+        this("bed_1001", "FFF000_200_F", new CapacityStruct());
     }
 
     /**

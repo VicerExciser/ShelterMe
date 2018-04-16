@@ -2,6 +2,7 @@ package edu.gatech.cs2340.shelterme.util;
 
 
 import edu.gatech.cs2340.shelterme.model.Age;
+import edu.gatech.cs2340.shelterme.model.CapacityStruct;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
 /**
@@ -28,17 +29,19 @@ public class ShelterBuilder {
         };
     }
 
+
     /**
-     * Process restrictions.
+     * Process shelter restrictions.
      *
-     * @param rs the rs
+     * @param rs the restrictions string
      */
     public void processRestrictions(String rs) {
 //        bedManager = new BedManager(newShelter);
         Shelter shelter = newShelter.get();
+        CapacityStruct parameters = new CapacityStruct();
+        parameters.shelterName = shelter.getShelterName();
         String cp = shelter.getCapacityStr();
         boolean fam;
-        boolean anyone;
         boolean exMen;
         boolean exWomen;
         boolean exVets;
@@ -46,11 +49,15 @@ public class ShelterBuilder {
         int ageFloor = Age.MIN_AGE.toInt();
         int ageCeiling = Age.MAX_AGE.toInt();
         String restrictionString = rs.toLowerCase();
-        anyone = restrictionString.contains("anyone");
-        if (anyone) {
-            ageFloor = Age.MIN_AGE.toInt();
-            ageCeiling = Age.MAX_AGE.toInt();
-            parseCapacity(cp, true, false, false, ageFloor, ageCeiling, false);
+        if (restrictionString.contains("anyone")) {
+            parameters.cap = cp;
+            parameters.family = true;
+            parameters.menOnly = false;
+            parameters.vetsOnly = false;
+            parameters.womenOnly = false;
+            parameters.minimumAge = ageFloor;
+            parameters.maximumAge = ageCeiling;
+            parseCapacity(parameters);
             return;
         } else {
             fam = restrictionString.contains("families");
@@ -89,7 +96,15 @@ public class ShelterBuilder {
             ageCeiling = Age.YOUNG_ADULTS_CAP.toInt();
         }
 
-        parseCapacity(cp, fam, exMen, exWomen, ageFloor, ageCeiling, exVets);
+        parameters.cap = cp;
+        parameters.family = fam;
+        parameters.menOnly = exMen;
+        parameters.vetsOnly = exVets;
+        parameters.womenOnly = exWomen;
+        parameters.minimumAge = ageFloor;
+        parameters.maximumAge = ageCeiling;
+        parseCapacity(parameters);
+//        parseCapacity(cp, fam, exMen, exWomen, ageFloor, ageCeiling, exVets);
     }
 
 
@@ -98,15 +113,14 @@ public class ShelterBuilder {
     // make this set totalCapacity & call:
     //   addNewBeds(int numberOfSingleBeds, boolean isFamily, boolean menOnly, boolean womenOnly,
     //       Age minAge, Age maxAge, boolean veteranOnly)
-    private void parseCapacity(String cp, boolean fm, boolean mo, boolean wo, int mna, int mxa,
-                               boolean vo) {
-        String cp1 = cp;
-        int singleBeds = 0;
-        int familyBeds = 0;
-        if ((cp1 != null) && !cp1.isEmpty() && !"N/A".equals(cp1)) {
+//    private void parseCapacity(String cp, boolean fm, boolean mo, boolean wo, int mna, int mxa,
+//                               boolean vo) {
+    private void parseCapacity(CapacityStruct p) {
+        String cp = p.cap;
+        if ((cp != null) && !cp.isEmpty() && !"N/A".equals(cp)) {
             // split up Capacity strings by spaces
-            cp1 = cp1.toLowerCase();
-            String[] tokens = cp1.split(" ");
+            cp = cp.toLowerCase();
+            String[] tokens = cp.split(" ");
             int length = tokens.length;
             for (int i = 0; i < length; i++) {
                 int val = getInt(tokens[i]);
@@ -115,69 +129,76 @@ public class ShelterBuilder {
                         for (int j = 1; j <= 3; j++) {
                             if ((i + j) < length) {
                                 if (tokens[i + j].contains("famil")) {
-                                    familyBeds += val;
+                                    p.familyBeds += val;
                                 } else if (tokens[i + j].contains("singl")
                                         || tokens[i + j].contains("bed")) {
-                                    singleBeds += val;
+                                    p.singleBeds += val;
                                 } else if (tokens[i + j].contains("apartment")) {
-                                    familyBeds += val / 2;
-                                    singleBeds += val * 2;
+                                    p.familyBeds += val / 2;
+                                    p.singleBeds += val * 2;
                                 }
                             }
                         }
                     } else {
-                        if (fm) {
-                            familyBeds = val;
+                        if (p.family) {
+                            p.familyBeds = val;
                         } else {
-                            singleBeds = val;
+                            p.singleBeds = val;
                         }
                     }
                 }
             }
         } else {
-            if (fm) {
-                familyBeds = DEFAULT_BED_COUNT;
+            if (p.family) {
+                p.familyBeds = DEFAULT_BED_COUNT;
             } else {
-                singleBeds = DEFAULT_BED_COUNT;
+                p.singleBeds = DEFAULT_BED_COUNT;
             }
         }
-        Age minAge;
-        Age maxAge;
 
-        if (mna == Age.MIN_AGE.toInt()) {
-            minAge = Age.MIN_AGE;
-        } else if (mna == Age.CHILDREN_BASE.toInt()) {
-            minAge = Age.CHILDREN_BASE;
-        } else if (mna == Age.YOUNG_ADULTS_BASE.toInt()) {
-            minAge = Age.YOUNG_ADULTS_BASE;
-        } else if (mna == Age.ADULTS_BASE.toInt()) {
-            minAge = Age.ADULTS_BASE;
-        } else {
-            minAge = Age.MIN_AGE;
-        }
+        decipherMinAge(p);
+        decipherMaxAge(p);
 
-        if (mxa == Age.BABIES.toInt()) {
-            maxAge = Age.BABIES;
-        } else if (mxa == Age.CHILDREN_CAP.toInt()) {
-            maxAge = Age.CHILDREN_CAP;
-        } else if (mxa == Age.YOUNG_ADULTS_CAP.toInt()) {
-            maxAge = Age.YOUNG_ADULTS_CAP;
-        } else if (mxa == Age.ADULTS_CAP.toInt()) {
-            maxAge = Age.ADULTS_CAP;
-        } else {
-            maxAge = Age.MAX_AGE;
-        }
-
-//        this.bedManager = new BedManager(newShelter);
         Shelter shelterTemporary = newShelter.get();
         BedManager bedManager = shelterTemporary.getShelterBedManager();
 
         //this.setVacancies(singleBeds + familyBeds);
-        if (singleBeds > 0) {
-            bedManager.addNewBeds(singleBeds, false, mo, wo, minAge, maxAge, vo);
+//        if (singleBeds > 0) {
+//            bedManager.addNewBeds(singleBeds, false, mo, wo, minAge, maxAge, vo);
+
+//        }
+//        if (familyBeds > 0) {
+////            bedManager.addNewBeds(familyBeds, true, mo, wo, minAge, maxAge, vo);
+//        }
+        if (p.singleBeds > 0)
+            bedManager.addNewBeds(p, p.singleBeds);
+        if (p.familyBeds > 0)
+            bedManager.addNewBeds(p, p.familyBeds);
+    }
+
+    private void decipherMinAge(CapacityStruct p) {
+        if (p.minimumAge == Age.CHILDREN_BASE.toInt()) {
+            p.fromAge = Age.CHILDREN_BASE;
+        } else if (p.minimumAge == Age.YOUNG_ADULTS_BASE.toInt()) {
+            p.fromAge = Age.YOUNG_ADULTS_BASE;
+        } else if (p.minimumAge == Age.ADULTS_BASE.toInt()) {
+            p.fromAge = Age.ADULTS_BASE;
+        } else {
+            p.fromAge = Age.MIN_AGE;
         }
-        if (familyBeds > 0) {
-            bedManager.addNewBeds(familyBeds, true, mo, wo, minAge, maxAge, vo);
+    }
+
+    private void decipherMaxAge(CapacityStruct p) {
+        if (p.maximumAge == Age.BABIES.toInt()) {
+            p.toAge = Age.BABIES;
+        } else if (p.maximumAge  == Age.CHILDREN_CAP.toInt()) {
+            p.toAge = Age.CHILDREN_CAP;
+        } else if (p.maximumAge  == Age.YOUNG_ADULTS_CAP.toInt()) {
+            p.toAge = Age.YOUNG_ADULTS_CAP;
+        } else if (p.maximumAge  == Age.ADULTS_CAP.toInt()) {
+            p.toAge = Age.ADULTS_CAP;
+        } else {
+            p.toAge = Age.MAX_AGE;
         }
     }
 

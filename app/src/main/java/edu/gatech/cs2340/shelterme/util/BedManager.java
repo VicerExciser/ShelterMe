@@ -7,6 +7,7 @@ import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.model.Age;
 import edu.gatech.cs2340.shelterme.model.Bed;
+import edu.gatech.cs2340.shelterme.model.CapacityStruct;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
@@ -23,7 +24,7 @@ public class BedManager {
      *
      * @param shelter the shelter
      */
-    public BedManager(Shelter shelter){
+    public BedManager(Shelter shelter) {
         if (shelter == null) {
             throw new IllegalArgumentException("No BedManager can exist for a null Shelter.");
         }
@@ -39,20 +40,16 @@ public class BedManager {
     /**
      * Add new beds.
      *
-     * @param numberOfBeds the number of beds
-     * @param isFamily     the is family
-     * @param menOnly      the men only
-     * @param womenOnly    the women only
-     * @param minAge       the min age
-     * @param maxAge       the max age
-     * @param veteranOnly  the veteran only
+     * @param struct       the information holder for Shelter -> Bed data
+     * @param numberOfBeds the number of beds being added
      */
 //Bed Handling
 // Ex. bedKey: 'FFF026_200_T'  <-- single bed, not men only, not women only, minAge = 26 (ADULT),
 //                                   maxAge = 200 (MAX_AGE), is veterans only
 // CALLED FROM SHELTER BUILDER
-    public void addNewBeds(int numberOfBeds, boolean isFamily, boolean menOnly, boolean womenOnly,
-                            Age minAge, Age maxAge, boolean veteranOnly) {
+//    public void addNewBeds(int numberOfBeds, boolean isFamily, boolean menOnly, boolean womenOnly,
+//                            Age minAge, Age maxAge, boolean veteranOnly) {
+    public void addNewBeds(CapacityStruct struct, int numberOfBeds) {
         if (currentShelter == null) {
 //            Model.getInstance().displayErrorMessage("Cannot add beds to a null shelter!",
 //                    BedManager.this);
@@ -62,12 +59,14 @@ public class BedManager {
         //create unique bed key that encodes all of the bed's restrictions into the key
         // Note for searches: if !menOnly && !womenOnly, then this Shelter takes Anyone
         String bedKey = "";
-        bedKey += isFamily ? "T" : "F";
-        bedKey += menOnly ? "T" : "F";
-        bedKey += womenOnly ? "T" : "F";
+        bedKey += struct.family ? "T" : "F";
+        bedKey += struct.menOnly ? "T" : "F";
+        bedKey += struct.womenOnly ? "T" : "F";
+        Age minAge = struct.fromAge;
         bedKey += minAge.getAgeKeyVal();
+        Age maxAge = struct.toAge;
         bedKey += maxAge.getAgeKeyVal();
-        bedKey += veteranOnly ? "T" : "F";
+        bedKey += struct.vetsOnly ? "T" : "F";
         int lastId = 0;
         Bed lastBedAdded = currentShelter.getLastBedAdded();
         if (lastBedAdded != null) {
@@ -89,12 +88,13 @@ public class BedManager {
         }
         for (int i = lastId + 1; i < (lastId + numberOfBeds + 1); i++) {
             String newId = String.format(Locale.US, "bed_%d", i);
-            Bed newBed = new Bed(newId, isFamily, menOnly, womenOnly, minAge, maxAge,
-                    veteranOnly, bedKey, currentShelter.getShelterName());
+//            Bed newBed = new Bed(newId, isFamily, menOnly, womenOnly, minAge, maxAge,
+//                    veteranOnly, bedKey, currentShelter.getShelterName());
+            Bed newBed = new Bed(newId, bedKey, struct);
             bedType.put(newId, newBed);
             int curVacancy = currentShelter.getVacancies();
             currentShelter.setVacancies(curVacancy + 1);
-            if (isFamily) {
+            if (struct.family) {
                 int famCap = currentShelter.getFamilyCapacity();
                 currentShelter.setFamilyCapacity(famCap + 1);
             } else {
@@ -139,8 +139,11 @@ public class BedManager {
                         return bedKey;
                     }
                     int keyLength = bedKey.length();
-                    //attributes of Bed
                     boolean thisBedOpen = true;
+                    boolean bedCheck1 = true;
+                    boolean bedCheck2 = true;
+                    boolean bedCheck3 = true;
+                    //attributes of Bed
                     // Ex. bedKey: 'TFF000_200_F'  <-- family, men, women, minage, maxage, vets
                     boolean isFamilyBed = bedKey.charAt(0) == 'T';
                     boolean menOnlyBed = bedKey.charAt(1) == 'T';
@@ -164,41 +167,56 @@ public class BedManager {
                             break;
                     }
                     boolean isVeteranUser = isVeteranChar == 'T';
-                    String minString = bedKey.substring(3, 6);
-                    int minAge = Integer.parseInt(minString);
-                    String maxString = bedKey.substring(7, 10);
-                    int maxAge = Integer.parseInt(maxString);
-                    int userAge = Integer.parseInt(ageString);
-                    if (isFamilyBed ^ isFamilyUser) {
-                        //make sure family type matches between user and bed
-                        thisBedOpen = false;
-                    }
-                    if (menOnlyBed && (isFemaleUser)) {
-                        //make sure women don't get into men only shelters
-                        thisBedOpen = false;
-                    }
-                    if (womenOnlyBed && (isMaleUser)) {
-                        //make sure men don't get into women only shelters
-                        thisBedOpen = false;
-                    }
-                    if ((menOnlyBed ^ womenOnlyBed) && isNonBinaryUser) {
-                        //makes sure non-binary users can access shelters that
-                        // exclude nobody OR BOTH genders
-                        thisBedOpen = false;
-                    }
-                    if (veteranOnlyBed && !(isVeteranUser)) {
-                        //exclude veteran beds from non-veterans
-                        thisBedOpen = false;
-                    }
-                    if ((userAge > maxAge) || (userAge < minAge)) {
-                        //make sure user is within the appropriate age range
-                        thisBedOpen = false;
-                    }
+                    boolean[] bedAttributes = {isFamilyBed, menOnlyBed, womenOnlyBed,
+                            veteranOnlyBed};
+                    boolean[] userAttributes = {isFamilyUser, isFemaleUser, isMaleUser,
+                            isNonBinaryUser, isVeteranUser};
+
+//                    String minString = bedKey.substring(3, 6);
+//                    int minAge = Integer.parseInt(minString);
+//                    String maxString = bedKey.substring(7, 10);
+//                    int maxAge = Integer.parseInt(maxString);
+//                    int userAge = Integer.parseInt(ageString);
+//                    if (isFamilyBed ^ isFamilyUser) {
+//                        //make sure family type matches between user and bed
+//                        thisBedOpen = false;
+//                    }
+//                    if (menOnlyBed && (isFemaleUser)) {
+//                        //make sure women don't get into men only shelters
+//                        thisBedOpen = false;
+//                    }
+//                    if (womenOnlyBed && (isMaleUser)) {
+//                        //make sure men don't get into women only shelters
+//                        thisBedOpen = false;
+//                    }
+//                    if ((menOnlyBed ^ womenOnlyBed) && isNonBinaryUser) {
+//                        //makes sure non-binary users can access shelters that
+//                        // exclude nobody OR BOTH genders
+//                        thisBedOpen = false;
+//                    }
+//                    if (veteranOnlyBed && !(isVeteranUser)) {
+//                        //exclude veteran beds from non-veterans
+//                        thisBedOpen = false;
+//                    }
+//                    if ((userAge > maxAge) || (userAge < minAge)) {
+//                        //make sure user is within the appropriate age range
+//                        thisBedOpen = false;
+//                    }
+//                    Map<String, Bed> bedType = bedMap.get(bedKey);
+//                    if (bedType.isEmpty()) {
+//                        //cannot have 0 vacancies of this bed type to be valid for use
+//                        thisBedOpen = false;
+//                    }
+
+                    bedCheck1 = userCompatible(userAttributes, bedAttributes);
+                    bedCheck2 = ageCompatible(ageString, bedKey);
+
                     Map<String, Bed> bedType = bedMap.get(bedKey);
                     if (bedType.isEmpty()) {
                         //cannot have 0 vacancies of this bed type to be valid for use
-                        thisBedOpen = false;
+                        bedCheck3 = false;
                     }
+                    thisBedOpen = bedCheck1 && bedCheck2 && bedCheck3;
                     if (thisBedOpen) {
                         return bedKey;
                     }
@@ -207,9 +225,54 @@ public class BedManager {
         }
         return null;
     }
+
+
+    private boolean userCompatible(boolean[] user, boolean[] bed) {
+        boolean thisBedOpen = true;
+//        if (isFamilyBed ^ isFamilyUser) {
+        if (bed[0] ^ user[0]) {
+            //make sure family type matches between user and bed
+            thisBedOpen = false;
+        }
+//        if (menOnlyBed && (isFemaleUser)) {
+        if (bed[1] && user[1]) {
+            //make sure women don't get into men only shelters
+            thisBedOpen = false;
+        }
+//        if (womenOnlyBed && (isMaleUser)) {
+        if (bed[2] && user[2]) {
+            //make sure men don't get into women only shelters
+            thisBedOpen = false;
+        }
+//        if ((menOnlyBed ^ womenOnlyBed) && isNonBinaryUser) {
+        if ((bed[1] ^ bed[2]) && user[3]) {
+            //makes sure non-binary users can access shelters that
+            // exclude nobody OR BOTH genders
+            thisBedOpen = false;
+        }
+//        if (veteranOnlyBed && !(isVeteranUser)) {
+        if (bed[3] && !user[4]) {
+            //exclude veteran beds from non-veterans
+            thisBedOpen = false;
+        }
+        return thisBedOpen;
+    }
+
+    private boolean ageCompatible(String ageString, String bedKey) {
+        String minString = bedKey.substring(3, 6);
+        int minAge = Integer.parseInt(minString);
+        String maxString = bedKey.substring(7, 10);
+        int maxAge = Integer.parseInt(maxString);
+        int userAge = Integer.parseInt(ageString);
+
+        if ((userAge > maxAge) || (userAge < minAge)) {
+            //make sure user is within the appropriate age range
+            return false;
+        }
+        return true;
+    }
+
 }
-
-
 /*
     // Clears all occupied beds for this shelter
     public void clearOccupiedBeds() {
