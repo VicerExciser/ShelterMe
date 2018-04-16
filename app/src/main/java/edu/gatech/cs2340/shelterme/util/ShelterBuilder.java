@@ -170,10 +170,12 @@ public class ShelterBuilder {
 //        if (familyBeds > 0) {
 ////            bedManager.addNewBeds(familyBeds, true, mo, wo, minAge, maxAge, vo);
 //        }
-        if (p.singleBeds > 0)
+        if (p.singleBeds > 0) {
             bedManager.addNewBeds(p, p.singleBeds);
-        if (p.familyBeds > 0)
+        }
+        if (p.familyBeds > 0) {
             bedManager.addNewBeds(p, p.familyBeds);
+        }
     }
 
     private void decipherMinAge(CapacityStruct p) {

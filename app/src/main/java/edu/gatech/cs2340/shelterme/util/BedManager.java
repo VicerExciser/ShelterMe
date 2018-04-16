@@ -139,9 +139,9 @@ public class BedManager {
                         return bedKey;
                     }
                     int keyLength = bedKey.length();
-                    boolean thisBedOpen = true;
-                    boolean bedCheck1 = true;
-                    boolean bedCheck2 = true;
+                    boolean thisBedOpen;
+                    boolean bedCheck1;
+                    boolean bedCheck2;
                     boolean bedCheck3 = true;
                     //attributes of Bed
                     // Ex. bedKey: 'TFF000_200_F'  <-- family, men, women, minage, maxage, vets
@@ -265,11 +265,7 @@ public class BedManager {
         int maxAge = Integer.parseInt(maxString);
         int userAge = Integer.parseInt(ageString);
 
-        if ((userAge > maxAge) || (userAge < minAge)) {
-            //make sure user is within the appropriate age range
-            return false;
-        }
-        return true;
+        return !((userAge > maxAge) || (userAge < minAge));
     }
 
 }
