@@ -1,3 +1,4 @@
+
 package edu.gatech.cs2340.shelterme.model;
 
 import android.os.Parcel;
@@ -34,7 +35,7 @@ public class Shelter implements Parcelable {
     private final String phone;
     private String address;
 
-//    private HashMap<String, LinkedHashMap<String, Bed>> beds;
+    //    private HashMap<String, LinkedHashMap<String, Bed>> beds;
     private Map<String, Map<String, Bed>> beds;
     @Nullable
     private Bed lastBedAdded;
