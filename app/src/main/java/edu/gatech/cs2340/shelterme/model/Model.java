@@ -11,7 +11,13 @@ import java.util.Map;
 import edu.gatech.cs2340.shelterme.util.DBUtil;
 import edu.gatech.cs2340.shelterme.util.MessageAdapter;
 
-/* Facade Controller */
+/* Facade Controller */     // I think we can change Model so that it is not a singleton
+                            // and just a pure facade class. All data additions and removals
+                            // can be done with DBUtil having Model act as a wrapper for those
+                            // synchronized functions. However, should we still encapsulate
+                            // local class methods here that simply are accessing/searching the
+                            // synchronous data structures (e.g. accounts, shelters)??
+                        // ^^^^^ This way, we can keep the getCurrUser functionality.
 
 /**
  * The type Model.

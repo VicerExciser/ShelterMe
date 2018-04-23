@@ -133,7 +133,8 @@ public class LoginPage extends AppCompatActivity {
             } else {
                 assert attempting != null;
                 if (!attempting.validatePassword(password)) {
-                    model.displayErrorMessage("Incorrect username or password", this);
+                    model.displayErrorMessage("Incorrect password for user " +
+                            attempting.getUsername(), this);
                     return false;
                 }
             }

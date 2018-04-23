@@ -7,8 +7,8 @@ public abstract class Account {
     private final String name;
     private final String username;          // login name (in recognition of current popular trends,
                                             // this can be the email address)
-    private final int password;             // hashed user password
-    private final boolean accountLocked;          // account state (locked or unlocked)
+    private int password;             // hashed user password
+    private boolean accountLocked;          // account state (locked or unlocked)
     private final String email;             // contact info (email address)
     private Type accountType;
     private Question secQuest;
@@ -62,6 +62,13 @@ public abstract class Account {
     public String getEmail() { return this.email; }
 
     /**
+     * Gets password.
+     *
+     * @return the password
+     */
+    public int getPassword() { return this.password; }
+
+    /**
      * A method to validate the password
      *
      * @param pw the password of the account
@@ -79,8 +86,7 @@ public abstract class Account {
     @SuppressWarnings("unused")
     public boolean isAccountLocked() { return this.accountLocked; }
 
-    // --Commented out by Inspection (4/13/2018 6:17 PM):
-    // public void setAccountLocked(boolean locked) { this.accountLocked = locked; }
+     public void setAccountLocked(boolean locked) { this.accountLocked = locked; }
 
     @Override
     public boolean equals(Object other) {
