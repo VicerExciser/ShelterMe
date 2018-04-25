@@ -16,6 +16,7 @@ import java.util.Map;
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Account;
 import edu.gatech.cs2340.shelterme.model.Model;
+import edu.gatech.cs2340.shelterme.model.User;
 
 //import com.google.firebase.auth.FirebaseAuth;
 
@@ -27,6 +28,8 @@ public class LoginPage extends AppCompatActivity {
     private EditText mUsernameView;
     private EditText mPasswordView;
     private final Model model = Model.getInstance();
+    private int incorrectLogins;
+    private static final int MAX_ATTEMPTS = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,20 +55,28 @@ public class LoginPage extends AppCompatActivity {
             public void onClick(View view) {
                 if(attemptLogin()){
                     Account acct = model.getCurrUser();
-                    Intent myIntent1 = null;
-                    Account.Type type = acct.getAccountType();
-                    switch (type) {
-                        case USER:
-                            myIntent1 = new Intent(view.getContext(), HomePage.class);
-                            break;
-                        case ADMIN:
-                            myIntent1 = new Intent(view.getContext(), AdminHomePage.class);
-                            break;
-                        case EMP:
-                            myIntent1 = new Intent(view.getContext(), EmployeeHomePage.class);
-                            break;
+                    if (acct == null) {
+                        String username = mUsernameView.getText().toString();
+                        String email = Model.getEmailAssociatedWithUsername(username);
+                        acct = Model.getAccountByEmail(email);
                     }
-                    startActivityForResult(myIntent1, 0);
+                    Intent myIntent1 = null;
+                    /*Account.Type*/ String type = acct.getAccountType();
+//                    switch (type) {
+                    if (type.equals(Account.Type.USER.toString()) || type.equals("USER"))
+                            myIntent1 = new Intent(view.getContext(), HomePage.class);
+//                            break;
+//                        case ADMIN:
+                    else if (type.equals(Account.Type.ADMIN.toString()) || type.equals("ADMIN"))
+                            myIntent1 = new Intent(view.getContext(), AdminHomePage.class);
+//                            break;
+//                        case EMP:
+                    else if (type.equals(Account.Type.EMP.toString()) || type.equals("EMP"))
+                            myIntent1 = new Intent(view.getContext(), EmployeeHomePage.class);
+//                            break;
+//                    }
+                    assert(myIntent1 != null);
+                    startActivity/*ForResult*/(myIntent1 /*, 0*/);
                 }}
         });
 
@@ -82,7 +93,7 @@ public class LoginPage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myIntent3 = new Intent(view.getContext(),
-                        HomePage.class);
+                        PasswordRecovery.class);
                 startActivityForResult(myIntent3, 0);
             }
         });
@@ -92,7 +103,12 @@ public class LoginPage extends AppCompatActivity {
         username = username.trim();
         String passString =  mPasswordView.getText().toString();
         int password = passString.hashCode();
-        String email = Model.getEmailAssociatedWithUsername(username);
+        String email;
+        if (Model.isValidEmailAddress(username) && model.emailExists(username)) {
+            email = username;
+        } else {
+            email = Model.getEmailAssociatedWithUsername(username);
+        }
         Account attempting = Model.getAccountByEmail(email);
 
         Map<String, Account> accountMap = Model.getAccountListPointer();
@@ -118,23 +134,39 @@ public class LoginPage extends AppCompatActivity {
 //                || model.getAccountByIndex(0).getUsername().equals(username)) {
         } else {
             if (email == null) {
+                model.displayErrorMessage("No account email entered", this);
+                return false;
+            }
+            if (!model.emailExists(email)) {
                 model.displayErrorMessage("No existing user found", this);
                 return false;
             }
-            if ((attempting != null)
-                    && username.equals(attempting.getUsername())
-                    && email.equals(attempting.getEmail())
-                    && attempting.validatePassword(password)) {
-                model.displaySuccessMessage("Login successful!", this);
-            } else //noinspection ChainedMethodCall
-                if (!Model.getAccountListPointer().containsValue(attempting)) {
-                model.displayErrorMessage("User does not exist, please register an account", this);
+            if ((attempting == null || !Model.getAccountListPointer().containsValue(attempting))) {
+                model.displayErrorMessage("User does not exist, please register an account",
+                        this);
                 return false;
-            } else {
-                assert attempting != null;
-                if (!attempting.validatePassword(password)) {
-                    model.displayErrorMessage("Incorrect password for user " +
-                            attempting.getUsername(), this);
+            }
+            if (attempting.isAccountLocked()) {  // Account is locked
+                model.displayErrorMessage("This account is locked! Proceed to the Password " +
+                        "Recovery page ('forgot my password') to unlock with a new password",
+                        this);
+                return false;
+            }
+            if (username.equals(attempting.getUsername()) && email.equals(attempting.getEmail())) {
+                if (attempting.validatePassword(password)) {
+                    model.displaySuccessMessage("Login successful!", this);
+                } else {
+                    incorrectLogins++;
+                    if (incorrectLogins >= MAX_ATTEMPTS) {
+//                        attempting.setAccountLocked(true);
+                        Model.updateUserAccountStatus((User)attempting, true);
+                        model.displayErrorMessage("Incorrect password for user " +
+                                attempting.getUsername() + ".\nThis account is now locked!", this);
+                    } else {
+                        model.displayErrorMessage("Incorrect password for user " +
+                                attempting.getUsername() + ".\nOnly " + (MAX_ATTEMPTS - incorrectLogins) +
+                                " attempts remaining before lockout!", this);
+                    }
                     return false;
                 }
             }

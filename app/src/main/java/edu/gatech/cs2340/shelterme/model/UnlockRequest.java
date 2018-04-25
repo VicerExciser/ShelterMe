@@ -1,29 +1,74 @@
 package edu.gatech.cs2340.shelterme.model;
 
-class UnlockRequest extends Message {
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 
-    public UnlockRequest(User lockedUser, String message, Account sender) {
-        super(message, sender);
-        @SuppressWarnings("unused") String lockedUserEmail = lockedUser.getEmail();
+import java.util.Random;
+
+import edu.gatech.cs2340.shelterme.util.GeneratePassword;
+
+import static android.support.v4.content.ContextCompat.startActivity;
+
+public class UnlockRequest extends Message {
+    private User lockedUser;
+//    private String lockedUserEmail;
+
+    public UnlockRequest(Account sender) {
+        super("User " + sender.getUsername() + " has requested for their account to be" +
+                " unlocked.", sender);
+        assert(lockedUser != null);
+        this.lockedUser = (User)sender;
+//        lockedUserEmail = lockedUser.getEmail();
+        accountUnlockRequested = true;
     }
 
-// --Commented out by Inspection START (4/13/2018 6:17 PM):
-//    public UnlockRequest() {
-//        super();
-//        this.lockedUserEmail = new User().getEmail();
-//    }
-// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
+    public UnlockRequest() {
+        super();
+        this.lockedUser = new User();
+    }
 
 
-// --Commented out by Inspection START (4/13/2018 6:17 PM):
-//    public String getLockedUserEmail() {
-//        return lockedUserEmail;
-//    }
-// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
+    public User getLockedUser() {
+        return lockedUser;
+    }
 
-// --Commented out by Inspection START (4/13/2018 6:17 PM):
+    public void setLockedUser(User user) {
+        this.lockedUser = user;
+    }
+//
 //    public void setLockedUserEmail(String lockedUserEmail) {
 //        this.lockedUserEmail = lockedUserEmail;
 //    }
-// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
+
+    @Override
+    public Intent resolve() {
+        Log.e("UNLOCK REQUEST", "Subclass 'resolve()' called");
+        Random rand = new Random();
+        int maxLen = 10;
+        int minLen = 5;
+        int length = rand.nextInt((maxLen - minLen) + 1) + minLen;
+        String newPass = GeneratePassword.randomPassword(length);
+        lockedUser.setPassword(newPass.hashCode());
+//        lockedUser.setAccountLocked(false);
+        Model.updateUserAccountStatus(lockedUser, false);
+        return emailNewPassword(newPass);
+    }
+
+    private Intent emailNewPassword(String newPass) {
+        String deliveryText = "The new password for " + lockedUser.getUsername() + " is " + newPass
+                + "\n\nEnter this for your ShelterMe login to access your unlocked account!";
+        String[] destination = {lockedUser.getEmail()};
+
+        // send email
+//        Intent mail = new Intent(Intent.ACTION_SENDTO);
+//        mail.setType("message/rfc822");
+        Intent mail = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
+        mail.putExtra(Intent.EXTRA_EMAIL, destination);
+        mail.putExtra(Intent.EXTRA_SUBJECT, "ShelterMe Password Recovery Service");
+        mail.putExtra(Intent.EXTRA_TEXT, deliveryText);
+
+        return mail;
+//        return (Intent.createChooser(mail, "Send email..."));
+    }
 }

@@ -26,8 +26,10 @@ import edu.gatech.cs2340.shelterme.model.Admin;
 import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.Employee;
 import edu.gatech.cs2340.shelterme.model.Message;
+import edu.gatech.cs2340.shelterme.model.ReportUserRequest;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.StayReport;
+import edu.gatech.cs2340.shelterme.model.UnlockRequest;
 import edu.gatech.cs2340.shelterme.model.User;
 
 import static android.content.ContentValues.TAG;
@@ -216,11 +218,15 @@ public final class DBUtil implements Runnable {
         usersQueryRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                User user = dataSnapshot.getValue(User.class);
-                if (user != null) {
-                    synchronized (accountList) {
-                    accountList.put(user.getEmail(), user);
+                try {
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user != null) {
+                        synchronized (accountList) {
+                            accountList.put(user.getEmail(), user);
+                        }
                     }
+                } catch (DatabaseException dbe) {
+                    Log.e("USER CHILD ADDED", dbe.getMessage());
                 }
             }
 
@@ -491,10 +497,10 @@ public final class DBUtil implements Runnable {
 
     // Primary key = email (String up to '@' symbol)
     public void addAccount(Account newAccount) {
-        Account.Type type = newAccount.getAccountType();
-        String branch = (type == Account.Type.USER) ? "users"
-                : ((type == Account.Type.ADMIN) ? "employees"
-                : ((type == Account.Type.EMP) ? "admins" : ""));
+        /*Account.Type*/ String type = newAccount.getAccountType();
+        String branch = (type.equals(Account.Type.USER.toString()) || type.equals("USER")) ? "users"
+                : ((type.equals(Account.Type.ADMIN.toString()) || type.equals("ADMIN")) ? "employees"
+                : ((type.equals(Account.Type.EMP.toString()) || type.equals("EMP")) ? "admins" : ""));
         if (branch.isEmpty()) {
             return;
         }
@@ -586,6 +592,12 @@ public final class DBUtil implements Runnable {
         }
     }
 
+    public void updateUserAccountStatus(User u) {
+        String key = u.getEmail().substring(0, u.getEmail().indexOf('@'));
+        usersRef.child(key).child("accountLocked").setValue(u.isAccountLocked());
+        usersRef.child(key).child("password").setValue(u.getPassword());
+    }
+
 // --Commented out by Inspection START (4/13/2018 6:17 PM):
 //    public void updateUserInfo(User u) {
 //        String key = u.getEmail().substring(0, u.getEmail().indexOf('@'));
@@ -601,7 +613,7 @@ public final class DBUtil implements Runnable {
     */
 
     public void initMessages() {
-        messageRef.addValueEventListener(new ValueEventListener() {
+        messageRef.child("unlockRequests").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
@@ -609,7 +621,35 @@ public final class DBUtil implements Runnable {
                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                 try {
                     for (DataSnapshot child : children) {
-                        Message message = child.getValue(Message.class);
+                        Message message = child.getValue(UnlockRequest.class);
+                        if (message != null) {
+                            synchronized (messageList) {
+                                messageList.put(message.getTimeSent(), message);
+                            }
+                        }
+                    }
+                } catch (com.google.firebase.database.DatabaseException dbe) {
+                    Log.e("messageDataChange", dbe.getMessage());
+                    dbe.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", databaseError.toException());
+            }
+        });
+
+        messageRef.child("userReports").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                try {
+                    for (DataSnapshot child : children) {
+                        Message message = child.getValue(ReportUserRequest.class);
                         if (message != null) {
                             synchronized (messageList) {
                                 messageList.put(message.getTimeSent(), message);
@@ -632,11 +672,11 @@ public final class DBUtil implements Runnable {
 
     public void maintainMessages(final RecyclerView messagesRecyclerView,
                                  final MessageAdapter adapter) {
-        Query messageQuery = messageRef.orderByKey();
-        messageQuery.addChildEventListener(new ChildEventListener() {
+        Query unlockReqsQuery = messageRef.child("unlockRequests").orderByKey();
+        unlockReqsQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Message message = dataSnapshot.getValue(Message.class);
+                Message message = dataSnapshot.getValue(UnlockRequest.class);
                 //Now add to message map
                 synchronized (messageList) {
                     if (message != null) {
@@ -650,7 +690,7 @@ public final class DBUtil implements Runnable {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Message message = dataSnapshot.getValue(Message.class);
+                Message message = dataSnapshot.getValue(UnlockRequest.class);
                 synchronized (messageList) {
                     if (message != null) {
                         messageList.put(message.getTimeSent(), message);
@@ -661,7 +701,61 @@ public final class DBUtil implements Runnable {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Message message = dataSnapshot.getValue(Message.class);
+                Message message = dataSnapshot.getValue(UnlockRequest.class);
+                synchronized (messageList) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        if (message != null) {
+                            messageList.remove(message.getTimeSent(), message);
+                        }
+                    } else {
+                        assert message != null;
+                        messageList.remove(message.getTimeSent());
+                    }
+                }
+                messagesRecyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        Query userReportsQuery = messageRef.child("userReports").orderByKey();
+        userReportsQuery.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Message message = dataSnapshot.getValue(ReportUserRequest.class);
+                //Now add to message map
+                synchronized (messageList) {
+                    if (message != null) {
+                        messageList.put(message.getTimeSent(), message);
+                    }
+                }
+                //Now Add messageList into Adapter/RecyclerView
+                messagesRecyclerView.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Message message = dataSnapshot.getValue(ReportUserRequest.class);
+                synchronized (messageList) {
+                    if (message != null) {
+                        messageList.put(message.getTimeSent(), message);
+                    }
+                }
+                messagesRecyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Message message = dataSnapshot.getValue(ReportUserRequest.class);
                 synchronized (messageList) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         if (message != null) {
@@ -690,7 +784,9 @@ public final class DBUtil implements Runnable {
     public void addMessage(Message newMessage) {
 //        String key = new Date(newMessage.getTimeSent()).toString(); // likely redundant
         String key = String.valueOf(new Date(newMessage.getTimeSent()).getTime());
-        messageRef.child(key).setValue(newMessage, new DatabaseReference.CompletionListener() {
+        String branch = newMessage.isAccountUnlockRequested() ? "unlockRequests" : "userReports";
+        messageRef.child(branch).child(key).setValue(newMessage,
+                new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError,
                                    DatabaseReference databaseReference) {
@@ -702,6 +798,12 @@ public final class DBUtil implements Runnable {
                 }
             }
         });
+    }
+
+    public void markMessageAsAddressed(Message oldMessage) {
+        String key = String.valueOf(new Date(oldMessage.getTimeSent()).getTime());
+        String branch = oldMessage.isAccountUnlockRequested() ? "unlockRequests" : "userReports";
+        messageRef.child(branch).child(key).child("addressed").setValue(oldMessage.isAddressed());
     }
 }
 

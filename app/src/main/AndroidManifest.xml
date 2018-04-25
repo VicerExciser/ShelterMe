@@ -74,7 +74,7 @@
         <activity
             android:name=".controllers.AccountDetails"
             android:label="@string/title_activity_account_details"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.TransparentTheme" />
         <activity
             android:name=".controllers.MessageBoard"
             android:label="@string/title_activity_message_board"

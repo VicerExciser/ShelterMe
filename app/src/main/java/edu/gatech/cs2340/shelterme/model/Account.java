@@ -4,14 +4,14 @@ package edu.gatech.cs2340.shelterme.model;
  * Represents an Account
  */
 public abstract class Account {
-    private final String name;
-    private final String username;          // login name (in recognition of current popular trends,
+    private String name;
+    private String username;          // login name (in recognition of current popular trends,
                                             // this can be the email address)
     private int password;             // hashed user password
     private boolean accountLocked;          // account state (locked or unlocked)
     private final String email;             // contact info (email address)
-    private Type accountType;
-    private Question secQuest;
+    private /*Type*/ String accountType;
+    private Question secQuest;    // add eligibility for more than 1 security question in the future
     private String secAns;
 
     /**
@@ -26,8 +26,8 @@ public abstract class Account {
      */
     Account(String name, String username, String email, int password,
             Question secQuest, String secAns) {
-        this.name = name;
-        this.username = username;
+        this.setName(name);
+        this.setUsername(username);
         this.password = password;
         this.email = email;
         this.secQuest = secQuest;
@@ -41,7 +41,7 @@ public abstract class Account {
      * @return the name of the account holder
      */
     @SuppressWarnings("unused")
-    String getName() {
+    public String getName() {
         return this.name;
     }
 
@@ -69,6 +69,13 @@ public abstract class Account {
     public int getPassword() { return this.password; }
 
     /**
+     * Sets password.
+     *
+     * @param pass the pass
+     */
+    public void setPassword(int pass) { this.password = pass; }
+
+    /**
      * A method to validate the password
      *
      * @param pw the password of the account
@@ -86,15 +93,20 @@ public abstract class Account {
     @SuppressWarnings("unused")
     public boolean isAccountLocked() { return this.accountLocked; }
 
-     public void setAccountLocked(boolean locked) { this.accountLocked = locked; }
+    /**
+     * Sets account locked.
+     *
+     * @param locked the locked
+     */
+    public void setAccountLocked(boolean locked) { this.accountLocked = locked; }
 
     @Override
     public boolean equals(Object other) {
 //        if (other == this) return true;
         return (other == this) || ((other instanceof Account)
                 && ((Account) other).email.equalsIgnoreCase(this.email)
-                && ((Account) other).name.equalsIgnoreCase(this.name)
-                && ((Account) other).username.equalsIgnoreCase(this.username)
+                && ((Account) other).getName().equalsIgnoreCase(this.getName())
+                && ((Account) other).getUsername().equalsIgnoreCase(this.getUsername())
                 && (((Account) other).password == this.password));
     }
 
@@ -102,9 +114,9 @@ public abstract class Account {
     @Override
     public int hashCode() {
         int result = 17;
-        result = (31 * result) + this.username.toLowerCase().hashCode();
+        result = (31 * result) + this.getUsername().toLowerCase().hashCode();
         result = (31 * result) + this.email.toLowerCase().hashCode();
-        result = (31 * result) + this.name.toLowerCase().hashCode();
+        result = (31 * result) + this.getName().toLowerCase().hashCode();
         result = (31 * result) + this.password;
 //        result = (31 * result) + this.accountType.toString().toLowerCase().hashCode();
         return result;
@@ -118,7 +130,7 @@ public abstract class Account {
      *
      * @param accountType the account type (admin, employee, user)
      */
-    void setAccountType(Type accountType) {
+    void setAccountType(String accountType) {
         this.accountType = accountType;
     }
 
@@ -127,7 +139,7 @@ public abstract class Account {
      *
      * @return the type of the account (admin, employee, user)
      */
-    public Type getAccountType() { return this.accountType; }
+    public /*Type*/ String getAccountType() { return this.accountType; }
 
     /**
      * Gets sec quest.
@@ -167,6 +179,24 @@ public abstract class Account {
     @SuppressWarnings("unused")
     public void setSecAns(String secAns) {
         this.secAns = secAns;
+    }
+
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Sets username.
+     *
+     * @param username the username
+     */
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 

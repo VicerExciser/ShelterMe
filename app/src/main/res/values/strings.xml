@@ -65,5 +65,7 @@
     <string name="capacity_hint">Capacity</string>
     <string name="create_hint">Create</string>
     <string name="reservation_rules_check">By checking, I hearby declare that I have read and agreed to the Rules and Agreements of this shelter.</string>
+    <string name="account_status_locked">Account Status: Locked</string>
+    <string name="account_status_unlocked">Account Status: Unlocked</string>
 
 </resources>

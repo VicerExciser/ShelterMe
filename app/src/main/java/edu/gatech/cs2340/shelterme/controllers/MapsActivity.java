@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.gatech.cs2340.shelterme.Manifest;
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.GenderAccepted;

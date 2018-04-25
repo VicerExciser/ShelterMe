@@ -32,7 +32,8 @@ public class MessageBoard extends AppCompatActivity {
 
     private RecyclerView messageRecyclerView;
     private Map<String, Message> dataSet;
-
+    MessageAdapter messageAdapter;
+//    int filterUpdatesBeforeChange = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +44,8 @@ public class MessageBoard extends AppCompatActivity {
         Model.initMessages();
 
         // Just for testing adding a Message to DB
-        Model model = Model.getInstance();
-        model.testMessage();
+//        Model model = Model.getInstance();
+//        model.testMessage();
 
         dataSet = Model.getMessageListPointer();
         // use this setting to improve performance if you know that changes
@@ -65,6 +66,7 @@ public class MessageBoard extends AppCompatActivity {
 //--------------------------------------------------------------------------------------------------
 
         CheckBox showAddressedCheckBox = findViewById(R.id._showAddressedCheckBox);
+//        showAddressedCheckBox.setChecked(true);
         showAddressedCheckBox.setOnCheckedChangeListener(
                 new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -72,7 +74,8 @@ public class MessageBoard extends AppCompatActivity {
                 if (isChecked) {
 //                    showUnaddressedOnly();
 //                    MessageBoard.this.messageAdapter.filter("Addressed", "False");
-                    updateFilter("Addressed", "False");
+//                    if (filterUpdatesBeforeChange <= 0)
+                        updateFilter("Addressed", "False");
                 } else {
 //                    showAddressed();
 //                    MessageBoard.this.messageAdapter.filter("Addressed", "True");
@@ -108,7 +111,19 @@ public class MessageBoard extends AppCompatActivity {
         });
 
 //        MessageBoard.this.messageAdapter.filter(null, null);
-        updateFilter(null, null);
+
+//        updateFilter(null, null);
+//        messageAdapter.notifyDataSetChanged();
+
+        dataSet = Model.getMessageListPointer();
+        Message[] dataArray = new Message[dataSet.size()];
+        List<Message> dataList = new ArrayList<>(dataSet.values());
+        Collections.sort(dataList, Collections.reverseOrder()); // display in descending order
+        dataArray = dataList.toArray(dataArray);
+        messageAdapter = new MessageAdapter(dataArray);
+        messageRecyclerView.setAdapter(messageAdapter);
+        Model.maintainMessages(messageRecyclerView, messageAdapter);
+        messageAdapter.notifyDataSetChanged();
     }
 
     private void updateFilter(String mode, String searchText) {
@@ -118,6 +133,8 @@ public class MessageBoard extends AppCompatActivity {
             dataSet = Model.getMessageListPointer();
         } else if ("Search".equals(mode)) {
             Log.e("'Search' filter", "Now showing only results containing " + searchText);
+//            dataArray = new Message[dataSet.size()];
+//            dataList = new ArrayList<>(dataSet.values());
             Iterator<Message> iterator = dataList.iterator();
             while (iterator.hasNext()) {
                 Message message = iterator.next();
@@ -128,6 +145,8 @@ public class MessageBoard extends AppCompatActivity {
             }
         } else if ("Addressed".equals(mode) && "False".equals(searchText)) {
             Log.e("'Addressed' filter", "Now showing only unaddressed messages");
+//            dataArray = new Message[dataSet.size()];
+//            dataList = new ArrayList<>(dataSet.values());
             Iterator<Message> iterator = dataList.iterator();
             while (iterator.hasNext()) {
                 Message message = iterator.next();
@@ -138,13 +157,13 @@ public class MessageBoard extends AppCompatActivity {
         } else {
             dataSet = Model.getMessageListPointer();
         }
-//        Message[] dataArray = new Message[dataSet.size()];
-//        List<Message> dataList = new ArrayList<>(dataSet.values());
         Collections.sort(dataList, Collections.reverseOrder()); // display in descending order
         dataArray = dataList.toArray(dataArray);
-        MessageAdapter messageAdapter = new MessageAdapter(dataArray);
+        messageAdapter = new MessageAdapter(dataArray);
         messageRecyclerView.setAdapter(messageAdapter);
         Model.maintainMessages(messageRecyclerView, messageAdapter);
+        messageAdapter.notifyDataSetChanged();
+//        filterUpdatesBeforeChange--;
     }
 
 

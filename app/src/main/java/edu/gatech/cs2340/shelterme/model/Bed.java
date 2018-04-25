@@ -4,8 +4,6 @@ import android.support.annotation.Nullable;
 
 import java.util.Map;
 
-import edu.gatech.cs2340.shelterme.util.ShelterBuilder;
-
 /**
  * Represents a Bed in a shelter.
  */
@@ -51,7 +49,7 @@ public class Bed {
         this.maxAge = struct.toAge;
         this.veteranOnly = struct.vetsOnly;
         this.savedBedKey = savedBedKey;
-        this.associatedShelterName = struct.shelterName;
+        this.setAssociatedShelterName(struct.shelterName);
     }
 
     /**
@@ -280,7 +278,7 @@ public class Bed {
             return true;
         }
         Bed b = (Bed) other;
-        return this.associatedShelterName.equalsIgnoreCase(b.associatedShelterName)
+        return this.getAssociatedShelterName().equalsIgnoreCase(b.getAssociatedShelterName())
                 && this.savedBedKey.equalsIgnoreCase(b.savedBedKey)
                 && this.id.equals(b.id);
     }
@@ -290,9 +288,27 @@ public class Bed {
     public int hashCode() {
         int result = 17;
         result = (31 * result) + this.id.toLowerCase().hashCode();
-        result = (31 * result) + this.associatedShelterName.toLowerCase().hashCode();
+        result = (31 * result) + this.getAssociatedShelterName().toLowerCase().hashCode();
         result = (31 * result) + this.savedBedKey.toLowerCase().hashCode();
         return result;
+    }
+
+    /**
+     * Gets associated shelter name.
+     *
+     * @return the associated shelter name
+     */
+    public String getAssociatedShelterName() {
+        return associatedShelterName;
+    }
+
+    /**
+     * Sets associated shelter name.
+     *
+     * @param associatedShelterName the associated shelter name
+     */
+    public void setAssociatedShelterName(String associatedShelterName) {
+        this.associatedShelterName = associatedShelterName;
     }
 }
 

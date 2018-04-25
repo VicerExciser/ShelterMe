@@ -7,14 +7,10 @@ import java.util.Stack;
  */
 public class User extends Account {
 
-    private final boolean isFamily;
-    private final int age;
-    private final Sex sex;
-    private final boolean isVeteran;
-    /**
-     * The Is occupying bed.
-     */
-    @SuppressWarnings("PublicField")
+    private boolean isFamily;
+    private int age;
+    private Sex sex;
+    private boolean isVeteran;
     public boolean isOccupyingBed;
     private List<StayReport> stayReports;
 
@@ -44,7 +40,7 @@ public class User extends Account {
         this.isVeteran = false;
         this.setIsOccupyingBed(false);
         this.stayReports = new Stack<>();
-        super.setAccountType(Type.USER);
+        super.setAccountType(Type.USER.toString());
     }
 
 
@@ -118,44 +114,66 @@ public class User extends Account {
         return cur;
     }
 
-//    @Override
-//    public String getName() {
-//        return super.getName();
-//    }
-//
-//    @Override
-//    public String getEmail() {
-//        return super.getEmail();
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return super.getUsername();
-//    }
+    @Override
+    public String getName() {
+        return super.getName();
+    }
 
-// --Commented out by Inspection START (4/13/2018 6:17 PM):
-//    public boolean getIsFamily() {
-//        return this.isFamily;
-//    }
-// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
+    @Override
+    public String getEmail() {
+        return super.getEmail();
+    }
 
-// --Commented out by Inspection START (4/13/2018 6:17 PM):
-//    public int getAge() {
-//        return this.age;
-//    }
-// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
+    @Override
+    public String getUsername() {
+        return super.getUsername();
+    }
 
-// --Commented out by Inspection START (4/13/2018 6:17 PM):
-//    public Sex getSex() {
-//        return this.sex;
-//    }
-// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
+    @Override
+    public void setName(String name) {
+        super.setName(name);
+    }
 
-// --Commented out by Inspection START (4/13/2018 6:17 PM):
-//    public boolean getIsVeteran() {
-//        return this.isVeteran;
-//    }
-// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
+    @Override
+    public void setUsername(String username) {
+        super.setUsername(username);
+    }
+
+    /**
+     * Gets is family.
+     *
+     * @return the is family
+     */
+    public boolean getIsFamily() {
+        return this.isFamily;
+    }
+
+    /**
+     * Gets age.
+     *
+     * @return the age
+     */
+    public int getAge() {
+        return this.age;
+    }
+
+    /**
+     * Gets sex.
+     *
+     * @return the sex
+     */
+    public Sex getSex() {
+        return this.sex;
+    }
+
+    /**
+     * Gets is veteran.
+     *
+     * @return the is veteran
+     */
+    public boolean getIsVeteran() {
+        return this.isVeteran;
+    }
 
     /**
      * Is occupying bed boolean.

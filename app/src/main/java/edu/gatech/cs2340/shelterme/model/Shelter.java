@@ -32,7 +32,7 @@ public class Shelter implements Parcelable {
     private double latitude;
     private double longitude;
     private String notes;
-    private final String phone;
+    private String phone;
     private String address;
 
     //    private HashMap<String, LinkedHashMap<String, Bed>> beds;
@@ -383,11 +383,9 @@ public class Shelter implements Parcelable {
         return beds;
     }
 
-// --Commented out by Inspection START (4/13/2018 6:17 PM):
-//    public void setBeds(HashMap<String, HashMap<String, Bed>> beds) {
-//        this.beds = beds;
-//    }
-// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
+    public void setBeds(Map<String, Map<String, Bed>> beds) {
+        this.beds = beds;
+    }
 
     /**
      * Gets vacancies.

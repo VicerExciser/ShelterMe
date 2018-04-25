@@ -1,6 +1,8 @@
 package edu.gatech.cs2340.shelterme.model;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -8,12 +10,13 @@ import java.util.Date;
 /**
  * The type Message.
  */
-public class Message implements Comparable<Message> {
+public abstract class Message implements Comparable<Message> {
     private final String message;
     private final String timeSent;
     private final String senderEmail;
     @SuppressWarnings("FieldMayBeFinal")
     private boolean isAddressed;
+    protected boolean accountUnlockRequested;
 
     /**
      * Instantiates a new Message.
@@ -24,7 +27,8 @@ public class Message implements Comparable<Message> {
     public Message(String message, Account sender) {
         this.message = message;
         //noinspection ChainedMethodCall
-        this.timeSent = Calendar.getInstance().getTime().toString();
+        Calendar calendar = Calendar.getInstance();
+        this.timeSent = calendar.getTime().toString();
         this.senderEmail = sender.getEmail();
         this.isAddressed = false;
     }
@@ -91,11 +95,18 @@ public class Message implements Comparable<Message> {
         return isAddressed;
     }
 
-// --Commented out by Inspection START (4/13/2018 6:17 PM):
-//    public void setAddressed(boolean addressed) {
-//        isAddressed = addressed;
-//    }
-// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
+    /**
+     * Sets addressed.
+     *
+     * @param addressed the addressed
+     */
+    public void setAddressed(boolean addressed) {
+        isAddressed = addressed;
+    }
+
+    public boolean isAccountUnlockRequested() {
+        return this.accountUnlockRequested;
+    }
 
 // --Commented out by Inspection START (4/14/18, 6:04 PM):
 //    public void address() {
@@ -133,5 +144,10 @@ public class Message implements Comparable<Message> {
         result = (result * 31) + this.getMessage().toLowerCase().hashCode();
         result = (result * 31) + this.getTimeSent().toLowerCase().hashCode();
         return result;
+    }
+
+    public Intent resolve() {
+        Log.e("MESSAGE", "Superclass 'resolve()' called");
+        return new Intent();
     }
 }

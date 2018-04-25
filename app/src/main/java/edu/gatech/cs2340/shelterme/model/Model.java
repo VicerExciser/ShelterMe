@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import java.util.Map;
+import java.util.Objects;
 
 import edu.gatech.cs2340.shelterme.util.DBUtil;
 import edu.gatech.cs2340.shelterme.util.MessageAdapter;
@@ -115,10 +116,10 @@ public final class Model {
      * Test message.
      */
     public void testMessage() {
-        addToMessages(new Message());
+        addToMessages(new UnlockRequest());
     }
 
-    private void addToMessages(Message msg) {
+    public void addToMessages(Message msg) {
         dbUtil.addMessage(msg);
     }
 
@@ -168,6 +169,16 @@ public final class Model {
     }
 
     /**
+     * Email exists boolean.
+     *
+     * @param email the email
+     * @return the boolean
+     */
+    public boolean emailExists(String email) {
+        return accounts.containsKey(email);
+    }
+
+    /**
      * Gets account by email.
      *
      * @param email the email
@@ -178,10 +189,19 @@ public final class Model {
             return null;
         }
         Account toRet = accounts.get(email);
-        Account.Type type = toRet.getAccountType();
-        return (type == Account.Type.USER) ? (User) toRet
-                : ((type == Account.Type.ADMIN) ? (Admin) toRet
-                : ((type == Account.Type.EMP) ? (Employee) toRet : toRet));
+        /*Account.Type*/ String type = toRet.getAccountType();
+        return (
+                (type.equals(Account.Type.USER.toString())
+                        || type.equals("USER"))
+                        ? (User)toRet
+                : ((type.equals(Account.Type.ADMIN.toString())
+                        || type.equals("ADMIN")))
+                        ? (Admin)toRet
+                : (((type.equals(Account.Type.EMP.toString())
+                        || type.equals("EMP")))
+                        ? (Employee)toRet
+                : toRet)
+        );
     }
 
     /**
@@ -199,6 +219,11 @@ public final class Model {
             }
         }
         return null;
+    }
+
+    public static void updateUserAccountStatus(User u, boolean accountLocked) {
+        u.setAccountLocked(accountLocked);
+        dbUtil.updateUserAccountStatus(u);
     }
 
 //    public static User

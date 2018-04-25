@@ -17,23 +17,36 @@ public class AdminHomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home_page);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         Button viewMessages = findViewById(R.id.viewRequest);
         viewMessages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AdminHomePage.this, MessageBoard.class));
+            }
+        });
+
+        Button logOut = findViewById(R.id.logout);
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminHomePage.this, LoginPage.class));
+            }
+        });
+
+        Button addShelter = findViewById(R.id.addShelter);
+        addShelter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminHomePage.this, CreateShelter.class));
+            }
+        });
+
+        Button manageAccounts = findViewById(R.id.manageAccount);
+        manageAccounts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminHomePage.this, AccountManagement.class));
             }
         });
     }

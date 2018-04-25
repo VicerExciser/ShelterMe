@@ -26,7 +26,7 @@ public class Admin extends Account {
     public Admin(String name, String username, String email, int password,
                  Question secQ, String secA) {
         super(name, username, email, password, secQ, secA);
-        super.setAccountType(Type.ADMIN);
+        super.setAccountType(Type.ADMIN.toString());
     }
 
     @Override

@@ -32,14 +32,17 @@ public class Employee extends Account {
         super("Working Employee", "shelterboi420", "employeeboi@shelters.com",
                 "employee".hashCode(), Question.PET, "Spot");
         setPlaceOfWork(Model.findShelterByName("My Sister's House"));
-        super.setAccountType(Type.EMP);
+        super.setAccountType(Type.EMP.toString());
     }
 
-// --Commented out by Inspection START (4/13/2018 6:17 PM):
-//    public Shelter getPlaceOfWork() {
-//        return placeOfWork;
-//    }
-// --Commented out by Inspection STOP (4/13/2018 6:17 PM)
+    /**
+     * Gets place of work.
+     *
+     * @return the place of work
+     */
+    public Shelter getPlaceOfWork() {
+        return placeOfWork;
+    }
 
     private void setPlaceOfWork(Shelter placeOfWork) {
         this.placeOfWork = placeOfWork;

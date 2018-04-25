@@ -23,7 +23,6 @@ public class AccountManagement extends AppCompatActivity {
     // Customize this activity to suit full purposes; integrate Firebase realtime updates for
     // RecyclerView data
 
-    // --Commented out by Inspection (4/13/2018 6:17 PM):private AccountAdapter accountAdapter;
     private Map<String, Account> dataSet;
 
 
