@@ -29,6 +29,7 @@ public class AccountDetails extends AppCompatActivity {
     Account account;
     boolean accountIsLocked;
     Message message;
+    Model model = Model.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,23 +79,17 @@ public class AccountDetails extends AppCompatActivity {
         resolveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean shouldUnlockAccount = (message.isAccountUnlockRequested() && accountIsLocked);
-                Intent mail;
-                if  (shouldUnlockAccount) {
-                    mail = ((UnlockRequest)message).resolve();
-                    Model.getInstance().displaySuccessMessage("User's account has been " +
-                            "unlocked; sending new password to email now.", AccountDetails.this);
-//                    message.setAddressed(true);
-                    startActivity(mail);
-                } else if (!shouldUnlockAccount) {
-                    mail = ((ReportUserRequest)message).resolve();
-//                    account.setAccountLocked(true);
-                    Model.updateUserAccountStatus((User)account, true);
-//                    Model.markMessageAsAddressed(this);
-                    message.markAsAddressed();
-                    Model.getInstance().displaySuccessMessage("User has been banned; account" +
-                            " locked.", AccountDetails.this);
+                boolean shouldUnlockAccount = message.isAccountUnlockRequested() && accountIsLocked;
+                String successMessageText;
+                if  (shouldUnlockAccount) {                                     // UnlockRequest
+                    successMessageText = "User's account has been unlocked; " +
+                            "sending new password to email now.";
+                } else {                                                        // ReportUserRequest
+                    successMessageText = "User has been banned; account locked.";
                 }
+                model.displaySuccessMessage(successMessageText, AccountDetails.this);
+                Intent mail = message.resolve();
+                startActivity(mail);
             }
         });
 

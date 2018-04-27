@@ -167,8 +167,9 @@ public abstract class Message implements Comparable<Message> {
      *
      * @return the intent
      */
-    public Intent resolve() {
-        Log.e("MESSAGE", "Superclass 'resolve()' called");
-        return new Intent();
-    }
+    public abstract Intent resolve();
+//    {
+//        Log.e("MESSAGE", "Superclass 'resolve()' called");
+//        return new Intent();
+//    }
 }

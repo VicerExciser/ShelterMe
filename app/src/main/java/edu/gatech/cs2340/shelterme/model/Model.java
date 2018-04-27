@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -301,6 +302,11 @@ public final class Model {
 //    }
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
+    /**
+     * Update vacancy.
+     *
+     * @param s the s
+     */
     public void updateVacancy(Shelter s) {
         dbUtil.updateVacancy(s);
     }
@@ -310,11 +316,23 @@ public final class Model {
         Log.v(TAG, s.detail());
     }
 
+    /**
+     * Update user occupancy and stay reports.
+     *
+     * @param u the u
+     */
     public void updateUserOccupancyAndStayReports(User u) {
         dbUtil.updateUserOccupancyAndStayReports(u);
     }
 
-    public void updateShelterVacanciesAndBeds(Shelter s, Map<String, Collection<Bed>> reserved,
+    /**
+     * Update shelter vacancies and beds.
+     *
+     * @param s         the s
+     * @param reserved  the reserved
+     * @param reserving the reserving
+     */
+    public void updateShelterVacanciesAndBeds(Shelter s, Map<String, List<Bed>> reserved,
                                               boolean reserving) {
         dbUtil.updateShelterVacanciesAndBeds(s, reserved, reserving);
     }

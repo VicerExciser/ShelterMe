@@ -11,6 +11,8 @@ import edu.gatech.cs2340.shelterme.model.CapacityStruct;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
+/* Based on a Factory class design */
+
 /**
  * The type Bed manager.
  */

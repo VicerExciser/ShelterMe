@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.R;
@@ -151,7 +152,7 @@ public class RequestStayReport extends AppCompatActivity {
                         try {
                                 ReservationManager reservationManager
                                     = new ReservationManager(shelter, user);
-                                Map<String, Collection<Bed>> reserved
+                                Map<String, List<Bed>> reserved
                                     = reservationManager.reserveBed(selectedBedType, selctedNumber);
 
                                 model.updateShelterVacanciesAndBeds(shelter, reserved, true);

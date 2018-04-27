@@ -24,6 +24,7 @@ import edu.gatech.cs2340.shelterme.model.Employee;
 import edu.gatech.cs2340.shelterme.model.Message;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.UnlockRequest;
+import edu.gatech.cs2340.shelterme.model.User;
 
 /**
  * The type Password recovery.
@@ -112,7 +113,7 @@ public class PasswordRecovery extends AppCompatActivity {
                             PasswordRecovery.this);
                 } else {
                     if (answer.equalsIgnoreCase(account.getSecAns())) {
-                        Message unlockReq = new UnlockRequest(account);
+                        Message unlockReq = new UnlockRequest((User) account);
                         model.addToMessages(unlockReq);
                         String successText = "Password successfully reset! " +
                                 "\nA request has been submitted for your account to be unlocked" +

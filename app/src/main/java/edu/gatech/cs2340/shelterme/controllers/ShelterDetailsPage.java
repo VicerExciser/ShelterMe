@@ -36,7 +36,7 @@ public class ShelterDetailsPage extends AppCompatActivity {
         TextView notes = findViewById(R.id.notes);
         TextView vacancies = findViewById(R.id.vacancies);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         final Shelter shelterParcel = intent.getParcelableExtra("Shelter");
         final Model modelInstance = Model.getInstance();
         final Shelter shelter = modelInstance.verifyShelterParcel(shelterParcel);
@@ -68,8 +68,12 @@ public class ShelterDetailsPage extends AppCompatActivity {
         stayRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (modelInstance.getCurrUser() != null) {
-                    User user = (User)(modelInstance.getCurrUser());
+                String userEmail = intent.getStringExtra("UserEmail");
+                if (userEmail == null && modelInstance.getCurrUser() != null) {
+                    userEmail = modelInstance.getCurrUser().getEmail();
+                }
+                if (userEmail != null && modelInstance.emailExists(userEmail)) {
+                    User user = (User)(Model.getAccountByEmail(userEmail));
                     if (!(user.isOccupyingBed())) {
                         if ((vacancyRaw > 0) && shelter.hasOpenBed(user.generateKey())) {
                             Intent request = new Intent(ShelterDetailsPage.this,

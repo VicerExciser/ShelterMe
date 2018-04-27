@@ -25,6 +25,7 @@ import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.GenderAccepted;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.Shelter;
+import edu.gatech.cs2340.shelterme.model.User;
 
 /**
  * The type View shelters page.
@@ -38,6 +39,7 @@ public class ViewSheltersPage extends AppCompatActivity {
     private AgeRange selectedAgeRange = AgeRange.ANYONE;
     private GenderAccepted selectedGender = GenderAccepted.ANY;
     private ListView shelterList;
+    private String userEmail;
 
     private CheckBox familyCheck;
     private CheckBox showAllCheck;
@@ -63,6 +65,9 @@ public class ViewSheltersPage extends AppCompatActivity {
             }
         });
 
+
+        userEmail = getIntent().getStringExtra("UserEmail");
+
         shelterList = findViewById(R.id.shelterList);
 
         final Spinner ageSpin = findViewById(R.id.ageSpinner);
@@ -72,6 +77,16 @@ public class ViewSheltersPage extends AppCompatActivity {
 
         showAllCheck.setChecked(true);
         showAllCheck.setOnCheckedChangeListener(null);
+
+        Button switchToMap = findViewById(R.id.swtichMap);
+        switchToMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mapIntent = new Intent(ViewSheltersPage.this, MapsActivity.class);
+                mapIntent.putExtra("UserEmail", userEmail);
+                startActivity(mapIntent);
+            }
+        });
 
         //filling spinners
         //noinspection unchecked,unchecked
@@ -353,9 +368,17 @@ public class ViewSheltersPage extends AppCompatActivity {
     }
 
     private void displayDetailView(int position) {
+        Model model = Model.getInstance();
         Shelter selected = shelters.get(adapter.getItem(position));
         Intent intent = new Intent(ViewSheltersPage.this, ShelterDetailsPage.class);
         intent.putExtra("Shelter", selected);
+        if (userEmail != null && model.emailExists(userEmail)) {
+            intent.putExtra("UserEmail", userEmail);
+            User user = (User) Model.getAccountByEmail(userEmail);
+            if (user != null && !model.getCurrUser().equals(user)) {
+                model.setCurrUser(userEmail, user);
+            }
+        }
         startActivity(intent);
     }
 

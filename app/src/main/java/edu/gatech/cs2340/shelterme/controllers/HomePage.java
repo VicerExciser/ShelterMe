@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.R;
@@ -26,17 +27,22 @@ public class HomePage extends AppCompatActivity {
 
     private final Model model = Model.getInstance();
     private final DBUtil dbUtil = DBUtil.getInstance();
+    private String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
+        userEmail = getIntent().getStringExtra("UserEmail");
+        assert (userEmail != null);
+
         Button map = findViewById(R.id.mapButton);
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(HomePage.this, MapsActivity.class));
+                startActivity(new Intent(HomePage.this, MapsActivity.class)
+                        .putExtra("UserEmail", userEmail));
             }
         });
         Button logout = findViewById(R.id.logoutButton);
@@ -53,7 +59,8 @@ public class HomePage extends AppCompatActivity {
         viewShelters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomePage.this, ViewSheltersPage.class));
+                startActivity(new Intent(HomePage.this, ViewSheltersPage.class)
+                        .putExtra("UserEmail", userEmail));
             }
         });
 
@@ -62,7 +69,10 @@ public class HomePage extends AppCompatActivity {
         if (curUser == null) {
             checkOut.setVisibility(View.GONE);
             Log.e("HomePage", "curUser == null");
-        } else if (!curUser.isOccupyingBed() || (curUser.getCurrentStayReport() == null)) {
+            return;
+        }
+        assert (userEmail.equals(curUser.getEmail()));
+        if (!curUser.isOccupyingBed() || (curUser.getCurrentStayReport() == null)) {
             checkOut.setVisibility(View.GONE);
             Log.e("HomePage", "curUser is not occupying a bed or has " +
                     "no active stay report");
@@ -85,7 +95,7 @@ public class HomePage extends AppCompatActivity {
                     try {
                         ReservationManager reservationManager
                                 = new ReservationManager(shelter, curUser);
-                        Map<String, Collection<Bed>> reserved
+                        Map<String, List<Bed>> reserved
                                 = reservationManager.undoReservation(curStay);
 //
                         model.updateShelterVacanciesAndBeds(shelter, reserved, false);

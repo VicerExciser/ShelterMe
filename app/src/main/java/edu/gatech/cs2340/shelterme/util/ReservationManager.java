@@ -3,9 +3,11 @@ package edu.gatech.cs2340.shelterme.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import edu.gatech.cs2340.shelterme.model.Bed;
 import edu.gatech.cs2340.shelterme.model.Model;
@@ -46,9 +48,9 @@ public class ReservationManager {
      * @param type    The type of bed to be reserved (Single or Family)
      * @param numBeds An integer from 1 to 5 for the quantity of beds to reserve at this shelter
      * @return A HashMap that maps a bedKey (representative of the User type that can legitimately
-     * sleep in this bed) to a collection of bedIDs (i.e. bed_50)
+     * sleep in this bed) to a List of bedIDs (i.e. bed_50)
      */
-    public Map<String, Collection<Bed>> reserveBed(String type, int numBeds) {
+    public Map<String, List<Bed>> reserveBed(String type, int numBeds) {
         //function takes in User and returns ID of bed(s) being reserved
         if (type == null) {
             throw new IllegalArgumentException("Bed type cannot be null.");
@@ -115,12 +117,12 @@ public class ReservationManager {
         }
 
         // ValidBedsFound is our structure containing all beds that must be updated in the database
-        Map<String, Collection<Bed>> validBedsFound = new HashMap<>();
+        Map<String, List<Bed>> validBedsFound = new HashMap<>();
         // reservedBeds will hold pointers to our newly reserved bed objects
-        Collection<Bed> reservedBeds = new ArrayList<>();
+        List<Bed> reservedBeds = new ArrayList<>();
         Map<String, Map<String, Bed>> shelterBeds = curShelter.getBeds();
         Map<String, Bed> bedOptions = shelterBeds.get(bedTypeFoundKey);
-        Collection<Bed> v = bedOptions.values();
+        List<Bed> v = new ArrayList<>(bedOptions.values());
         Bed[] bedArr = new Bed[v.size()];
         bedArr = (v.toArray(bedArr));
 
@@ -151,7 +153,7 @@ public class ReservationManager {
      * @return the map
      */
 // Equivalent for checking out w/ a StayReport
-    public Map<String, Collection<Bed>> undoReservation(StayReport curStay) {
+    public Map<String, List<Bed>> undoReservation(StayReport curStay) {
 //        Model model = Model.getInstance();
 //        User user = ((User)(model.getCurrUser()));
         Shelter curShelter = model.verifyShelterParcel(currentShelter);
@@ -161,14 +163,14 @@ public class ReservationManager {
             throw new IllegalArgumentException("User must have bed reserved.");
         }
 
-        Collection<String> bedIds = curStay.getReservedBeds();
-        Collection<Bed> beds = new ArrayList<>();
-        Map<String, Collection<Bed>> reserved = new HashMap<>();
-        Collection<String> bedKeys = new HashSet<>();
+        List<String> bedIds = new ArrayList<>(curStay.getReservedBeds());
+        List<Bed> beds = new ArrayList<>();
+        Map<String, List<Bed>> reserved = new HashMap<>();
+        Set<String> bedKeys = new HashSet<>();
 
         Map<String, Map<String, Bed>> shelterBeds = curShelter.getBeds();
         Map<String, Bed> nonVacantBeds = shelterBeds.get("O");
-        Collection<Bed> occupied = nonVacantBeds.values();
+        List<Bed> occupied = new ArrayList<>(nonVacantBeds.values());
 
         for (String id : bedIds) {
             for (Bed b : occupied) {
@@ -188,7 +190,7 @@ public class ReservationManager {
         for (String key : bedKeys) {
             int numBedKeys = bedKeys.size();
             if (numBedKeys > 1) {
-                Collection<Bed> beds1 = new ArrayList<>();
+                List<Bed> beds1 = new ArrayList<>();
                 for (Bed b : beds) {
                     String savedKey = b.getSavedBedKey();
                     if (savedKey.equals(key)) {

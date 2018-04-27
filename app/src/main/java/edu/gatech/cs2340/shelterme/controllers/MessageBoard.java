@@ -72,7 +72,6 @@ public class MessageBoard extends AppCompatActivity {
         messageAdapter = new MessageAdapter(dataArray);
         Model.maintainMessages(messageRecyclerView, this);
         messageRecyclerView.setAdapter(messageAdapter);
-//        Model.maintainMessages(messageRecyclerView, messageAdapter);
 
 //--------------------------------------------------------------------------------------------------
 
@@ -84,17 +83,10 @@ public class MessageBoard extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 //                if (filterUpdatesBeforeChange <= 0) {
                     if (isChecked) {
-//                    showUnaddressedOnly();
-//                    MessageBoard.this.messageAdapter.filter("Addressed", "False");
-//                        if (filterUpdatesBeforeChange <= 0)
                         updateFilter("Addressed", "False");
                     } else {
-//                    showAddressed();
-//                    MessageBoard.this.messageAdapter.filter("Addressed", "True");
-//                        if (filterUpdatesBeforeChange <= 0)
                         updateFilter("Addressed", "True");
                     }
-//                }
             }
         });
 
@@ -106,32 +98,20 @@ public class MessageBoard extends AppCompatActivity {
         messageSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-//                MessageBoard.this.messageAdapter.filter("Search", query);
-//                if (filterUpdatesBeforeChange <= 0)
-                    updateFilter("Search", query);
+                updateFilter("Search", query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-//                if (filterUpdatesBeforeChange <= 0) {
                     if (newText.isEmpty()) {
-//                    MessageBoard.this.messageAdapter.filter(null, null);
                         updateFilter(null, null);
                     } else {
-//                    MessageBoard.this.messageAdapter.filter("Search", newText);
                         updateFilter("Search", newText);
                     }
-//                }
                 return false;
             }
         });
-
-//        MessageBoard.this.messageAdapter.filter(null, null);
-
-//        updateFilter(null, null);
-//        messageAdapter.notifyDataSetChanged();
-
 
         messageAdapter.notifyDataSetChanged();
     }
@@ -141,47 +121,42 @@ public class MessageBoard extends AppCompatActivity {
         if (filterUpdatesBeforeChange <= 0) {
             Log.e("MessageBoard", "UPDATE FILTER ACCEPTED");
             dataSet = Model.getMessageListPointer();
-            Message[] dataArray = new Message[dataSet.size()];
-            Set<Message> singularSet = new HashSet<>(dataSet.values());
-//        if ((mode == null) || (searchText == null)) {
-//            dataSet = Model.getMessageListPointer();
-//        } else
+//            Set<Message> singularSet = new HashSet<>(dataSet.values());
+            Set<Message> singularSet = new HashSet<>();
             if ("Search".equals(mode)) {
                 Log.e("'Search' filter", "Now showing only results containing " + searchText);
-                Iterator<Message> iterator = singularSet.iterator();
+//                Iterator<Message> iterator = singularSet.iterator();
+                Iterator<Message> iterator = dataSet.values().iterator();
                 while (iterator.hasNext()) {
                     Message message = iterator.next();
                     String email = message.getSenderEmail();
-                    if (!email.contains(searchText)) {
-                        iterator.remove();
-                    }
+                    if (email.contains(searchText)) singularSet.add(message);
+//                    if (!email.contains(searchText)) {
+//                        iterator.remove();
+//                    }
                 }
             } else if ("Addressed".equals(mode) && "False".equals(searchText)) {
                 Log.e("'Addressed' filter", "Now showing only unaddressed messages");
-                Iterator<Message> iterator = singularSet.iterator();
+//                Iterator<Message> iterator = singularSet.iterator();
+                Iterator<Message> iterator = dataSet.values().iterator();
                 while (iterator.hasNext()) {
                     Message message = iterator.next();
-                    if (message.isAddressed()) {
-                        iterator.remove();
-                    }
+                    if (!message.isAddressed()) singularSet.add(message);
+//                    if (message.isAddressed()) {
+//                        iterator.remove();
+//                    }
                 }
+            } else {
+                singularSet.addAll(dataSet.values());
             }
-//        else {
-////            dataSet = Model.getMessageListPointer();
-//        }
             List<Message> dataList = new ArrayList<>(singularSet);
             Collections.sort(dataList, Collections.reverseOrder()); // display in descending order
+            Message[] dataArray = new Message[singularSet.size()];
             dataArray = dataList.toArray(dataArray);
             messageAdapter = new MessageAdapter(dataArray);
-//        Model.maintainMessages(messageRecyclerView, this);
             messageRecyclerView.setAdapter(messageAdapter);
-//        messageAdapter.notifyDataSetChanged();
-
-//        messageAdapter.updateTextView(messageAdapter.viewHolder, -1);
-//        messageAdapter.onBindViewHolder(messageAdapter.viewHolder, -1);
         }
         filterUpdatesBeforeChange--;
-//        messageAdapter.updateMessageTextViewString();
     }
 
     public void updateDataSet(RecyclerView rv) {
@@ -190,16 +165,5 @@ public class MessageBoard extends AppCompatActivity {
     }
 
     public MessageAdapter getMessageAdapter() { return this.messageAdapter; }
-
-
-//    private void showAddressed() {
-////        messageListView.setAdapter(allMessageArrayAdapter);
-//        messageAdapter.filter("Addressed", "True");
-//    }
-//
-//    private void showUnaddressedOnly() {
-////        messageListView.setAdapter(unaddressedMessageArrayAdapter);
-//        messageAdapter.filter("Addressed", "False");
-//    }
 
 }

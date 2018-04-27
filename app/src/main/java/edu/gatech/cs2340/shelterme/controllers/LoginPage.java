@@ -29,12 +29,16 @@ public class LoginPage extends AppCompatActivity {
     private EditText mPasswordView;
     private final Model model = Model.getInstance();
     private int incorrectLogins;
+    private boolean userLockoutEnabled;
+    private String email, username;
     private static final int MAX_ATTEMPTS = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
+
+        userLockoutEnabled = false;
 
         mUsernameView= findViewById(R.id.editText);
         mPasswordView= findViewById(R.id.editText2);
@@ -46,38 +50,38 @@ public class LoginPage extends AppCompatActivity {
             finish();
         }
 
-        ImageButton logo = findViewById(R.id.log);
+        ImageButton logInButton = findViewById(R.id.logInButton);
         ImageButton cancel = findViewById(R.id.actualcancel);
         ImageButton forgotPass = findViewById(R.id.forget);
 
-        logo.setOnClickListener(new View.OnClickListener() {
+        logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(attemptLogin()){
+                if(attemptLogin()) {
                     Account acct = model.getCurrUser();
                     if (acct == null) {
-                        String username = mUsernameView.getText().toString();
-                        String email = Model.getEmailAssociatedWithUsername(username);
+                        if (username == null)
+                            username = mUsernameView.getText().toString();
+                        if (email == null)
+                            email = Model.getEmailAssociatedWithUsername(username);
                         acct = Model.getAccountByEmail(email);
                     }
                     Intent myIntent1 = null;
-                    /*Account.Type*/ String type = acct.getAccountType();
-//                    switch (type) {
-                    if (type.equals(Account.Type.USER.toString()) || type.equals("USER"))
-                            myIntent1 = new Intent(view.getContext(), HomePage.class);
-//                            break;
-//                        case ADMIN:
-                    else if (type.equals(Account.Type.ADMIN.toString()) || type.equals("ADMIN"))
-                            myIntent1 = new Intent(view.getContext(), AdminHomePage.class);
-//                            break;
-//                        case EMP:
-                    else if (type.equals(Account.Type.EMP.toString()) || type.equals("EMP"))
-                            myIntent1 = new Intent(view.getContext(), EmployeeHomePage.class);
-//                            break;
-//                    }
-                    assert(myIntent1 != null);
-                    startActivity/*ForResult*/(myIntent1 /*, 0*/);
-                }}
+                    /*Account.Type*/
+                    String type = acct.getAccountType();
+                    if (type.equals(Account.Type.USER.toString()) || type.equals("USER")) {
+                        myIntent1 = new Intent(view.getContext(), HomePage.class);
+                        userLockoutEnabled = true;
+                    } else if (type.equals(Account.Type.ADMIN.toString()) || type.equals("ADMIN")) {
+                        myIntent1 = new Intent(view.getContext(), AdminHomePage.class);
+                    } else if (type.equals(Account.Type.EMP.toString()) || type.equals("EMP")) {
+                        myIntent1 = new Intent(view.getContext(), EmployeeHomePage.class);
+                    }
+                    assert (myIntent1 != null);
+                    myIntent1.putExtra("UserEmail", email);
+                    startActivity(myIntent1);
+                }
+            }
         });
 
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -98,12 +102,13 @@ public class LoginPage extends AppCompatActivity {
             }
         });
     }
+
     private boolean attemptLogin() {
-        String username = mUsernameView.getText().toString();
+        username = mUsernameView.getText().toString();
         username = username.trim();
         String passString =  mPasswordView.getText().toString();
         int password = passString.hashCode();
-        String email;
+//        String email;
         if (Model.isValidEmailAddress(username) && model.emailExists(username)) {
             email = username;
         } else {
@@ -130,8 +135,6 @@ public class LoginPage extends AppCompatActivity {
         if ((password == 0) || TextUtils.isEmpty(username)) {
             model.displayErrorMessage("This field is required", this);
             return false;
-//        } else if (model.getAccountByIndex(0).validatePassword(password)
-//                || model.getAccountByIndex(0).getUsername().equals(username)) {
         } else {
             if (email == null) {
                 model.displayErrorMessage("No account email entered", this);
@@ -146,6 +149,11 @@ public class LoginPage extends AppCompatActivity {
                         this);
                 return false;
             }
+            if (!userLockoutEnabled) {  // double check for lockout eligibility
+                String userString = Account.Type.USER.toString();
+                userLockoutEnabled = userString.equals(attempting.getAccountType())
+                        || "USER".equals(attempting.getAccountType());
+            }
             if (attempting.isAccountLocked()) {  // Account is locked
                 model.displayErrorMessage("This account is locked! Proceed to the Password " +
                         "Recovery page ('forgot my password') to contact an administrator",
@@ -156,16 +164,18 @@ public class LoginPage extends AppCompatActivity {
                 if (attempting.validatePassword(password)) {
                     model.displaySuccessMessage("Login successful!", this);
                 } else {
-                    incorrectLogins++;
-                    if (incorrectLogins >= MAX_ATTEMPTS) {
+                    if (userLockoutEnabled) {
+                        incorrectLogins++;
+                        if (incorrectLogins >= MAX_ATTEMPTS) {
 //                        attempting.setAccountLocked(true);
-                        Model.updateUserAccountStatus((User)attempting, true);
-                        model.displayErrorMessage("Incorrect password for user " +
-                                attempting.getUsername() + ".\nThis account is now locked!", this);
-                    } else {
-                        model.displayErrorMessage("Incorrect password for user " +
-                                attempting.getUsername() + ".\nOnly " + (MAX_ATTEMPTS - incorrectLogins) +
-                                " attempts remaining before lockout!", this);
+                            Model.updateUserAccountStatus((User) attempting, true);
+                            model.displayErrorMessage("Incorrect password for user " +
+                                    attempting.getUsername() + ".\nThis account is now locked!", this);
+                        } else {
+                            model.displayErrorMessage("Incorrect password for user " +
+                                    attempting.getUsername() + ".\nOnly " + (MAX_ATTEMPTS - incorrectLogins) +
+                                    " attempts remaining before lockout!", this);
+                        }
                     }
                     return false;
                 }
@@ -174,34 +184,6 @@ public class LoginPage extends AppCompatActivity {
         model.setCurrUser(email);
         return true;
     }
-
-//    public void displaySuccessMessage(String message) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("Success!").setMessage(message)
-//                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        // do nothing
-//                    }
-//                })
-//                .setIcon(android.R.drawable.ic_dialog_alert)
-//                .show();
-//    }
-//
-//    public void displayErrorMessage(String error) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        Log.e("error", "displayErrorMessage: " + error);
-//        builder.setTitle("Error")
-//                .setMessage(error)
-//                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        // co nothing
-//                    }
-//                })
-//                .setIcon(android.R.drawable.ic_dialog_alert)
-//                .show();
-//    }
 
 }
 

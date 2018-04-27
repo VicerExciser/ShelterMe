@@ -14,10 +14,12 @@ import java.util.Map;
 
 import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Account;
+import edu.gatech.cs2340.shelterme.model.Employee;
 import edu.gatech.cs2340.shelterme.model.Message;
 import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.model.ReportUserRequest;
 import edu.gatech.cs2340.shelterme.model.Shelter;
+import edu.gatech.cs2340.shelterme.model.User;
 
 /**
  * The type Employee home page.
@@ -40,6 +42,7 @@ public class EmployeeHomePage extends AppCompatActivity {
         });
 
 //----------------------- Demo functionality -----------------------------------
+        final Account currEmployee = model.getCurrEmployee();
 
         Button editShelter = findViewById(R.id.editShelter);
         editShelter.setOnClickListener(new View.OnClickListener() {
@@ -48,15 +51,20 @@ public class EmployeeHomePage extends AppCompatActivity {
                 // Navigate to EditShelter activity or display TextView for Shelter and vacancy input
 
                 // hardcoded test to decrement vacancies:
-                Shelter selected = Model.findShelterByName("Nicholas House");
+                String empShelter = ((Employee)currEmployee).getPlaceOfWork();
+                Shelter selected = Model.findShelterByName(empShelter);
                 int pastVacancies = selected.getVacancies();
-                int newVacancies = pastVacancies - 1;
-                selected.setVacancies(newVacancies);
-                model.updateVacancy(selected);
-                String successText = String.format(Locale.US, "Vacancy for Nicholas House " +
-                        "changed from %d to %d.", pastVacancies, newVacancies);
-                model.displaySuccessMessage(successText,
-                        EmployeeHomePage.this);
+                if (pastVacancies > 0) {
+                    int newVacancies = pastVacancies - 1;
+                    selected.setVacancies(newVacancies);
+                    model.updateVacancy(selected);
+                    String successText = String.format(Locale.US, "Vacancy for %s changed " +
+                            "from %d to %d.", empShelter, pastVacancies, newVacancies);
+                    model.displaySuccessMessage(successText, EmployeeHomePage.this);
+                } else {
+                    model.displayErrorMessage("This Shelter is at maximum capacity",
+                            EmployeeHomePage.this);
+                }
             }
         });
 
@@ -69,12 +77,10 @@ public class EmployeeHomePage extends AppCompatActivity {
                 // hardcoded test to ban an existing Account:
                 Account toSuspend = Model.getAccountByEmail("acondict3@gatech.edu");
                 assert (toSuspend != null);
-                Account sendingEmployee = model.getCurrEmployee();
-                Message userReport = new ReportUserRequest(sendingEmployee, toSuspend);
+                Message userReport = new ReportUserRequest(currEmployee, (User) toSuspend);
                 model.addToMessages(userReport);
                 String successText = "User " + toSuspend.getUsername() + " has been reported.";
-                model.displaySuccessMessage(successText,
-                        EmployeeHomePage.this);
+                model.displaySuccessMessage(successText, EmployeeHomePage.this);
             }
         });
 

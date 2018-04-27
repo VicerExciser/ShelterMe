@@ -11,6 +11,9 @@ public class User extends Account {
     private int age;
     private Sex sex;
     private boolean isVeteran;
+    /**
+     * The Is occupying bed.
+     */
     public boolean isOccupyingBed;
     private List<StayReport> stayReports;
 
@@ -69,9 +72,12 @@ public class User extends Account {
             userKey += this.sex.toString();
             userKey += Integer.toString(this.age);
             userKey += this.isVeteran ? 'T' : 'F';
-        } finally {
-            return userKey;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+//        finally {
+        return userKey;
+//        }
     }
 
     /**

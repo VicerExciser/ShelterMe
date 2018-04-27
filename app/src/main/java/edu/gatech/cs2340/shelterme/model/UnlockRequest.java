@@ -12,7 +12,7 @@ import edu.gatech.cs2340.shelterme.util.GeneratePassword;
  * The type Unlock request.
  */
 public class UnlockRequest extends Message {
-    private Account lockedUser;
+    private User lockedUser;
 //    private String lockedUserEmail;
 
     /**
@@ -20,7 +20,7 @@ public class UnlockRequest extends Message {
      *
      * @param sender the sender
      */
-    public UnlockRequest(Account sender) {
+    public UnlockRequest(User sender) {
         super("User " + sender.getUsername() + " has requested for their account to be" +
                 " unlocked.", sender);
         this.lockedUser = sender;
@@ -42,7 +42,7 @@ public class UnlockRequest extends Message {
      *
      * @return the locked user
      */
-    public Account getLockedUser() {
+    public User getLockedUser() {
         return lockedUser;
     }
 
@@ -51,7 +51,7 @@ public class UnlockRequest extends Message {
      *
      * @param user the user
      */
-    public void setLockedUser(Account user) {
+    public void setLockedUser(User user) {
         this.lockedUser = user;
     }
 
@@ -63,11 +63,13 @@ public class UnlockRequest extends Message {
         int minLen = 5;
         int length = rand.nextInt((maxLen - minLen) + 1) + minLen;
         String newPass = GeneratePassword.randomPassword(length);
+
         lockedUser.setPassword(newPass.hashCode());
         this.markAsAddressed();
         // This doubles to unlock the account and update the database
 //        lockedUser.setAccountLocked(false);
         lockedUser.unlockAccount();
+        this.lockedUser.setAccountLocked(false);
         return emailNewPassword(newPass);
     }
 

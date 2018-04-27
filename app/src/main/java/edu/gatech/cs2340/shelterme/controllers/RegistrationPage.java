@@ -387,9 +387,11 @@ public class RegistrationPage extends AppCompatActivity {
             int age = 0;
             Account.Sex sex = Account.Sex.MALE;
             String workplace = ""; //enteredWorkplace;
-//            Shelter workplace = null;
 
-            if (type == Account.Type.USER) {
+            String userString = Account.Type.USER.toString();
+            String empString = Account.Type.EMP.toString();
+
+            if (userString.equals(type.toString())) {
                 //noinspection ChainedMethodCall
                 dob = dateOfBirthField.getText().toString();
                 //noinspection ChainedMethodCall
@@ -413,7 +415,7 @@ public class RegistrationPage extends AppCompatActivity {
 
                 sex = (Account.Sex) selectSexSpinner.getSelectedItem();
 
-            } else if (type == Account.Type.EMP) {
+            } else if (empString.equals(type.toString())) {
 //            enteredWorkplace = workplaceField.getText().toString();
 //            allFieldsComplete &= !enteredWorkplace.isEmpty()
 //                    && !enteredWorkplace.equals(workplaceField.getHint().toString());

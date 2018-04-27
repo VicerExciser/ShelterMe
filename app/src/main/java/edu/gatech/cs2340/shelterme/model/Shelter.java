@@ -402,7 +402,8 @@ public class Shelter implements Parcelable {
      * @param vacancies the vacancies
      */
     public void setVacancies(int vacancies) {
-        this.vacancies = vacancies;
+        int capSum = (this.singleCapacity + this.familyCapacity);
+        this.vacancies = vacancies <= capSum ? vacancies : capSum;
     }
 
     @Override

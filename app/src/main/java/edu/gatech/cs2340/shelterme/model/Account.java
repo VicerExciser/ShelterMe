@@ -5,9 +5,9 @@ package edu.gatech.cs2340.shelterme.model;
  */
 public abstract class Account {
     private String name;
-    private String username;          // login name (in recognition of current popular trends,
+    private String username;                // login name (in recognition of current popular trends,
                                             // this can be the email address)
-    private int password;             // hashed user password
+    private int password;                   // hashed user password (for security)
     private boolean accountLocked;          // account state (locked or unlocked)
     private final String email;             // contact info (email address)
     private /*Type*/ String accountType;
@@ -24,7 +24,7 @@ public abstract class Account {
      * @param secQuest the security question of the account holder
      * @param secAns   the security answer of the account holder
      */
-    Account(String name, String username, String email, int password,
+    public Account(String name, String username, String email, int password,
             Question secQuest, String secAns) {
         this.setName(name);
         this.setUsername(username);
@@ -33,6 +33,14 @@ public abstract class Account {
         this.secQuest = secQuest;
         this.secAns = secAns;
         accountLocked = false;
+    }
+
+    /**
+     * Default constructor for Account.
+     */
+    public Account() {
+        this("account test", "test", "account@test.com",
+            "password".hashCode(), Question.CITY, "Atlanta");
     }
 
     /**
@@ -103,11 +111,17 @@ public abstract class Account {
 //        Model.updateUserAccountStatus(this, locked);
     }
 
+    /**
+     * Ban account.
+     */
     public void banAccount() {
         setAccountLocked(true);
         Model.updateUserAccountStatus(this, true);
     }
 
+    /**
+     * Unlock account.
+     */
     public void unlockAccount() {
         setAccountLocked(false);
         Model.updateUserAccountStatus(this, false);

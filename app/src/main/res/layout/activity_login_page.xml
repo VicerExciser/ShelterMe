@@ -48,22 +48,22 @@
             tools:ignore="HardcodedText" />
 
         <ImageButton
-            android:id="@+id/log"
+            android:id="@+id/logInButton"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/editText2"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="21dp"
+            android:contentDescription="TODO"
             android:tint="#000000"
             app:srcCompat="@android:drawable/bottom_bar"
-            android:contentDescription="TODO"
             tools:ignore="ContentDescription,HardcodedText" />
 
         <TextView
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/log"
+            android:layout_alignTop="@+id/logInButton"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:text="Login"
@@ -75,7 +75,7 @@
             android:id="@+id/forget"
             android:layout_width="150dp"
             android:layout_height="25dp"
-            android:layout_below="@+id/log"
+            android:layout_below="@+id/logInButton"
             android:layout_centerHorizontal="true"
             android:background="#FFFFFF"
             android:contentDescription="Cancel"
@@ -142,8 +142,8 @@
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/log"
-            android:layout_alignStart="@+id/log"
+            android:layout_alignLeft="@+id/logInButton"
+            android:layout_alignStart="@+id/logInButton"
             android:layout_below="@+id/logo1"
             app:srcCompat="@mipmap/cs_social_good"
             android:contentDescription="TODO"

@@ -9,7 +9,7 @@ import android.util.Log;
  * The type Report user request.
  */
 public class ReportUserRequest extends Message {
-    private Account reportedUser;
+    private User reportedUser;
 
     /**
      * Instantiates a new Report user request.
@@ -17,9 +17,9 @@ public class ReportUserRequest extends Message {
      * @param sender       the sender
      * @param reportedUser the reported user
      */
-    public ReportUserRequest(Account sender, Account reportedUser) {
+    public ReportUserRequest(Account sender, User reportedUser) {
         super(String.format("%s %s has reported user [%s] for a violation of the ShelterMe Terms " +
-                "of Service", sender.getAccountType(), sender.getEmail(),
+                "of Service", sender.getAccountType(), sender.getUsername(),
                 reportedUser.getUsername()), sender);
         this.reportedUser = reportedUser;
 //        String reportedUserEmail = reportedUser.getEmail();
@@ -41,7 +41,7 @@ public class ReportUserRequest extends Message {
      */
 // Can be implemented in the future for AccountDetails page to profile a User
     // All Account details are attached to a Message and thus visible on the Firebase console already
-    public Account getReportedUser() {
+    public User getReportedUser() {
         return reportedUser;
     }
 
@@ -50,7 +50,7 @@ public class ReportUserRequest extends Message {
      *
      * @param reportedUser the reported user
      */
-    public void setReportedUser(Account reportedUser) {
+    public void setReportedUser(User reportedUser) {
         this.reportedUser = reportedUser;
     }
 
@@ -59,6 +59,7 @@ public class ReportUserRequest extends Message {
         Log.e("USER REPORT", "User has been banned");
 //        reportedUser.setAccountLocked(true);
         reportedUser.banAccount();
+        this.reportedUser.setAccountLocked(true);
         this.markAsAddressed();
         return emailBanNotice();
     }

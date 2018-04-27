@@ -482,7 +482,7 @@ public final class DBUtil implements Runnable {
      * @param reserved  the reserved
      * @param reserving the reserving
      */
-    public void updateShelterVacanciesAndBeds(Shelter s, Map<String, Collection<Bed>> reserved,
+    public void updateShelterVacanciesAndBeds(Shelter s, Map<String, List<Bed>> reserved,
                                               boolean reserving) {
         String key = String.format("%s_%s", s.getShelterKey(), s.getShelterName());
         DatabaseReference ref = sheltersRef.child(key);
@@ -546,8 +546,8 @@ public final class DBUtil implements Runnable {
     public void addAccount(Account newAccount) {
         /*Account.Type*/ String type = newAccount.getAccountType();
         String branch = (type.equals(Account.Type.USER.toString()) || type.equals("USER")) ? "users"
-                : ((type.equals(Account.Type.ADMIN.toString()) || type.equals("ADMIN")) ? "employees"
-                : ((type.equals(Account.Type.EMP.toString()) || type.equals("EMP")) ? "admins" : ""));
+                : ((type.equals(Account.Type.ADMIN.toString()) || type.equals("ADMIN")) ? "admins"
+                : ((type.equals(Account.Type.EMP.toString()) || type.equals("EMP")) ? "employees" : ""));
         if (branch.isEmpty()) {
             return;
         }

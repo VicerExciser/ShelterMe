@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -20,7 +21,7 @@ public class StayReport {
     private boolean active;
     private int numReserved;
     private String shelterName;
-    private final Collection<String> reservedBeds;
+    private final List<String> reservedBeds;
     private String checkInDate;
     private String checkOutDate;
     private String accountEmail;
