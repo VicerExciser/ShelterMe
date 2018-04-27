@@ -5,6 +5,8 @@ import edu.gatech.cs2340.shelterme.model.Age;
 import edu.gatech.cs2340.shelterme.model.CapacityStruct;
 import edu.gatech.cs2340.shelterme.model.Shelter;
 
+/* Factory Design for a Shelter instance with specific restrictions and capacity */
+
 /**
  * The type Shelter builder.
  */

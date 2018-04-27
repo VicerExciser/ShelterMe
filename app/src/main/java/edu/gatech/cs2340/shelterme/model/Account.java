@@ -94,11 +94,24 @@ public abstract class Account {
     public boolean isAccountLocked() { return this.accountLocked; }
 
     /**
-     * Sets account locked.
+     * Sets account as locked or unlocked; necessary setter for Firebase.
      *
-     * @param locked the locked
+     * @param locked the locked condition
      */
-    public void setAccountLocked(boolean locked) { this.accountLocked = locked; }
+    public void setAccountLocked(boolean locked) {
+        this.accountLocked = locked;
+//        Model.updateUserAccountStatus(this, locked);
+    }
+
+    public void banAccount() {
+        setAccountLocked(true);
+        Model.updateUserAccountStatus(this, true);
+    }
+
+    public void unlockAccount() {
+        setAccountLocked(false);
+        Model.updateUserAccountStatus(this, false);
+    }
 
     @Override
     public boolean equals(Object other) {
@@ -130,7 +143,7 @@ public abstract class Account {
      *
      * @param accountType the account type (admin, employee, user)
      */
-    void setAccountType(String accountType) {
+    public void setAccountType(String accountType) {
         this.accountType = accountType;
     }
 

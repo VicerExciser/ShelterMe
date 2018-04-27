@@ -148,7 +148,7 @@ public class LoginPage extends AppCompatActivity {
             }
             if (attempting.isAccountLocked()) {  // Account is locked
                 model.displayErrorMessage("This account is locked! Proceed to the Password " +
-                        "Recovery page ('forgot my password') to unlock with a new password",
+                        "Recovery page ('forgot my password') to contact an administrator",
                         this);
                 return false;
             }

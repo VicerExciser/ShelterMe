@@ -16,6 +16,9 @@ public abstract class Message implements Comparable<Message> {
     private final String senderEmail;
     @SuppressWarnings("FieldMayBeFinal")
     private boolean isAddressed;
+    /**
+     * The Account unlock requested.
+     */
     protected boolean accountUnlockRequested;
 
     /**
@@ -24,7 +27,7 @@ public abstract class Message implements Comparable<Message> {
      * @param message the message
      * @param sender  the sender
      */
-    public Message(String message, Account sender) {
+    public Message(String message, @NonNull Account sender) {
         this.message = message;
         //noinspection ChainedMethodCall
         Calendar calendar = Calendar.getInstance();
@@ -96,14 +99,27 @@ public abstract class Message implements Comparable<Message> {
     }
 
     /**
+     * Mark as addressed.
+     */
+    public void markAsAddressed() {
+        this.setAddressed(true);
+        Model.markMessageAsAddressed(this);
+    }
+
+    /**
      * Sets addressed.
      *
      * @param addressed the addressed
      */
     public void setAddressed(boolean addressed) {
-        isAddressed = addressed;
+        this.isAddressed = addressed;
     }
 
+    /**
+     * Is account unlock requested boolean.
+     *
+     * @return the boolean
+     */
     public boolean isAccountUnlockRequested() {
         return this.accountUnlockRequested;
     }
@@ -146,6 +162,11 @@ public abstract class Message implements Comparable<Message> {
         return result;
     }
 
+    /**
+     * Resolve intent.
+     *
+     * @return the intent
+     */
     public Intent resolve() {
         Log.e("MESSAGE", "Superclass 'resolve()' called");
         return new Intent();

@@ -20,10 +20,13 @@ import edu.gatech.cs2340.shelterme.model.Model;
 import edu.gatech.cs2340.shelterme.util.MessageAdapter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The type Message board.
@@ -32,8 +35,8 @@ public class MessageBoard extends AppCompatActivity {
 
     private RecyclerView messageRecyclerView;
     private Map<String, Message> dataSet;
-    MessageAdapter messageAdapter;
-//    int filterUpdatesBeforeChange = 2;
+    private MessageAdapter messageAdapter;
+    int filterUpdatesBeforeChange = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +44,7 @@ public class MessageBoard extends AppCompatActivity {
         setContentView(R.layout.activity_message_board);
 
         messageRecyclerView = findViewById(R.id.recycler_message);
-        Model.initMessages();
+//        Model.initMessages();
 
         // Just for testing adding a Message to DB
 //        Model model = Model.getInstance();
@@ -62,6 +65,14 @@ public class MessageBoard extends AppCompatActivity {
 //        messageAdapter = new MessageAdapter(dataSet);
 //        messageRecyclerView.setAdapter(messageAdapter);
 //        Model.maintainMessages(messageRecyclerView, messageAdapter);
+        Message[] dataArray = new Message[dataSet.size()];
+        List<Message> dataList = new ArrayList<>(dataSet.values());
+        Collections.sort(dataList, Collections.reverseOrder()); // display in descending order
+        dataArray = dataList.toArray(dataArray);
+        messageAdapter = new MessageAdapter(dataArray);
+        Model.maintainMessages(messageRecyclerView, this);
+        messageRecyclerView.setAdapter(messageAdapter);
+//        Model.maintainMessages(messageRecyclerView, messageAdapter);
 
 //--------------------------------------------------------------------------------------------------
 
@@ -71,16 +82,19 @@ public class MessageBoard extends AppCompatActivity {
                 new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+//                if (filterUpdatesBeforeChange <= 0) {
+                    if (isChecked) {
 //                    showUnaddressedOnly();
 //                    MessageBoard.this.messageAdapter.filter("Addressed", "False");
-//                    if (filterUpdatesBeforeChange <= 0)
+//                        if (filterUpdatesBeforeChange <= 0)
                         updateFilter("Addressed", "False");
-                } else {
+                    } else {
 //                    showAddressed();
 //                    MessageBoard.this.messageAdapter.filter("Addressed", "True");
-                    updateFilter("Addressed", "True");
-                }
+//                        if (filterUpdatesBeforeChange <= 0)
+                        updateFilter("Addressed", "True");
+                    }
+//                }
             }
         });
 
@@ -93,19 +107,22 @@ public class MessageBoard extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
 //                MessageBoard.this.messageAdapter.filter("Search", query);
-                updateFilter("Search", query);
+//                if (filterUpdatesBeforeChange <= 0)
+                    updateFilter("Search", query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.isEmpty()) {
+//                if (filterUpdatesBeforeChange <= 0) {
+                    if (newText.isEmpty()) {
 //                    MessageBoard.this.messageAdapter.filter(null, null);
-                    updateFilter(null, null);
-                } else {
+                        updateFilter(null, null);
+                    } else {
 //                    MessageBoard.this.messageAdapter.filter("Search", newText);
-                    updateFilter("Search", newText);
-                }
+                        updateFilter("Search", newText);
+                    }
+//                }
                 return false;
             }
         });
@@ -115,56 +132,64 @@ public class MessageBoard extends AppCompatActivity {
 //        updateFilter(null, null);
 //        messageAdapter.notifyDataSetChanged();
 
-        dataSet = Model.getMessageListPointer();
-        Message[] dataArray = new Message[dataSet.size()];
-        List<Message> dataList = new ArrayList<>(dataSet.values());
-        Collections.sort(dataList, Collections.reverseOrder()); // display in descending order
-        dataArray = dataList.toArray(dataArray);
-        messageAdapter = new MessageAdapter(dataArray);
-        messageRecyclerView.setAdapter(messageAdapter);
-        Model.maintainMessages(messageRecyclerView, messageAdapter);
+
         messageAdapter.notifyDataSetChanged();
     }
 
     private void updateFilter(String mode, String searchText) {
-        Message[] dataArray = new Message[dataSet.size()];
-        List<Message> dataList = new ArrayList<>(dataSet.values());
-        if ((mode == null) || (searchText == null)) {
+        Log.e("MessageBoard", "UPDATE FILTER CALLED");
+        if (filterUpdatesBeforeChange <= 0) {
+            Log.e("MessageBoard", "UPDATE FILTER ACCEPTED");
             dataSet = Model.getMessageListPointer();
-        } else if ("Search".equals(mode)) {
-            Log.e("'Search' filter", "Now showing only results containing " + searchText);
-//            dataArray = new Message[dataSet.size()];
-//            dataList = new ArrayList<>(dataSet.values());
-            Iterator<Message> iterator = dataList.iterator();
-            while (iterator.hasNext()) {
-                Message message = iterator.next();
-                String email = message.getSenderEmail();
-                if (!email.contains(searchText)) {
-                    iterator.remove();
+            Message[] dataArray = new Message[dataSet.size()];
+            Set<Message> singularSet = new HashSet<>(dataSet.values());
+//        if ((mode == null) || (searchText == null)) {
+//            dataSet = Model.getMessageListPointer();
+//        } else
+            if ("Search".equals(mode)) {
+                Log.e("'Search' filter", "Now showing only results containing " + searchText);
+                Iterator<Message> iterator = singularSet.iterator();
+                while (iterator.hasNext()) {
+                    Message message = iterator.next();
+                    String email = message.getSenderEmail();
+                    if (!email.contains(searchText)) {
+                        iterator.remove();
+                    }
+                }
+            } else if ("Addressed".equals(mode) && "False".equals(searchText)) {
+                Log.e("'Addressed' filter", "Now showing only unaddressed messages");
+                Iterator<Message> iterator = singularSet.iterator();
+                while (iterator.hasNext()) {
+                    Message message = iterator.next();
+                    if (message.isAddressed()) {
+                        iterator.remove();
+                    }
                 }
             }
-        } else if ("Addressed".equals(mode) && "False".equals(searchText)) {
-            Log.e("'Addressed' filter", "Now showing only unaddressed messages");
-//            dataArray = new Message[dataSet.size()];
-//            dataList = new ArrayList<>(dataSet.values());
-            Iterator<Message> iterator = dataList.iterator();
-            while (iterator.hasNext()) {
-                Message message = iterator.next();
-                if (message.isAddressed()) {
-                    iterator.remove();
-                }
-            }
-        } else {
-            dataSet = Model.getMessageListPointer();
+//        else {
+////            dataSet = Model.getMessageListPointer();
+//        }
+            List<Message> dataList = new ArrayList<>(singularSet);
+            Collections.sort(dataList, Collections.reverseOrder()); // display in descending order
+            dataArray = dataList.toArray(dataArray);
+            messageAdapter = new MessageAdapter(dataArray);
+//        Model.maintainMessages(messageRecyclerView, this);
+            messageRecyclerView.setAdapter(messageAdapter);
+//        messageAdapter.notifyDataSetChanged();
+
+//        messageAdapter.updateTextView(messageAdapter.viewHolder, -1);
+//        messageAdapter.onBindViewHolder(messageAdapter.viewHolder, -1);
         }
-        Collections.sort(dataList, Collections.reverseOrder()); // display in descending order
-        dataArray = dataList.toArray(dataArray);
-        messageAdapter = new MessageAdapter(dataArray);
-        messageRecyclerView.setAdapter(messageAdapter);
-        Model.maintainMessages(messageRecyclerView, messageAdapter);
-        messageAdapter.notifyDataSetChanged();
-//        filterUpdatesBeforeChange--;
+        filterUpdatesBeforeChange--;
+//        messageAdapter.updateMessageTextViewString();
     }
+
+    public void updateDataSet(RecyclerView rv) {
+        this.messageRecyclerView = rv;
+        updateFilter(null, null);
+    }
+
+    public MessageAdapter getMessageAdapter() { return this.messageAdapter; }
 
 
 //    private void showAddressed() {

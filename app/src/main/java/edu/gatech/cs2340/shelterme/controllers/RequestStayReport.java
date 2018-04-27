@@ -154,8 +154,8 @@ public class RequestStayReport extends AppCompatActivity {
                                 Map<String, Collection<Bed>> reserved
                                     = reservationManager.reserveBed(selectedBedType, selctedNumber);
 
-                                dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, true);
-                                dbUtil.updateUserOccupancyAndStayReports(user);
+                                model.updateShelterVacanciesAndBeds(shelter, reserved, true);
+                                model.updateUserOccupancyAndStayReports(user);
                             } catch (IllegalArgumentException iae) {
                                 model.displayErrorMessage(iae.getMessage(),
                                         RequestStayReport.this);

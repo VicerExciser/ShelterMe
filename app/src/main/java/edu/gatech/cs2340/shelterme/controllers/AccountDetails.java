@@ -7,10 +7,7 @@ package edu.gatech.cs2340.shelterme.controllers;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +17,7 @@ import edu.gatech.cs2340.shelterme.R;
 import edu.gatech.cs2340.shelterme.model.Account;
 import edu.gatech.cs2340.shelterme.model.Message;
 import edu.gatech.cs2340.shelterme.model.Model;
+import edu.gatech.cs2340.shelterme.model.ReportUserRequest;
 import edu.gatech.cs2340.shelterme.model.UnlockRequest;
 import edu.gatech.cs2340.shelterme.model.User;
 
@@ -29,7 +27,7 @@ import edu.gatech.cs2340.shelterme.model.User;
 public class AccountDetails extends AppCompatActivity {
     String accountEmail, messageBody, timeSent;
     Account account;
-    boolean status;
+    boolean accountIsLocked;
     Message message;
 
     @Override
@@ -46,17 +44,14 @@ public class AccountDetails extends AppCompatActivity {
         getWindow().setLayout(width, height);
 
         Intent intent = getIntent();
-//        accountEmail = savedInstanceState.getString("SenderEmail");
         accountEmail = intent.getStringExtra("SenderEmail");
         TextView emailText = findViewById(R.id.emailText);
         emailText.setText(accountEmail);
 
-//        messageBody = savedInstanceState.getString("MessageBody");
         messageBody = intent.getStringExtra("MessageBody");
         TextView messageText = findViewById(R.id.messageText);
         messageText.setText(messageBody);
 
-//        timeSent = savedInstanceState.getString("TimeSent");
         timeSent = intent.getStringExtra("TimeSent");
         TextView timeSentText = findViewById(R.id.timeSentText);
         timeSentText.setText(timeSent);
@@ -66,9 +61,9 @@ public class AccountDetails extends AppCompatActivity {
             Model.getInstance().displayErrorMessage("No account information found", this);
             return;
         }
-        status = account.isAccountLocked();
+        accountIsLocked = account.isAccountLocked();
         TextView statusText = findViewById(R.id.statusText);
-        if (status)
+        if (accountIsLocked)
             statusText.setText(R.string.account_status_locked);
         else
             statusText.setText(R.string.account_status_unlocked);
@@ -83,19 +78,20 @@ public class AccountDetails extends AppCompatActivity {
         resolveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (status) {
-//                    UnlockRequest unlockReq = (UnlockRequest) message;
-//                    Intent mail = unlockReq.resolve();
-                    Intent mail = ((UnlockRequest)message).resolve();
+                boolean shouldUnlockAccount = (message.isAccountUnlockRequested() && accountIsLocked);
+                Intent mail;
+                if  (shouldUnlockAccount) {
+                    mail = ((UnlockRequest)message).resolve();
                     Model.getInstance().displaySuccessMessage("User's account has been " +
                             "unlocked; sending new password to email now.", AccountDetails.this);
-                    message.setAddressed(true);
-//                    Model.getMessageListPointer().remove(timeSent);
-//                    Intent.createChooser(mail, "Send email...");
+//                    message.setAddressed(true);
                     startActivity(mail);
-                } else {
+                } else if (!shouldUnlockAccount) {
+                    mail = ((ReportUserRequest)message).resolve();
 //                    account.setAccountLocked(true);
                     Model.updateUserAccountStatus((User)account, true);
+//                    Model.markMessageAsAddressed(this);
+                    message.markAsAddressed();
                     Model.getInstance().displaySuccessMessage("User has been banned; account" +
                             " locked.", AccountDetails.this);
                 }

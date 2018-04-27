@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import edu.gatech.cs2340.shelterme.R;
+import edu.gatech.cs2340.shelterme.model.Model;
 
 /**
  * The type Admin home page.
@@ -17,6 +18,8 @@ public class AdminHomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home_page);
+
+        Model.initMessages();   // preemptive loading of Messages from FBDB for MessageBoard option
 
         Button viewMessages = findViewById(R.id.viewRequest);
         viewMessages.setOnClickListener(new View.OnClickListener() {

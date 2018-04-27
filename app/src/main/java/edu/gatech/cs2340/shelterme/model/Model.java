@@ -6,26 +6,21 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
+import edu.gatech.cs2340.shelterme.controllers.MessageBoard;
 import edu.gatech.cs2340.shelterme.util.DBUtil;
 import edu.gatech.cs2340.shelterme.util.MessageAdapter;
 
-/* Facade Controller */     // I think we can change Model so that it is not a singleton
-                            // and just a pure facade class. All data additions and removals
-                            // can be done with DBUtil having Model act as a wrapper for those
-                            // synchronized functions. However, should we still encapsulate
-                            // local class methods here that simply are accessing/searching the
-                            // synchronous data structures (e.g. accounts, shelters)??
-                        // ^^^^^ This way, we can keep the getCurrUser functionality.
+/* Facade Controller */
 
 /**
  * The type Model.
  */
 // SINGLETON -- Updated to be Thread-Safe for Synchronization
 @SuppressWarnings("AssignmentToStaticFieldFromInstanceMethod")
-//@Singleton
 public final class Model {
     private static volatile Model modelInstance; // Volatile so multiple threads can access
     private static volatile DBUtil dbUtil;
@@ -35,6 +30,7 @@ public final class Model {
     private static Map<String, Shelter> shelters;
     private static Map<String, Message> messages;
     private Account currUser;
+    private Account currEmployee;  // both of these are for testing purposes, not thread-safe
 
     private Model() {
         while (dbUtil == null) {
@@ -106,10 +102,10 @@ public final class Model {
      * Maintain messages.
      *
      * @param messagesRecyclerView the messages recycler view
-     * @param adapter              the adapter
+     * @param mb              the calling MessageBoard activity
      */
-    public static void maintainMessages(RecyclerView messagesRecyclerView, MessageAdapter adapter) {
-        dbUtil.maintainMessages(messagesRecyclerView, adapter);
+    public static void maintainMessages(RecyclerView messagesRecyclerView, MessageBoard mb) {
+        dbUtil.maintainMessages(messagesRecyclerView, mb);
     }
 
     /**
@@ -137,6 +133,17 @@ public final class Model {
     }
 
     /**
+     * Locks/unlocks User account and updates Firebase and all synchronized data.
+     *
+     * @param u User to ban or grant access to
+     * @param locked whether the User account should be locked/unlocked
+     */
+    public static void updateUserAccountStatus(Account u, boolean locked) {
+//        u.setAccountLocked(locked);
+        dbUtil.updateUserAccountStatus(u, locked, u.getEmail());
+    }
+
+    /**
      * Gets curr user.
      *
      * @return the curr user
@@ -157,7 +164,21 @@ public final class Model {
      *
      * @param email the email
      */
-    public void setCurrUser(String email) {currUser = getAccountByEmail(email);}
+    public void setCurrUser(String email) {
+        Account found = getAccountByEmail(email);
+        if (found != null) {
+            String empString = Account.Type.EMP.toString();
+            String adminString = Account.Type.ADMIN.toString();
+            String fat = found.getAccountType();
+            if (empString.equals(fat) || "EMP".equals(fat)) {
+                setCurrEmployee(found);
+                return;
+            } else if (adminString.equals(fat) || "ADMIN".equals(fat)) {
+                return;  // no actions taken for logged in administrators
+            }
+        }
+        currUser = found;
+    }
 
     /**
      * Add to accounts.
@@ -221,9 +242,28 @@ public final class Model {
         return null;
     }
 
-    public static void updateUserAccountStatus(User u, boolean accountLocked) {
-        u.setAccountLocked(accountLocked);
-        dbUtil.updateUserAccountStatus(u);
+    /**
+     * Gets curr employee.
+     *
+     * @return the curr employee
+     */
+    public Account getCurrEmployee() {return currEmployee;}
+
+    /**
+     * Sets curr employee.
+     *
+     * @param emp the employee currently sending an administrator request
+     */
+//    public void setCurrEmployee(String email) {currEmployee = getAccountByEmail(email);}
+    private void setCurrEmployee(Account emp) { currEmployee = emp; }
+
+    /**
+     * Mark message as addressed.
+     *
+     * @param oldMessage the message being resolved
+     */
+    static void markMessageAsAddressed(Message oldMessage) {
+        dbUtil.markMessageAsAddressed(oldMessage);
     }
 
 //    public static User
@@ -261,9 +301,22 @@ public final class Model {
 //    }
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
+    public void updateVacancy(Shelter s) {
+        dbUtil.updateVacancy(s);
+    }
+
 
     private void getShelterDetails(Shelter s) {
         Log.v(TAG, s.detail());
+    }
+
+    public void updateUserOccupancyAndStayReports(User u) {
+        dbUtil.updateUserOccupancyAndStayReports(u);
+    }
+
+    public void updateShelterVacanciesAndBeds(Shelter s, Map<String, Collection<Bed>> reserved,
+                                              boolean reserving) {
+        dbUtil.updateShelterVacanciesAndBeds(s, reserved, reserving);
     }
 
     /**

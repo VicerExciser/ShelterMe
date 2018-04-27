@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import edu.gatech.cs2340.shelterme.controllers.MessageBoard;
 import edu.gatech.cs2340.shelterme.model.Account;
 import edu.gatech.cs2340.shelterme.model.Admin;
 import edu.gatech.cs2340.shelterme.model.Bed;
@@ -34,6 +35,9 @@ import edu.gatech.cs2340.shelterme.model.User;
 
 import static android.content.ContentValues.TAG;
 
+/**
+ * The type Db util.
+ */
 // Properly configured implementation of Runnable interface so that not all work done on main thread
 @SuppressWarnings("ALL")
 // Declared volatile rather than final for sync.
@@ -66,6 +70,11 @@ public final class DBUtil implements Runnable {
 //        rootRef.keepSynced(true);
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static DBUtil getInstance() {
         if (dbUtilInstance == null) {
             synchronized (DBUtil.class) {
@@ -402,17 +411,32 @@ public final class DBUtil implements Runnable {
     }
 //-------------------------------------------------------------------------------------------------
 
-    // Map: <Email, Account>
+    /**
+     * Gets account list pointer.
+     *
+     * @return the account list pointer
+     */
+// Map: <Email, Account>
     public static Map<String, Account> getAccountListPointer() {
         return accountList;
     }
 
-    // Map: <ShelterName, Shelter>
+    /**
+     * Gets shelter list pointer.
+     *
+     * @return the shelter list pointer
+     */
+// Map: <ShelterName, Shelter>
     public static Map<String, Shelter> getShelterListPointer() {
         return shelterList;
     }
 
-    // Map<String, Message> messageList
+    /**
+     * Gets message list pointer.
+     *
+     * @return the message list pointer
+     */
+// Map<String, Message> messageList
     public static Map<String, Message> getMessageListPointer() {
         return messageList;
     }
@@ -424,6 +448,11 @@ public final class DBUtil implements Runnable {
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 
 
+    /**
+     * Add shelter.
+     *
+     * @param newShelter the new shelter
+     */
 //-------------------------------------------------------------------------------------------------
     // Primary key = shelterKey_shelterName
     @SuppressWarnings("unused")
@@ -446,6 +475,13 @@ public final class DBUtil implements Runnable {
 
     }
 
+    /**
+     * Update shelter vacancies and beds.
+     *
+     * @param s         the s
+     * @param reserved  the reserved
+     * @param reserving the reserving
+     */
     public void updateShelterVacanciesAndBeds(Shelter s, Map<String, Collection<Bed>> reserved,
                                               boolean reserving) {
         String key = String.format("%s_%s", s.getShelterKey(), s.getShelterName());
@@ -487,6 +523,12 @@ public final class DBUtil implements Runnable {
         }
     }
 
+    public void updateVacancy(Shelter s) {
+        String key = String.format("%s_%s", s.getShelterKey(), s.getShelterName());
+        DatabaseReference vacRef = sheltersRef.child(key).child("vacancies");
+        vacRef.setValue(s.getVacancies());
+    }
+
 // --Commented out by Inspection START (4/13/2018 6:17 PM):
 //    public void updateShelterInfo(Shelter s) {
 //        String key = s.getShelterKey() + "_" + s.getShelterName();
@@ -495,7 +537,12 @@ public final class DBUtil implements Runnable {
 // --Commented out by Inspection STOP (4/13/2018 6:17 PM)
 //-------------------------------------------------------------------------------------------------
 
-    // Primary key = email (String up to '@' symbol)
+    /**
+     * Add account.
+     *
+     * @param newAccount the new account
+     */
+// Primary key = email (String up to '@' symbol)
     public void addAccount(Account newAccount) {
         /*Account.Type*/ String type = newAccount.getAccountType();
         String branch = (type.equals(Account.Type.USER.toString()) || type.equals("USER")) ? "users"
@@ -577,6 +624,11 @@ public final class DBUtil implements Runnable {
     }
     */
 
+    /**
+     * Update user occupancy and stay reports.
+     *
+     * @param u the u
+     */
     public void updateUserOccupancyAndStayReports(User u) {
         String key = u.getEmail().substring(0, u.getEmail().indexOf('@'));
         usersRef.child(key).child("isOccupyingBed").setValue(u.isOccupyingBed());
@@ -592,9 +644,17 @@ public final class DBUtil implements Runnable {
         }
     }
 
-    public void updateUserAccountStatus(User u) {
-        String key = u.getEmail().substring(0, u.getEmail().indexOf('@'));
-        usersRef.child(key).child("accountLocked").setValue(u.isAccountLocked());
+    /**
+     * Update user account status.
+     *
+     * @param a               the account to update as locked/unlocked
+     * @param accountIsLocked the account is locked
+     * @param email           the email
+     */
+    public void updateUserAccountStatus(Account a, boolean accountIsLocked, String email) {
+        User u = (User) a;
+        String key = email.substring(0, email.indexOf('@'));
+        usersRef.child(key).child("accountLocked").setValue(accountIsLocked);
         usersRef.child(key).child("password").setValue(u.getPassword());
     }
 
@@ -612,6 +672,9 @@ public final class DBUtil implements Runnable {
 
     */
 
+    /**
+     * Init messages.
+     */
     public void initMessages() {
         messageRef.child("unlockRequests").addValueEventListener(new ValueEventListener() {
             @Override
@@ -670,8 +733,14 @@ public final class DBUtil implements Runnable {
         });
     }
 
+    /**
+     * Maintain messages.
+     *
+     * @param messagesRecyclerView the messages recycler view
+     * @param mb                   the mb
+     */
     public void maintainMessages(final RecyclerView messagesRecyclerView,
-                                 final MessageAdapter adapter) {
+                                 final MessageBoard mb) {
         Query unlockReqsQuery = messageRef.child("unlockRequests").orderByKey();
         unlockReqsQuery.addChildEventListener(new ChildEventListener() {
             @Override
@@ -684,8 +753,8 @@ public final class DBUtil implements Runnable {
                     }
                 }
                 //Now Add messageList into Adapter/RecyclerView
-                messagesRecyclerView.setAdapter(adapter);
-
+                messagesRecyclerView.setAdapter(mb.getMessageAdapter());
+                mb.updateDataSet(messagesRecyclerView);
             }
 
             @Override
@@ -696,7 +765,8 @@ public final class DBUtil implements Runnable {
                         messageList.put(message.getTimeSent(), message);
                     }
                 }
-                messagesRecyclerView.setAdapter(adapter);
+                messagesRecyclerView.setAdapter(mb.getMessageAdapter());
+                mb.updateDataSet(messagesRecyclerView);
             }
 
             @Override
@@ -712,7 +782,8 @@ public final class DBUtil implements Runnable {
                         messageList.remove(message.getTimeSent());
                     }
                 }
-                messagesRecyclerView.setAdapter(adapter);
+                messagesRecyclerView.setAdapter(mb.getMessageAdapter());
+                mb.updateDataSet(messagesRecyclerView);
             }
 
             @Override
@@ -738,8 +809,8 @@ public final class DBUtil implements Runnable {
                     }
                 }
                 //Now Add messageList into Adapter/RecyclerView
-                messagesRecyclerView.setAdapter(adapter);
-
+//                messagesRecyclerView.setAdapter(mb.getMessageAdapter());
+                mb.updateDataSet(messagesRecyclerView);
             }
 
             @Override
@@ -750,7 +821,8 @@ public final class DBUtil implements Runnable {
                         messageList.put(message.getTimeSent(), message);
                     }
                 }
-                messagesRecyclerView.setAdapter(adapter);
+//                messagesRecyclerView.setAdapter(mb.getMessageAdapter());
+                mb.updateDataSet(messagesRecyclerView);
             }
 
             @Override
@@ -766,7 +838,8 @@ public final class DBUtil implements Runnable {
                         messageList.remove(message.getTimeSent());
                     }
                 }
-                messagesRecyclerView.setAdapter(adapter);
+//                messagesRecyclerView.setAdapter(mb.getMessageAdapter());
+                mb.updateDataSet(messagesRecyclerView);
             }
 
             @Override
@@ -781,6 +854,11 @@ public final class DBUtil implements Runnable {
         });
     }
 
+    /**
+     * Add message.
+     *
+     * @param newMessage the new message
+     */
     public void addMessage(Message newMessage) {
 //        String key = new Date(newMessage.getTimeSent()).toString(); // likely redundant
         String key = String.valueOf(new Date(newMessage.getTimeSent()).getTime());
@@ -800,6 +878,11 @@ public final class DBUtil implements Runnable {
         });
     }
 
+    /**
+     * Mark message as addressed.
+     *
+     * @param oldMessage the old message
+     */
     public void markMessageAsAddressed(Message oldMessage) {
         String key = String.valueOf(new Date(oldMessage.getTimeSent()).getTime());
         String branch = oldMessage.isAccountUnlockRequested() ? "unlockRequests" : "userReports";

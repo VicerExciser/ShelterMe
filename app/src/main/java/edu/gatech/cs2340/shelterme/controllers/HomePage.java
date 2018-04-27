@@ -88,8 +88,8 @@ public class HomePage extends AppCompatActivity {
                         Map<String, Collection<Bed>> reserved
                                 = reservationManager.undoReservation(curStay);
 //
-                        dbUtil.updateShelterVacanciesAndBeds(shelter, reserved, false);
-                        dbUtil.updateUserOccupancyAndStayReports(curUser);
+                        model.updateShelterVacanciesAndBeds(shelter, reserved, false);
+                        model.updateUserOccupancyAndStayReports(curUser);
                     } catch (IllegalArgumentException iae) {
                         model.displayErrorMessage(iae.getMessage(), HomePage.this);
                         return;

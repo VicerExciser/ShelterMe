@@ -386,8 +386,8 @@ public class RegistrationPage extends AppCompatActivity {
                     = Calendar.getInstance().get(Calendar.MONTH);
             int age = 0;
             Account.Sex sex = Account.Sex.MALE;
-            String selectedWorkplace; //enteredWorkplace;
-            Shelter workplace = null;
+            String workplace = ""; //enteredWorkplace;
+//            Shelter workplace = null;
 
             if (type == Account.Type.USER) {
                 //noinspection ChainedMethodCall
@@ -423,8 +423,8 @@ public class RegistrationPage extends AppCompatActivity {
 //            }
 //            // This is temporary placeholder for future code
 //            workplace = new Shelter();
-                selectedWorkplace = String.valueOf(shelterSpinner.getSelectedItem());
-                workplace = Model.findShelterByName(selectedWorkplace);
+                workplace = String.valueOf(shelterSpinner.getSelectedItem());
+//                workplace = Model.findShelterByName(selectedWorkplace);
             }
 
 
@@ -456,27 +456,17 @@ public class RegistrationPage extends AppCompatActivity {
     }
 
     private void createAccount(String nm, String un, String em, int pw, Account.Sex sx, int age,
-                               Account.Type at, Account.Question sq, String qa, Shelter wp) {
+                               Account.Type at, Account.Question sq, String qa, String wp) {
         Account newAccount = null;
         switch (at) {
             case USER:
                 newAccount = new User(nm, un, em, pw, sx, age, false, sq, qa);
-                ////// CHANGE FAMILY FALSE !!!!!!!!!!
-//                DatabaseReference newUserRef = dbRootRef.child("users").push();
-//                newUserRef.setValue(newAccount);
-//                newAccount.setAccountID(newUserRef);
                 break;
             case EMP:
                 newAccount = new Employee(nm, un, em, pw, wp, sq, qa);
-//                DatabaseReference newEmpRef = dbRootRef.child("employees").push();
-//                newEmpRef.setValue(newAccount);
-//                newAccount.setAccountID(newEmpRef);
                 break;
             case ADMIN:
                 newAccount = new Admin(nm, un, em, pw, sq, qa);
-//                DatabaseReference newAdminRef = dbRootRef.child("admins").push();
-//                newAdminRef.setValue(newAccount);
-//                newAccount.setAccountID(newAdminRef);
                 break;
         }
 

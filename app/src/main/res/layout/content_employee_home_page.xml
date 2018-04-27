@@ -67,9 +67,9 @@
             android:layout_marginBottom="52dp"
             android:background="@android:drawable/bottom_bar"
             android:backgroundTint="#F6E3CE"
-            android:text="Send Admin Request"
-            tools:targetApi="lollipop"
-            tools:ignore="HardcodedText" />
+            android:text="Report a User to Admins"
+            tools:ignore="HardcodedText"
+            tools:targetApi="lollipop" />
 
         <ImageView
             android:id="@+id/cs_sg_logo"

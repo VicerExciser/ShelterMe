@@ -43,7 +43,7 @@ public class PasswordRecovery extends AppCompatActivity {
         setContentView(R.layout.activity_password_recovery);
         final TextView emailInput = findViewById(R.id.acctEmail);
         final TextView answerInput = findViewById(R.id.securityAnswer);
-        Button submitRequest = findViewById(R.id.submitPassReq);
+        Button submitPasswordRequest = findViewById(R.id.submitReq);
 
         securitySpin = (Spinner) findViewById(R.id.spinnerQuestions);
         assert(securitySpin != null);
@@ -97,32 +97,32 @@ public class PasswordRecovery extends AppCompatActivity {
             }
         });
 
-        submitRequest.setOnClickListener(new View.OnClickListener() {
+        submitPasswordRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = emailInput.getText().toString();
-                String answer = answerInput.getText().toString();
-                if (email.isEmpty() || answer.isEmpty()) {
-                    model.displayErrorMessage("All fields must be filled out!",
+            String email = emailInput.getText().toString();
+            String answer = answerInput.getText().toString();
+            if (email.isEmpty() || answer.isEmpty()) {
+                model.displayErrorMessage("All fields must be filled out!",
+                        PasswordRecovery.this);
+            } else {
+                Account account = Model.getAccountByEmail(email);
+                if (account == null) {
+                    model.displayErrorMessage("No user found for the entered email!",
                             PasswordRecovery.this);
                 } else {
-                    Account account = Model.getAccountByEmail(email);
-                    if (account == null) {
-                        model.displayErrorMessage("No user found for the entered email!",
-                                PasswordRecovery.this);
-                    } else {
-                        if (answer.equalsIgnoreCase(account.getSecAns())) {
-                            Message unlockReq = new UnlockRequest(account);
-                            model.addToMessages(unlockReq);
-                            String successText = "Password successfully reset! " +
-                                    "\nA request has been submitted for your account to be unlocked" +
-                                    " and a new password will be sent to your email soon.";
+                    if (answer.equalsIgnoreCase(account.getSecAns())) {
+                        Message unlockReq = new UnlockRequest(account);
+                        model.addToMessages(unlockReq);
+                        String successText = "Password successfully reset! " +
+                                "\nA request has been submitted for your account to be unlocked" +
+                                " and a new password will be sent to your email soon.";
 //                            Toast.makeText(PasswordRecovery.this, successText,
 //                                    Toast.LENGTH_LONG);
-                            model.displaySuccessMessage(successText,
-                                    PasswordRecovery.this);
-                            final Intent nextIntent = new Intent(PasswordRecovery.this,
-                                    MainActivity.class);
+                        model.displaySuccessMessage(successText,
+                                PasswordRecovery.this);
+                        final Intent nextIntent = new Intent(PasswordRecovery.this,
+                                MainActivity.class);
 //                            if (account.getAccountType() != Account.Type.USER) {
 //                                switch (account.getAccountType()) {
 //                                    case EMP:
@@ -135,25 +135,25 @@ public class PasswordRecovery extends AppCompatActivity {
 //                                        break;
 //                                }
 //                            }
-                            Thread thread = new Thread() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        Thread.sleep(3500);
-                                        startActivity(nextIntent);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
+                        Thread thread = new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(3500);
+                                    startActivity(nextIntent);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            };
-                            thread.start();
+                            }
+                        };
+                        thread.start();
 //                            startActivity(nextIntent);
-                        } else {
-                            model.displayErrorMessage("Incorrect answer to the security" +
-                                    " question!", PasswordRecovery.this);
-                        }
+                    } else {
+                        model.displayErrorMessage("Incorrect answer to the security" +
+                                " question!", PasswordRecovery.this);
                     }
                 }
+            }
             }
         });
     }

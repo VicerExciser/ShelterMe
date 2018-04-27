@@ -13,8 +13,11 @@ import edu.gatech.cs2340.shelterme.model.Shelter;
 import edu.gatech.cs2340.shelterme.model.StayReport;
 import edu.gatech.cs2340.shelterme.model.User;
 
+// Following a Command Pattern
+
 /**
- * The type Reservation manager.
+ * The type Reservation manager; executes User requests to check in or check out of a Shelter and
+ * pushes them to the specific User's stack of StayReports.
  */
 public class ReservationManager {
 
@@ -42,7 +45,8 @@ public class ReservationManager {
      *
      * @param type    The type of bed to be reserved (Single or Family)
      * @param numBeds An integer from 1 to 5 for the quantity of beds to reserve at this shelter
-     * @return A HashMap that maps a bedKey (representative of the User type that can legitimately          sleep in this bed) to a collection of bedIDs (i.e. bed_50)
+     * @return A HashMap that maps a bedKey (representative of the User type that can legitimately
+     * sleep in this bed) to a collection of bedIDs (i.e. bed_50)
      */
     public Map<String, Collection<Bed>> reserveBed(String type, int numBeds) {
         //function takes in User and returns ID of bed(s) being reserved
